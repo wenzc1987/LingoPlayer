@@ -6,8 +6,8 @@ app, runtime = Path(sys.argv[1]), sys.argv[2]
 info = {
     "CFBundleExecutable": "LingoPlayer", "CFBundleIdentifier": "local.lingoplayer.mac",
     "CFBundleName": "LingoPlayer", "CFBundleDisplayName": "LingoPlayer",
-    "CFBundlePackageType": "APPL", "CFBundleShortVersionString": "0.1.0",
-    "CFBundleVersion": "1", "LSMinimumSystemVersion": "14.0", "NSHighResolutionCapable": True,
+    "CFBundlePackageType": "APPL", "CFBundleShortVersionString": "0.2.0",
+    "CFBundleIconFile": "AppIcon", "CFBundleVersion": "2", "LSMinimumSystemVersion": "14.0", "NSHighResolutionCapable": True,
     "NSPrincipalClass": "NSApplication", "LingoPlayerRuntime": runtime,
     "CFBundleDocumentTypes": [{"CFBundleTypeName": "Video and subtitle files", "CFBundleTypeRole": "Viewer", "LSHandlerRank": "Alternate", "CFBundleTypeExtensions": ["mp4", "mkv", "mov", "avi", "webm", "m4v", "srt", "ass", "ssa", "vtt"]}]
 }

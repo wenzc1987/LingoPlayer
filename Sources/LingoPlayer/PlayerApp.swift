@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import PlayerCore
 
 @main
 struct LingoPlayerApp: App {
@@ -10,14 +11,20 @@ struct LingoPlayerApp: App {
 }
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMenuItemValidation {
     private var window: NSWindow?
     private var learningWindow: NSWindow?
     private var model: AppModel?
+    private var keyboard: KeyboardRouter?
+    private var pendingFiles: [URL] = []
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.setActivationPolicy(.regular)
+        NSApp.appearance = NSAppearance(named: .darkAqua)
+        if let icon = Bundle.main.url(forResource: "AppIcon", withExtension: "icns") { NSApp.applicationIconImage = NSImage(contentsOf: icon) }
         let model = AppModel(); self.model = model
         model.onDetach = { [weak self] in self?.detachLearning() }
+        model.onReattach = { [weak self] in self?.learningWindow?.performClose(nil) }
+        model.onShortcutsChanged = { [weak self] in self?.installMenu() }
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1260, height: 800), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
         window.title = "LingoPlayer"; window.titlebarAppearsTransparent = true
         window.minSize = NSSize(width: 980, height: 640)
@@ -26,7 +33,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         window.center(); window.makeKeyAndOrderFront(nil)
         self.window = window
         NSApplication.shared.activate(ignoringOtherApps: true)
+        let keyboard = KeyboardRouter(model: model)
+        keyboard.isPlayerWindow = { [weak self] candidate in
+            guard let self, let candidate else { return false }
+            return candidate === self.window || candidate === self.learningWindow
+        }
+        self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(where: { ["--interaction-test", "--interaction-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
+            let restore = CommandLine.arguments[index] == "--interaction-restore"
+            let folder = URL(fileURLWithPath: CommandLine.arguments[index + 1])
+            let output = URL(fileURLWithPath: CommandLine.arguments[index + 2])
+            Task { [weak self] in
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                await InteractionSmoke.run(model: model, window: window, keyboard: keyboard, folder: folder, output: output, restoreOnly: restore,
+                    detach: { self?.detachLearning() }, learningWindow: { self?.learningWindow }, closeDetached: { self?.learningWindow?.performClose(nil) })
+            }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(of: "--self-test"), CommandLine.arguments.count > index + 2 {
             let video = URL(fileURLWithPath: CommandLine.arguments[index + 1])
             let output = URL(fileURLWithPath: CommandLine.arguments[index + 2])
@@ -36,16 +60,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             }
             return
         }
-        if let path = CommandLine.arguments.dropFirst().first(where: { !$0.hasPrefix("-") }), FileManager.default.fileExists(atPath: path) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { model.open(URL(fileURLWithPath: path)) }
-        }
+        let paths = CommandLine.arguments.dropFirst().filter { !$0.hasPrefix("-") && FileManager.default.fileExists(atPath: $0) }.map { URL(fileURLWithPath: $0) }
+        let files = pendingFiles + paths; pendingFiles = []
+        if files.isEmpty { model.restoreQueue() } else { model.acceptFiles(files) }
     }
     func application(_ sender: NSApplication, openFiles filenames: [String]) {
-        if let path = filenames.first { model?.acceptDrop(URL(fileURLWithPath: path)) }
+        let files = filenames.map { URL(fileURLWithPath: $0) }
+        if let model { model.acceptFiles(files) } else { pendingFiles.append(contentsOf: files) }
         sender.reply(toOpenOrPrint: .success)
     }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
-    func applicationWillTerminate(_ notification: Notification) { model?.shutdown() }
+    func applicationWillTerminate(_ notification: Notification) { keyboard?.uninstall(); model?.shutdown() }
     private func detachLearning() {
         guard let model else { return }
         if let learningWindow { learningWindow.makeKeyAndOrderFront(nil); return }
@@ -56,17 +81,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if let screen = NSScreen.screens.first(where: { $0 != window?.screen }) {
             panel.setFrameOrigin(NSPoint(x: screen.visibleFrame.midX - 200, y: screen.visibleFrame.midY - 350))
         } else { panel.center() }
-        learningWindow = panel; model.isDetached = true; panel.makeKeyAndOrderFront(nil)
+        learningWindow = panel; model.isDetached = true; model.sidebarTab = .queue; panel.makeKeyAndOrderFront(nil)
     }
     func windowWillClose(_ notification: Notification) {
-        if let closing = notification.object as? NSWindow, closing === learningWindow { learningWindow = nil; model?.isDetached = false }
+        if let closing = notification.object as? NSWindow, closing === learningWindow { learningWindow = nil; model?.isDetached = false; model?.sidebarTab = .learning }
     }
     @objc private func openVideo() { model?.chooseVideo() }
     @objc private func openSubtitles() { model?.chooseSubtitle() }
     @objc private func settings() { model?.showSettings = true }
-    @objc private func togglePlay() { model?.togglePlayback() }
-    @objc private func resumeLearning() { model?.resumeLearning() }
-    @objc private func replay() { model?.replaySentence() }
+    @objc private func dispatchAction(_ sender: NSMenuItem) {
+        guard let raw = sender.representedObject as? String, let action = PlayerAction(rawValue: raw) else { return }
+        model?.perform(action)
+    }
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        guard let raw = menuItem.representedObject as? String, let action = PlayerAction(rawValue: raw) else { return true }
+        return keyboard?.blocked == false && model?.canPerform(action) == true
+    }
     private func installMenu() {
         let menu = NSMenu()
         let app = NSMenuItem(); let appMenu = NSMenu()
@@ -82,8 +112,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         for (name, action, key) in [("撤销", Selector(("undo:")), "z"), ("剪切", #selector(NSText.cut(_:)), "x"), ("复制", #selector(NSText.copy(_:)), "c"), ("粘贴", #selector(NSText.paste(_:)), "v"), ("全选", #selector(NSText.selectAll(_:)), "a")] { editMenu.addItem(withTitle: name, action: action, keyEquivalent: key) }
         edit.submenu = editMenu; menu.addItem(edit)
         let playback = NSMenuItem(title: "播放", action: nil, keyEquivalent: ""); let playbackMenu = NSMenu(title: "播放")
-        for (name, action, key) in [("播放 / 暂停", #selector(togglePlay), "p"), ("继续学习", #selector(resumeLearning), "return"), ("回放本句", #selector(replay), "r")] {
-            let item = playbackMenu.addItem(withTitle: name, action: action, keyEquivalent: key == "return" ? "\r" : key); item.target = self
+        for action in PlayerAction.allCases {
+            let binding = model?.preferences.shortcut(for: action)
+            let item = playbackMenu.addItem(withTitle: action.title, action: #selector(dispatchAction(_:)), keyEquivalent: binding?.menuKey ?? "")
+            item.keyEquivalentModifierMask = binding?.menuModifiers ?? []
+            item.representedObject = action.rawValue; item.target = self
         }
         playback.submenu = playbackMenu; menu.addItem(playback)
         let windowItem = NSMenuItem(title: "窗口", action: nil, keyEquivalent: ""); let windowMenu = NSMenu(title: "窗口")

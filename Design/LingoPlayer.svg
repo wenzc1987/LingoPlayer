@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>LingoPlayer — Play, follow, understand</title>
+  <!-- Editable vector master. Colors match Palette.background, panel and accent. -->
+  <rect x="96" y="96" width="832" height="832" rx="184" fill="#242C34"/>
+  <rect x="102" y="102" width="820" height="820" rx="178" fill="#0E1114"/>
+  <rect x="156" y="156" width="712" height="712" rx="135" fill="#16191D"/>
+  <polygon points="414,276 696,464 414,652" fill="#BAE36E"/>
+  <rect x="266" y="714" width="116" height="56" rx="16" fill="#59636B"/>
+  <rect x="402" y="696" width="176" height="92" rx="22" fill="#BAE36E"/>
+  <rect x="426" y="732" width="128" height="20" rx="10" fill="#0E1114"/>
+  <rect x="598" y="714" width="160" height="56" rx="16" fill="#59636B"/>
+</svg>

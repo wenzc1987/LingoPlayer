@@ -2,7 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 import PlayerCore
 
-private enum Palette {
+enum Palette {
     static let background = Color(red: 0.055, green: 0.065, blue: 0.078)
     static let panel = Color(red: 0.085, green: 0.098, blue: 0.112)
     static let accent = Color(red: 0.73, green: 0.89, blue: 0.43)
@@ -28,10 +28,8 @@ struct PlayerRootView: View {
                     SubtitleStrip(model: model)
                     PlaybackControls(model: model)
                 }
-                if !model.isDetached {
-                    Rectangle().fill(Palette.border).frame(width: 1)
-                    LearningPanel(model: model, detached: false).frame(width: 332)
-                }
+                Rectangle().fill(Palette.border).frame(width: 1)
+                SidebarPanel(model: model).frame(width: 332)
             }
             footer
         }
@@ -39,10 +37,7 @@ struct PlayerRootView: View {
         .tint(Palette.accent)
         .frame(minWidth: 960, minHeight: 610)
         .onDrop(of: [.fileURL], isTargeted: $dropTargeted) { providers in
-            guard let provider = providers.first else { return false }
-            _ = provider.loadObject(ofClass: URL.self) { url, _ in
-                if let url { DispatchQueue.main.async { model.acceptDrop(url) } }
-            }
+            FileDropReader.read(providers) { model.acceptFiles($0) }
             return true
         }
         .sheet(isPresented: $model.showSettings) { SettingsPanel(model: model) }
@@ -53,7 +48,7 @@ struct PlayerRootView: View {
     }
     private var header: some View {
         HStack(spacing: 14) {
-            Image(systemName: "play.square.stack.fill").font(.system(size: 24)).foregroundStyle(Palette.accent)
+            BrandIcon().frame(width: 38, height: 38)
             VStack(alignment: .leading, spacing: 3) {
                 Text("LingoPlayer").font(.system(size: 16, weight: .semibold, design: .rounded))
                 Text(model.media?.title ?? "视频 · 英语学习").font(.system(size: 11)).foregroundStyle(Palette.muted).lineLimit(1)
@@ -88,7 +83,7 @@ struct PlayerRootView: View {
     }
     private var emptyVideo: some View {
         VStack(spacing: 22) {
-            Image(systemName: "play.rectangle.on.rectangle").font(.system(size: 64, weight: .ultraLight)).foregroundStyle(Palette.accent.opacity(0.85))
+            BrandIcon().frame(width: 96, height: 96)
             VStack(spacing: 10) {
                 Text("让每一段对白，都成为一次学习").font(.system(size: 23, weight: .medium))
                 Text("拖入本地视频，或选择文件开始播放").foregroundStyle(Palette.muted)
@@ -196,17 +191,21 @@ struct PlaybackControls: View {
                 }).disabled(!model.canPlay)
                 Text(clock(model.duration)).monospacedDigit().frame(width: 52, alignment: .trailing)
             }.font(.system(size: 11)).foregroundStyle(Palette.muted)
-            HStack(spacing: 22) {
-                Button { model.seek(model.position - 5) } label: { Image(systemName: "gobackward.5").font(.system(size: 20)) }.help("后退 5 秒")
-                Button { model.togglePlayback() } label: {
+            HStack(spacing: 16) {
+                Button { model.perform(.previousSentence) } label: { Image(systemName: "backward.end") }
+                    .disabled(!model.canPerform(.previousSentence)).help(model.help(.previousSentence))
+                Button { model.perform(.backward) } label: { Image(systemName: "gobackward.5").font(.system(size: 20)) }.help(model.help(.backward))
+                Button { model.perform(.playPause) } label: {
                     Image(systemName: model.paused ? "play.fill" : "pause.fill").font(.system(size: 18)).foregroundStyle(.black)
                         .frame(width: 44, height: 38).background(Palette.accent, in: RoundedRectangle(cornerRadius: 12))
-                }.help("播放 / 暂停 · ⌘P")
-                Button { model.seek(model.position + 5) } label: { Image(systemName: "goforward.5").font(.system(size: 20)) }.help("前进 5 秒")
+                }.help(model.help(.playPause))
+                Button { model.perform(.forward) } label: { Image(systemName: "goforward.5").font(.system(size: 20)) }.help(model.help(.forward))
+                Button { model.perform(.nextSentence) } label: { Image(systemName: "forward.end") }
+                    .disabled(!model.canPerform(.nextSentence)).help(model.help(.nextSentence))
                 Spacer()
                 Menu {
-                    ForEach([0.5, 0.75, 1, 1.25, 1.5, 2.0], id: \.self) { value in Button("\(value.formatted())×") { model.setSpeed(value) } }
-                } label: { Text("\(model.speed.formatted())×").monospacedDigit().frame(width: 36) }
+                    ForEach(AppModel.speedSteps, id: \.self) { value in Button("\(value.formatted())×") { model.setSpeed(value) } }
+                } label: { Text("\(model.speed.formatted())×").monospacedDigit().frame(width: 36) }.help(model.help(.slower) + " / " + model.help(.faster))
                 Image(systemName: "speaker.wave.2").foregroundStyle(Palette.muted)
                 Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...100).frame(width: 80)
             }.buttonStyle(.plain).disabled(!model.canPlay)
@@ -256,7 +255,7 @@ struct LearningPanel: View {
                             HStack { Text("当前台词").font(.system(size: 10)); Spacer(); Text(clock(selection.playbackStart)).font(.system(size: 10)).monospacedDigit() }.foregroundStyle(Palette.muted)
                             Text(selection.cue.text).font(.system(size: 16, weight: .medium)).lineSpacing(6).textSelection(.enabled)
                             if !selection.chinese.isEmpty { Text(selection.chinese).font(.system(size: 13)).foregroundStyle(.secondary).lineSpacing(5).textSelection(.enabled) }
-                            Button { model.replaySentence() } label: { Label("回放本句", systemImage: "arrow.counterclockwise").font(.system(size: 12)) }.buttonStyle(.borderless)
+                            Button { model.perform(.replaySentence) } label: { Label("回放本句", systemImage: "arrow.counterclockwise").font(.system(size: 12)) }.buttonStyle(.borderless).help(model.help(.replaySentence))
                         }
                         .padding(17).frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white.opacity(0.035), in: RoundedRectangle(cornerRadius: 12))
@@ -274,10 +273,10 @@ struct LearningPanel: View {
             Spacer(minLength: 0)
             VStack(spacing: 10) {
                 if model.learning.isLocked {
-                    Button { model.resumeLearning() } label: {
+                    Button { model.perform(.resumeLearning) } label: {
                         Label("继续学习", systemImage: "play.fill").frame(maxWidth: .infinity).padding(.vertical, 8)
-                    }.buttonStyle(.borderedProminent).foregroundStyle(.black)
-                    Text("恢复播放，并跟随当前单词").font(.system(size: 10)).foregroundStyle(Palette.muted)
+                    }.buttonStyle(.borderedProminent).foregroundStyle(.black).help(model.help(.resumeLearning))
+                    Text(model.help(.resumeLearning) + " · 恢复自动跟随").font(.system(size: 10)).foregroundStyle(Palette.muted)
                 } else {
                     Label("点击单词可暂停并锁定", systemImage: "hand.tap").font(.system(size: 11)).foregroundStyle(Palette.muted)
                 }
@@ -360,7 +359,7 @@ struct SubtitleSearchPanel: View {
     }
 }
 
-struct SettingsPanel: View {
+struct RuntimeSettingsPanel: View {
     @ObservedObject var model: AppModel
     @State private var draft: RuntimeSettings
     @State private var apiKey = ""
@@ -371,7 +370,7 @@ struct SettingsPanel: View {
     init(model: AppModel) { self.model = model; _draft = State(initialValue: model.settings) }
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            HStack { Text("设置").font(.title2.bold()); Spacer(); Button("取消") { model.showSettings = false }.keyboardShortcut(.cancelAction) }
+            Text("字幕服务与本地运行环境").font(.headline)
             Form {
                 Section("在线字幕") {
                     SecureField("OpenSubtitles API Key", text: $apiKey)
@@ -413,7 +412,7 @@ struct SettingsPanel: View {
                     catch { message = error.localizedDescription }
                 }.buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction)
             }
-        }.padding(24).frame(width: 660, height: 720).onAppear { apiKey = SecretStore.read("api-key") }
+        }.padding(16).onAppear { apiKey = SecretStore.read("api-key") }
     }
     private func pathField(_ name: String, value: Binding<String>) -> some View {
         HStack {
@@ -426,7 +425,7 @@ struct SettingsPanel: View {
     }
 }
 
-private func clock(_ value: Double) -> String {
+func clock(_ value: Double) -> String {
     let seconds = Int(max(0, value.isFinite ? value : 0))
     return seconds >= 3600 ? String(format: "%d:%02d:%02d", seconds / 3600, seconds / 60 % 60, seconds % 60) : String(format: "%02d:%02d", seconds / 60, seconds % 60)
 }

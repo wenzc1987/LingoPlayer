@@ -22,6 +22,7 @@ if [ -d "$TASK_ROOT/.runtime/lib" ]; then
     fi
   done
 fi
+cp "$TASK_ROOT/Sources/LingoPlayer/Resources/Icon/AppIcon.icns" "$TASK_APP/Contents/Resources/AppIcon.icns"
 python3 "$TASK_ROOT/scripts/write-app-info.py" "$TASK_APP" "$TASK_ROOT/.runtime"
 codesign --force --deep --sign - "$TASK_APP"
 echo "Built $TASK_APP"

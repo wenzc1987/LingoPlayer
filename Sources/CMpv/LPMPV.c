@@ -63,10 +63,11 @@ int lp_set_string(LPPlayer *p, const char *key, const char *value) { return p->s
 double lp_get_double(LPPlayer *p, const char *key, double fallback) { double value; return p->get_property(p->handle, key, 5, &value) >= 0 ? value : fallback; }
 char *lp_get_string(LPPlayer *p, const char *key) { return p->get_property_string(p->handle, key); }
 void lp_free_string(LPPlayer *p, char *string) { if (string) p->free(string); }
-int lp_poll_event(LPPlayer *p, int *error) {
-    mpv_event *event = p->wait_event(p->handle, 0); *error = event->error;
+int lp_poll_event(LPPlayer *p, int *error, int64_t *entry) {
+    mpv_event *event = p->wait_event(p->handle, 0); *error = event->error; *entry = -1;
+    if (event->id == 6 && event->data) *entry = *(int64_t *)event->data;
     // MPV_EVENT_END_FILE data starts with reason and error. Only expose failures.
-    if (event->id == 7 && event->data) { const int *data = event->data; if (data[0] == 4) *error = data[1]; }
+    if (event->id == 7 && event->data) { const int *data = event->data; *entry = *(int64_t *)(data + 2); if (data[0] == 4) *error = data[1]; }
     return event->id;
 }
 const char *lp_error(LPPlayer *p, int code) { return p->error_string(code); }

@@ -17,14 +17,26 @@ public final class SQLiteStore {
         try execute("PRAGMA journal_mode=WAL;")
         try execute("CREATE TABLE IF NOT EXISTS playback (id TEXT PRIMARY KEY, json BLOB NOT NULL);")
         try execute("CREATE TABLE IF NOT EXISTS alignment (id TEXT PRIMARY KEY, json BLOB NOT NULL);")
-        try execute("PRAGMA user_version=1;")
+        var statement: OpaquePointer?
+        sqlite3_prepare_v2(db, "PRAGMA user_version", -1, &statement, nil)
+        let version = sqlite3_step(statement) == SQLITE_ROW ? sqlite3_column_int(statement, 0) : 0
+        sqlite3_finalize(statement)
+        if version < 2 {
+            try execute("BEGIN IMMEDIATE;")
+            do {
+                try execute("CREATE TABLE IF NOT EXISTS queue (id TEXT PRIMARY KEY, json BLOB NOT NULL);")
+                try execute("CREATE TABLE IF NOT EXISTS progress (id TEXT PRIMARY KEY, json BLOB NOT NULL);")
+                try execute("PRAGMA user_version=2;")
+                try execute("COMMIT;")
+            } catch { try? execute("ROLLBACK;"); throw error }
+        }
     }
     deinit { sqlite3_close(db) }
     private func execute(_ sql: String) throws {
         guard sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK else { throw DatabaseError(message: String(cString: sqlite3_errmsg(db))) }
     }
     public func save<T: Encodable>(_ value: T, key: String, table: String) throws {
-        guard ["playback", "alignment"].contains(table) else { throw DatabaseError(message: "未知数据表。") }
+        guard ["playback", "alignment", "queue", "progress"].contains(table) else { throw DatabaseError(message: "未知数据表。") }
         let data = try JSONEncoder().encode(value)
         var statement: OpaquePointer?
         guard sqlite3_prepare_v2(db, "INSERT OR REPLACE INTO \(table) (id,json) VALUES (?,?)", -1, &statement, nil) == SQLITE_OK else { throw DatabaseError(message: "无法保存缓存。") }
@@ -34,7 +46,7 @@ public final class SQLiteStore {
         guard sqlite3_step(statement) == SQLITE_DONE else { throw DatabaseError(message: String(cString: sqlite3_errmsg(db))) }
     }
     public func load<T: Decodable>(_ type: T.Type, key: String, table: String) throws -> T? {
-        guard ["playback", "alignment"].contains(table) else { return nil }
+        guard ["playback", "alignment", "queue", "progress"].contains(table) else { return nil }
         var statement: OpaquePointer?
         guard sqlite3_prepare_v2(db, "SELECT json FROM \(table) WHERE id=?", -1, &statement, nil) == SQLITE_OK else { throw DatabaseError(message: "无法读取缓存。") }
         defer { sqlite3_finalize(statement) }

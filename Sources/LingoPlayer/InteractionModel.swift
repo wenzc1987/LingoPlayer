@@ -1,0 +1,136 @@
+import AppKit
+import PlayerCore
+
+enum SidebarTab: String, CaseIterable { case learning = "学习", queue = "播放列表" }
+
+@MainActor
+extension AppModel {
+    static let speedSteps = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+    static var preferenceURL: URL { RuntimeSettings.supportDirectory.appendingPathComponent("interaction.json") }
+    func loadInteractionState() {
+        if let data = try? Data(contentsOf: Self.preferenceURL), let value = try? JSONDecoder().decode(InteractionPreferences.self, from: data) { preferences = value }
+        queueState = (try? store?.load(PlaybackQueue.self, key: "main", table: "queue")) ?? PlaybackQueue()
+        for item in queueState.items {
+            if let value = try? store?.load(PlaybackProgress.self, key: item.id, table: "progress") { progress[item.id] = value }
+        }
+    }
+    func restoreQueue() {
+        if let current = queueState.currentID { playQueueItem(current, restoring: true) }
+    }
+    func persistQueue() {
+        do { try store?.save(queueState, key: "main", table: "queue") }
+        catch { queueMessage = "列表保存失败：\(error.localizedDescription)" }
+    }
+    @discardableResult func updatePreferences(_ updated: InteractionPreferences) -> Bool {
+        do {
+            try FileManager.default.createDirectory(at: RuntimeSettings.supportDirectory, withIntermediateDirectories: true)
+            try JSONEncoder().encode(updated).write(to: Self.preferenceURL, options: .atomic)
+            preferences = updated; onShortcutsChanged?(); return true
+        } catch { shortcutMessage = "设置保存失败：\(error.localizedDescription)"; queueMessage = shortcutMessage; return false }
+    }
+    func bind(_ shortcut: Shortcut?, to action: PlayerAction) {
+        var updated = preferences
+        if let message = updated.assign(shortcut, to: action) { shortcutMessage = message; return }
+        guard updatePreferences(updated) else { return }; recordingAction = nil; shortcutMessage = "已保存，立即生效。"
+    }
+    func resetShortcuts() {
+        var updated = preferences; updated.resetAll(); guard updatePreferences(updated) else { return }
+        recordingAction = nil; shortcutMessage = "已恢复全部默认快捷键。"
+    }
+    func help(_ action: PlayerAction) -> String {
+        action.title + (preferences.shortcut(for: action).map { " · " + $0.label } ?? "")
+    }
+    func canPerform(_ action: PlayerAction) -> Bool {
+        switch action {
+        case .toggleSidebar: return true
+        case .previousVideo: return queueState.adjacent(-1) != nil
+        case .nextVideo: return queueState.adjacent(1) != nil
+        case .replaySentence: return playbackReady && selected != nil
+        case .previousSentence, .nextSentence:
+            guard playbackReady, let target = SentenceNavigation.target(cues: english, position: position, offset: englishOffset, direction: action == .previousSentence ? -1 : 1) else { return false }
+            return duration <= 0 || target < duration
+        default: return playbackReady
+        }
+    }
+    func perform(_ action: PlayerAction) {
+        guard canPerform(action) else { return }
+        switch action {
+        case .playPause: togglePlayback()
+        case .replaySentence: replaySentence()
+        case .resumeLearning: resumeLearning()
+        case .backward: seek(position - 5)
+        case .forward: seek(position + 5)
+        case .previousSentence, .nextSentence:
+            if let target = SentenceNavigation.target(cues: english, position: position, offset: englishOffset, direction: action == .previousSentence ? -1 : 1) { seek(target) }
+        case .volumeDown: setVolume(volume - 5)
+        case .volumeUp: setVolume(volume + 5)
+        case .slower: setSpeed(Self.speedSteps.last { $0 < speed } ?? Self.speedSteps[0])
+        case .faster: setSpeed(Self.speedSteps.first { $0 > speed } ?? Self.speedSteps.last!)
+        case .previousVideo, .nextVideo:
+            if let next = queueState.adjacent(action == .previousVideo ? -1 : 1) { playQueueItem(next) }
+        case .toggleSidebar: sidebarTab = sidebarTab == .learning ? .queue : .learning
+        }
+    }
+    func acceptFiles(_ urls: [URL]) {
+        let subtitles = urls.filter { ["srt", "ass", "ssa", "vtt"].contains($0.pathExtension.lowercased()) }
+        let videos = urls.filter { !subtitles.contains($0) }
+        if !videos.isEmpty { ingest(videos) }
+        for subtitle in subtitles { importSubtitle(subtitle) }
+    }
+    func ingest(_ urls: [URL], adding: Bool = false) {
+        let batch = queueState.append(urls.filter { $0.isFileURL })
+        persistQueue()
+        if !adding || media == nil, let first = batch.first { playQueueItem(first) }
+    }
+    func playQueueItem(_ id: String, restoring: Bool = false) {
+        savePlayback()
+        guard let start = queueState.items.firstIndex(where: { $0.id == id }) else { return }
+        for index in start..<queueState.items.count {
+            let item = queueState.items[index]
+            let url = URL(fileURLWithPath: item.path)
+            var directory: ObjCBool = false
+            if FileManager.default.fileExists(atPath: item.path, isDirectory: &directory), !directory.boolValue,
+               FileManager.default.isReadableFile(atPath: item.path), (try? MediaIdentity(url: url)) != nil {
+                queueState.currentID = item.id; queueState.mark(item.id, failure: nil)
+                persistQueue(); loadMedia(url, restoring: restoring); return
+            }
+            queueState.mark(item.id, failure: "文件缺失或无法读取")
+            queueMessage = "已跳过：\(item.name)（文件缺失或无法读取）"
+        }
+        stopMedia(); queueMessage = "没有可播放的后续文件，请重新添加或检查文件位置。"; persistQueue()
+    }
+    func failCurrent(_ error: String) {
+        guard let id = queueState.currentID else { return }
+        queueState.mark(id, failure: error)
+        queueMessage = "已跳过无法播放的文件：\(URL(fileURLWithPath: id).lastPathComponent)"
+        let next = queueState.adjacent(1), pausedRestore = restoring
+        // Never overwrite a previously useful resume point with a failed load.
+        awaitingLoad = true
+        if let next { playQueueItem(next, restoring: pausedRestore) }
+        else { stopMedia(); queueMessage = "没有可播放的后续文件。\(error)"; persistQueue() }
+    }
+    func removeQueueItem(_ id: String) {
+        let current = id == queueState.currentID
+        if current { savePlayback() }
+        let next = queueState.remove(id)
+        if current { stopMedia(); if let next { playQueueItem(next) } }
+        persistQueue()
+    }
+    func clearQueue() {
+        savePlayback(); stopMedia(); queueState = PlaybackQueue(); queueMessage = ""; persistQueue()
+    }
+    func moveQueueItem(_ id: String, before target: String?) { queueState.move(id, before: target); persistQueue() }
+    func stopMedia() {
+        openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
+        sessionID = UUID(); searchID = UUID(); lookupID = UUID(); player.stop()
+        endGate.begin(sessionID, purpose: .normal, playing: false)
+        media = nil; position = 0; duration = 0; paused = true; awaitingLoad = false
+        queueState.currentID = nil; replayRange = nil; replayArmed = false; seekTarget = nil
+        english = []; chinese = []; activeEnglish = []; activeChinese = []; timings = []
+        learning.reset(); currentWordID = nil; dictionaryEntry = nil; lastDictionaryKey = ""
+        englishPath = nil; chinesePath = nil; englishDigest = ""; audioStreams = []; selectedAudio = -1
+        englishSource = "未加载"; chineseSource = "未加载"; subtitleOptions = []
+        subtitleStatus = "打开视频后自动发现字幕"; alignmentStatus = "导入英文字幕后可准备逐词高亮"
+        isSearching = false; isDownloading = false; searchResults = []
+    }
+}

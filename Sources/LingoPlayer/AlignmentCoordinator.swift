@@ -88,7 +88,12 @@ final class AlignmentCoordinator {
         }
         schedule()
     }
-    func cancel() { generation = UUID(); task?.cancel(); task = nil; runningIDs = [] }
+    func cancel() {
+        generation = UUID(); task?.cancel(); task = nil; runningIDs = []
+        // Playback snapshots may arrive before the new media has been inspected.
+        // Clear the old inputs so updatePosition cannot reschedule an old film.
+        media = nil; cues = []; words = []; completed = []; key = ""
+    }
     private func schedule() {
         guard task == nil, let media, !cues.isEmpty, !settings.mfa.isEmpty, FileManager.default.isExecutableFile(atPath: settings.mfa), !settings.ffmpeg.isEmpty, let worker else { return }
         let batch = Timeline.nextBatch(cues, completed: completed, position: position, offset: offset)

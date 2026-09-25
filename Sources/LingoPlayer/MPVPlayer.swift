@@ -4,10 +4,13 @@ import OpenGL.GL3
 import CMpv
 
 struct PlaybackSnapshot {
+    var generation: UUID
+    var path: String
     var position: Double
     var duration: Double
     var paused: Bool
     var loaded: Bool
+    var eof: Bool
     var error: String?
 }
 
@@ -15,6 +18,11 @@ final class MPVPlayer {
     private(set) var handle: OpaquePointer?
     private let queue = DispatchQueue(label: "LingoPlayer.playback", qos: .userInteractive)
     private var timer: DispatchSourceTimer?
+    private var generation = UUID()
+    private var expectedPath = ""
+    private var expectedEntry: Int64 = -1
+    private var activeEntry: Int64 = -2
+    private var fileReady = false
     var onUpdate: ((PlaybackSnapshot) -> Void)?
     var startupError: String?
     init(library: String) {
@@ -33,30 +41,30 @@ final class MPVPlayer {
     }
     private func poll() {
         guard let handle else { return }
-        var loaded = false, failure: String?
+        var failure: String?
         for _ in 0..<100 {
-            var error: Int32 = 0
-            let event = lp_poll_event(handle, &error)
+            var error: Int32 = 0, entry: Int64 = -1
+            let event = lp_poll_event(handle, &error, &entry)
             if event == 0 { break }
-            if event == 8 { loaded = true }
-            if error < 0 { failure = String(cString: lp_error(handle, error)) }
+            if event == 6 { activeEntry = entry }
+            if event == 8 && activeEntry == expectedEntry { fileReady = true }
+            if event == 7 && entry == expectedEntry && error < 0 { failure = String(cString: lp_error(handle, error)) }
         }
-        let snapshot = PlaybackSnapshot(position: lp_get_double(handle, "time-pos", 0), duration: lp_get_double(handle, "duration", 0), paused: string("pause") == "yes", loaded: loaded, error: failure)
+        let path = string("path")
+        let ready = fileReady && activeEntry == expectedEntry && path == expectedPath
+        let snapshot = PlaybackSnapshot(generation: generation, path: expectedPath,
+            position: lp_get_double(handle, "time-pos", 0), duration: lp_get_double(handle, "duration", 0),
+            paused: string("pause") == "yes", loaded: ready, eof: ready && string("eof-reached") == "yes", error: failure)
         DispatchQueue.main.async { [weak self] in self?.onUpdate?(snapshot) }
     }
-    func command(_ args: [String]) {
-        queue.async { [weak self] in
-            guard let self, let handle = self.handle else { return }
-            let allocated = args.map { strdup($0) }
-            defer { allocated.forEach { free($0) } }
-            let pointers: [UnsafePointer<CChar>?] = allocated.map { $0.map { UnsafePointer($0) } } + [nil]
-            let result = pointers.withUnsafeBufferPointer { lp_command(handle, $0.baseAddress) }
-            if result < 0 {
-                let message = String(cString: lp_error(handle, result))
-                DispatchQueue.main.async { [weak self] in self?.onUpdate?(PlaybackSnapshot(position: 0, duration: 0, paused: true, loaded: false, error: message)) }
-            }
-        }
+    @discardableResult private func execute(_ args: [String]) -> Int32 {
+        guard let handle else { return -1 }
+        let allocated = args.map { strdup($0) }
+        defer { allocated.forEach { free($0) } }
+        let pointers: [UnsafePointer<CChar>?] = allocated.map { $0.map { UnsafePointer($0) } } + [nil]
+        return pointers.withUnsafeBufferPointer { lp_command(handle, $0.baseAddress) }
     }
+    func command(_ args: [String]) { queue.async { [weak self] in self?.execute(args) } }
     func set(_ key: String, _ value: String) {
         queue.async { [weak self] in guard let handle = self?.handle else { return }; _ = lp_set_string(handle, key, value) }
     }
@@ -71,7 +79,21 @@ final class MPVPlayer {
             }
         }
     }
-    func load(_ url: URL) { command(["loadfile", url.path, "replace"]) }
+    func load(_ url: URL, generation: UUID, paused: Bool) {
+        queue.async { [weak self] in
+            guard let self, let handle = self.handle else { return }
+            self.generation = generation; self.expectedPath = url.path; self.fileReady = false
+            self.activeEntry = -2
+            _ = lp_set_string(handle, "pause", paused ? "yes" : "no")
+            let result = self.execute(["loadfile", url.path, "replace"])
+            self.expectedEntry = Int64(lp_get_double(handle, "playlist/0/id", -1))
+            if result < 0 {
+                let snapshot = PlaybackSnapshot(generation: generation, path: url.path, position: 0, duration: 0, paused: true, loaded: false, eof: false, error: String(cString: lp_error(handle, result)))
+                DispatchQueue.main.async { [weak self] in self?.onUpdate?(snapshot) }
+            }
+        }
+    }
+    func stop() { command(["stop"]) }
     func seek(_ position: Double) { command(["seek", String(max(0, position)), "absolute+exact"]) }
     func pause(_ value: Bool) { set("pause", value ? "yes" : "no") }
     /// Caller must dispose the render context first, on its GL thread.
