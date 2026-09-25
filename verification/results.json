@@ -1,0 +1,343 @@
+{
+  "recorded_at_utc": "2026-09-25T16:17:34.740807+00:00",
+  "os": "15.8",
+  "cpu": "Intel Core i5-8259U @ 2.30GHz",
+  "memory_gib": 8,
+  "runtime_versions": {
+    "ffmpeg": "8.1.2",
+    "sqlalchemy": "2.0.54",
+    "kalpy": "0.9.0",
+    "python": "3.11.16",
+    "montreal-forced-aligner": "3.3.9"
+  },
+  "source_sha256": "8fa43bae399a7f9d55d3e0306259d705b7cb4c766b2d20a05d0594b2e9a1aa7b",
+  "tests": {
+    "swift": 26,
+    "python": 6,
+    "passed": true,
+    "command": "bash scripts/test.sh",
+    "log_sha256": "826b016b3bce1864d773f2f34c8d6bed03c75b468ab10eedb13cc7dde179cf66"
+  },
+  "fixture": {
+    "source": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+    "dataset": "LibriSpeech test-clean / OpenSLR 12",
+    "license": "CC BY 4.0",
+    "authors": "Vassil Panayotov, Guoguo Chen, Daniel Povey, Sanjeev Khudanpur",
+    "selected_utterances": [
+      "6930-75918-0000",
+      "6930-75918-0001",
+      "6930-75918-0002",
+      "6930-75918-0003",
+      "6930-75918-0004"
+    ],
+    "reference_words": 157,
+    "duration_seconds": 59.635000000000005,
+    "note": "Real audiobook audio and reference transcripts, with synthetic test-pattern video. No human word-level timestamps; this fixture cannot establish the ±200 ms acceptance criterion.",
+    "translation_note": "Chinese translations authored for this integration fixture, not part of the LibriSpeech reference corpus."
+  },
+  "dictionary": {
+    "source": "https://raw.githubusercontent.com/skywind3000/ECDICT/master/ecdict.csv",
+    "csv_sha256": "1a6947e04785db63613a92e14903cdae7954f7e84860b10e68e5c7cbb3f9c3cf",
+    "entries": 770611,
+    "elapsed_seconds": 7.895757377999999
+  },
+  "model_load": {
+    "import_seconds": 0.2964919200021541,
+    "unpack_seconds": 0.3845399549973081,
+    "acoustic_weights_and_tree_load_seconds": 0.5587045009961003,
+    "total_seconds": 1.2397363759955624,
+    "peak_process_memory_mb": 219.3203125,
+    "method": "Fresh Python process; import Kalpy, extract final.alimdl and tree from english_mfa, deserialize actual GMM weights/transition model/tree. OS disk cache not cleared. Excludes features, lexicon and alignment."
+  },
+  "whole_clip_alignment": {
+    "word_count": 157,
+    "elapsed_seconds": 36.342254384,
+    "child_peak_memory_mb": 453.671875,
+    "failed_cues": {}
+  },
+  "gui": {
+    "mp4": {
+      "alignment_status": "逐词模型未就绪 · 可点词查阅",
+      "checks": [
+        {
+          "detail": "英文 5 句 · 中文 5 句",
+          "name": "video_opens_with_real_renderer_and_english_subtitles",
+          "passed": true
+        },
+        {
+          "detail": "10",
+          "name": "rendered_video_frames",
+          "passed": true
+        },
+        {
+          "detail": "clear.en.srt / clear.zh.srt",
+          "name": "bilingual_subtitles_discovered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "click_word_pauses_and_locks",
+          "passed": true
+        },
+        {
+          "detail": "concord",
+          "name": "real_ecdict_lookup",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "normal_play_preserves_locked_word",
+          "passed": true
+        },
+        {
+          "detail": "position=3.5416666666666665, end=3.505",
+          "name": "replay_sentence_stops_at_boundary",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_window_shares_selection",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "closing_learning_window_restores_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_learning_unlocks_and_plays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "seek_and_speed_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_offset_keeps_english_visible",
+          "passed": true
+        },
+        {
+          "detail": "157 words; 逐词准备完成 · 5 句可用",
+          "name": "local_mfa_alignment_produces_words",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "playback_clock_drives_word_highlight",
+          "passed": true
+        },
+        {
+          "detail": "12793 colored samples",
+          "name": "actual_gl_framebuffer_contains_video",
+          "passed": true
+        },
+        {
+          "detail": "0.004128098487854004 seconds",
+          "name": "reopening_alignment_reuses_cache",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offset_change_invalidates_word_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "model_unavailable_keeps_playback_running",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new_video_clears_old_subtitles_and_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "missing_subtitles_do_not_stop_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "manual_bilingual_ass_import",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 43.500213980674744,
+      "passed": true,
+      "subtitle_status": "英文 5 句 · 中文 5 句"
+    },
+    "mkv": {
+      "alignment_status": "逐词模型未就绪 · 可点词查阅",
+      "checks": [
+        {
+          "detail": "英文 5 句 · 中文 5 句",
+          "name": "video_opens_with_real_renderer_and_english_subtitles",
+          "passed": true
+        },
+        {
+          "detail": "23",
+          "name": "rendered_video_frames",
+          "passed": true
+        },
+        {
+          "detail": "embedded-3.srt / embedded-4.srt",
+          "name": "bilingual_subtitles_discovered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "click_word_pauses_and_locks",
+          "passed": true
+        },
+        {
+          "detail": "concord",
+          "name": "real_ecdict_lookup",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "normal_play_preserves_locked_word",
+          "passed": true
+        },
+        {
+          "detail": "position=3.606, end=3.569",
+          "name": "replay_sentence_stops_at_boundary",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_window_shares_selection",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "closing_learning_window_restores_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_learning_unlocks_and_plays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "seek_and_speed_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_offset_keeps_english_visible",
+          "passed": true
+        },
+        {
+          "detail": "157 words; 逐词准备完成 · 5 句可用",
+          "name": "local_mfa_alignment_produces_words",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "playback_clock_drives_word_highlight",
+          "passed": true
+        },
+        {
+          "detail": "12795 colored samples",
+          "name": "actual_gl_framebuffer_contains_video",
+          "passed": true
+        },
+        {
+          "detail": "0.006947994232177734 seconds",
+          "name": "reopening_alignment_reuses_cache",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offset_change_invalidates_word_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "audio_change_invalidates_word_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "model_unavailable_keeps_playback_running",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new_video_clears_old_subtitles_and_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "missing_subtitles_do_not_stop_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "manual_bilingual_ass_import",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 43.11618494987488,
+      "passed": true,
+      "subtitle_status": "英文 5 句 · 中文 5 句"
+    }
+  },
+  "application_batches": {
+    "mp4": [
+      {
+        "batch": "7a1e57a8841f56ea7184c356ca5fbddd3b3c67feb155c7e3a3eac6b126d67de8",
+        "cues": 4,
+        "date": "2026-09-25T16:11:44Z",
+        "elapsed_seconds": 21.790222867,
+        "failed_cues": 0,
+        "peak_memory_mb": 404.39453125,
+        "words": 126
+      },
+      {
+        "batch": "883a800fa511563c127bd54d3fb33f66790553870fa691695ce0c023cd345dad",
+        "cues": 1,
+        "date": "2026-09-25T16:12:04Z",
+        "elapsed_seconds": 19.176862139,
+        "failed_cues": 0,
+        "peak_memory_mb": 423.8671875,
+        "words": 31
+      }
+    ],
+    "mkv": [
+      {
+        "batch": "9e675774fc8986ebba9c55ffffcc1f5b63ce87401813c9645e9cde9c972c7bdb",
+        "cues": 4,
+        "date": "2026-09-25T16:16:51Z",
+        "elapsed_seconds": 21.504996573,
+        "failed_cues": 0,
+        "peak_memory_mb": 424.53515625,
+        "words": 126
+      },
+      {
+        "batch": "65f5bd7aaf10e9c200cf7ff29af4b2e362e9518f8bba827718e87195303cf264",
+        "cues": 1,
+        "date": "2026-09-25T16:17:10Z",
+        "elapsed_seconds": 18.536043803,
+        "failed_cues": 0,
+        "peak_memory_mb": 423.96484375,
+        "words": 31
+      }
+    ]
+  },
+  "accuracy_acceptance": {
+    "status": "pending",
+    "human_annotated_words": 0,
+    "clear_within_200ms_fraction": null,
+    "reason": "No independent human word-onset labels; fast/music movie scenarios not evaluated."
+  },
+  "online_subtitle_acceptance": {
+    "status": "pending",
+    "reason": "No personal OpenSubtitles credentials supplied; local discovery and mock API failures verified."
+  }
+}
