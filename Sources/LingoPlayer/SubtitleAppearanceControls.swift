@@ -39,8 +39,10 @@ struct SubtitleAppearanceControls: View {
                 Text("\(Int((viewing.subtitles[keyPath: key] * (suffix == "%" ? 100 : 1)).rounded())) \(suffix)").monospacedDigit().foregroundStyle(.secondary)
             }.font(.system(size: 12))
             Slider(value: Binding(get: { viewing.subtitles[keyPath: key] }, set: { value in
-                var appearance = viewing.subtitles; appearance[keyPath: key] = value; viewing.setSubtitles(appearance)
-            }), in: range, step: step).accessibilityLabel(title).accessibilityIdentifier(id)
+                var appearance = viewing.subtitles
+                appearance[keyPath: key] = (value / step).rounded() * step
+                viewing.setSubtitles(appearance)
+            }), in: range).accessibilityLabel(title).accessibilityIdentifier(id)
         }
     }
 }

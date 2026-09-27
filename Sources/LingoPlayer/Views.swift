@@ -14,18 +14,20 @@ struct PlayerRootView: View {
     @ObservedObject var model: AppModel
     @State private var dropTargeted = false
     var body: some View {
-        HStack(spacing: 0) {
-            PlayerStage(model: model)
-            Rectangle().fill(Palette.border).frame(width: model.preferences.sidebarCollapsed ? 0 : 1)
-            SidebarPanel(model: model).frame(width: 332)
-                .frame(width: model.preferences.sidebarCollapsed ? 0 : 332, alignment: .leading).clipped()
-                .allowsHitTesting(!model.preferences.sidebarCollapsed).accessibilityHidden(model.preferences.sidebarCollapsed)
+        GeometryReader { geometry in
+            HStack(spacing: 0) {
+                PlayerStage(model: model)
+                    .frame(width: max(0, geometry.size.width - (model.preferences.sidebarCollapsed ? 0 : 333)), height: geometry.size.height)
+                Rectangle().fill(Palette.border).frame(width: model.preferences.sidebarCollapsed ? 0 : 1)
+                SidebarPanel(model: model).frame(width: 332, height: geometry.size.height)
+                    .frame(width: model.preferences.sidebarCollapsed ? 0 : 332, alignment: .leading).clipped()
+                    .allowsHitTesting(!model.preferences.sidebarCollapsed).accessibilityHidden(model.preferences.sidebarCollapsed)
+            }
         }
         .ignoresSafeArea()
         .overlay { if dropTargeted { RoundedRectangle(cornerRadius: 12).stroke(Palette.accent, lineWidth: 3).padding(8).allowsHitTesting(false) } }
         .tint(Palette.accent)
         .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
-        .frame(minWidth: 960, minHeight: 610)
         .onDrop(of: [.fileURL], isTargeted: $dropTargeted) { providers in
             FileDropReader.read(providers) { model.acceptFiles($0) }
             return true
@@ -79,12 +81,12 @@ struct PlayerStage: View {
                             .lineLimit(1).truncationMode(.middle)
                             .padding(.horizontal, 90).padding(.top, 34).padding(.bottom, 22)
                             .frame(maxWidth: .infinity)
-                            .background(LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .top, endPoint: .bottom))
+                            .background(PlaybackTitleScrim().allowsHitTesting(false).accessibilityHidden(true))
                             .frame(maxHeight: .infinity, alignment: .top)
                             .allowsHitTesting(false).accessibilityIdentifier("playback-title")
                             .transition(.opacity)
                     }
-                    PlaybackControls(model: model)
+                    PlaybackControls(model: model, compact: geometry.size.width < 620)
                     .frame(width: min(860, max(0, geometry.size.width - 32)))
                     // Keep native hover tracking out of the subtitle area below.
                     .onHover { chrome.hold(.pointer, active: $0) }
@@ -213,7 +215,8 @@ struct WordWrap: Layout {
 struct PlaybackControls: View {
     @ObservedObject var model: AppModel
     @ObservedObject var playback: PlaybackPresentation
-    init(model: AppModel) { self.model = model; playback = model.playback }
+    var compact: Bool
+    init(model: AppModel, compact: Bool = false) { self.model = model; playback = model.playback; self.compact = compact }
     @State private var seeking = false
     @State private var draft = 0.0
     var body: some View {
@@ -228,7 +231,8 @@ struct PlaybackControls: View {
                 }).disabled(!model.canPlay).accessibilityLabel("播放进度")
                 Text(clock(model.duration)).monospacedDigit().frame(minWidth: 45, alignment: .trailing)
             }.font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
-            HStack(spacing: 8) {
+            buttonLayout {
+               HStack(spacing: compact ? 4 : 8) {
                 Button { model.chooseVideo() } label: { icon("folder") }.help(model.media?.title ?? "打开视频")
                 Spacer(minLength: 0)
                 action(.previousSentence, "backward.end")
@@ -242,6 +246,9 @@ struct PlaybackControls: View {
                 action(.nextSentence, "forward.end")
                 action(.toggleSentenceLoop, "repeat.1", active: model.sentenceLoop != nil)
                 Spacer(minLength: 0)
+               }
+               HStack(spacing: compact ? 4 : 8) {
+                if compact { Spacer(minLength: 0) }
                 Button { model.playerPopover = .subtitles } label: { icon("captions.bubble") }
                     .help("字幕显示、导入、搜索与全文").accessibilityIdentifier("subtitle-menu")
                     .popover(isPresented: popover(.subtitles)) { SubtitleMenuPanel(model: model) }
@@ -281,6 +288,8 @@ struct PlaybackControls: View {
                     }
                 }.help("播放设置").accessibilityIdentifier("quick-settings")
                     .popover(isPresented: $model.showSubtitleControls) { SubtitleControls(model: model) }
+                if compact { Spacer(minLength: 0) }
+               }
             }.buttonStyle(.plain).foregroundStyle(.white.opacity(0.9))
         }
         .padding(.horizontal, 16).padding(.vertical, 14)
@@ -288,6 +297,9 @@ struct PlaybackControls: View {
         .overlay { RoundedRectangle(cornerRadius: 15).stroke(.white.opacity(0.12), lineWidth: 1).allowsHitTesting(false) }
         .shadow(color: .black.opacity(0.25), radius: 16, y: 6)
         .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
+    }
+    private var buttonLayout: AnyLayout {
+        compact ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
     }
     private func icon(_ name: String, active: Bool = false) -> some View {
         Image(systemName: name).font(.system(size: 16)).foregroundStyle(active ? Palette.accent : .white.opacity(0.9)).frame(width: 28, height: 32)
@@ -421,6 +433,7 @@ struct SubtitleControls: View {
     @ObservedObject var model: AppModel
     @ObservedObject var viewing: ViewingPreferencesStore
     @State private var page = 0
+    @State private var appearanceLoaded = false
     init(model: AppModel) { self.model = model; viewing = model.viewing }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -433,8 +446,10 @@ struct SubtitleControls: View {
                 ZStack(alignment: .topLeading) {
                     timingControls.opacity(page == 0 ? 1 : 0)
                         .allowsHitTesting(page == 0).accessibilityHidden(page != 0)
-                    SubtitleAppearanceControls(viewing: viewing).opacity(page == 1 ? 1 : 0)
-                        .allowsHitTesting(page == 1).accessibilityHidden(page != 1)
+                    if appearanceLoaded {
+                        SubtitleAppearanceControls(viewing: viewing).opacity(page == 1 ? 1 : 0)
+                            .allowsHitTesting(page == 1).accessibilityHidden(page != 1)
+                    }
                 }
             }.frame(height: 440)
             HStack {
@@ -443,9 +458,15 @@ struct SubtitleControls: View {
                 Button("高级设置…") { model.showSettings = true; model.showSubtitleControls = false }
             }
         }.padding(20).frame(width: 380)
+            .onChange(of: page) { _, value in if value == 1 { appearanceLoaded = true } }
     }
     private var timingControls: some View {
         VStack(alignment: .leading, spacing: 12) {
+            Toggle("无黑边", isOn: Binding(get: { viewing.fitVideoWindow }, set: { viewing.setFitVideoWindow($0) }))
+                .toggleStyle(.switch).controlSize(.small).accessibilityIdentifier("fit-video-window")
+            Text("非全屏时，窗口随视频比例缩放，完整显示画面。影片本身的黑边保持不变。")
+                .font(.caption).foregroundStyle(.secondary)
+            Divider()
             HStack {
                 Label(model.subtitleOffsetStatus, systemImage: model.pendingSubtitleOffsets.isEmpty ? "checkmark.circle" : "clock")
                     .foregroundStyle(model.pendingSubtitleOffsets.isEmpty ? Palette.accent : .orange)

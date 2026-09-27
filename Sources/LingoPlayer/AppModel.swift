@@ -14,7 +14,14 @@ struct SubtitleOption: Identifiable {
 final class AppModel: ObservableObject {
     @Published var queueState = PlaybackQueue()
     @Published var progress: [String: PlaybackProgress] = [:]
-    @Published var preferences = InteractionPreferences() { didSet { updateTranscriptVisibility() } }
+    @Published var preferences = InteractionPreferences() { didSet {
+        updateTranscriptVisibility()
+        if oldValue.sidebarCollapsed != preferences.sidebarCollapsed { onWindowGeometryChanged?() }
+    } }
+    var onWindowGeometryChanged: (() -> Void)?
+    var videoAspect: Double? { didSet {
+        if oldValue != videoAspect { onWindowGeometryChanged?() }
+    } }
     @Published var sidebarTab: SidebarTab = .learning { didSet { if sidebarTab != oldValue { refreshDictionary(); updateTranscriptVisibility() } } }
     @Published var recordingAction: PlayerAction?
     @Published var shortcutMessage = ""
@@ -192,6 +199,7 @@ final class AppModel: ObservableObject {
         let session = sessionID
         guard let identity = try? MediaIdentity(url: url) else { alert = "无法读取视频文件。"; return }
         media = identity
+        videoAspect = nil
         awaitingLoad = true; player.pause(true)
         english = []; chinese = []; activeEnglish = []; activeChinese = []
         learning.reset(); currentWordID = nil; dictionaryEntry = nil; lastDictionaryKey = ""
@@ -406,6 +414,7 @@ final class AppModel: ObservableObject {
         guard let media, snapshot.generation == sessionID, snapshot.path == media.path else { return }
         if let error = snapshot.error { failCurrent(error); return }
         guard snapshot.loaded, snapshot.seekRevision == seekRevision else { return }
+        if videoAspect != snapshot.videoAspect { videoAspect = snapshot.videoAspect }
         if awaitingLoad {
             awaitingLoad = false
             duration = max(0, snapshot.duration)

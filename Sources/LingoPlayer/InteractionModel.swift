@@ -187,7 +187,7 @@ extension AppModel {
         sessionID = UUID(); searchID = UUID(); lookupID = UUID(); player.stop()
         sentenceLoop = nil; practiceMessage = ""; transcript.reset(); seekRevision = 0
         endGate.begin(sessionID, purpose: .normal, playing: false)
-        media = nil; position = 0; duration = 0; paused = true; awaitingLoad = false
+        media = nil; videoAspect = nil; position = 0; duration = 0; paused = true; awaitingLoad = false
         queueState.currentID = nil; cancelReplay(); seekTarget = nil
         english = []; chinese = []; activeEnglish = []; activeChinese = []; timings = []
         learning.reset(); currentWordID = nil; dictionaryEntry = nil; lastDictionaryKey = ""

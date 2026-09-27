@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 import OpenGL.GL3
 import CMpv
+import PlayerCore
 
 struct PlaybackSnapshot {
     var generation: UUID
@@ -15,6 +16,7 @@ struct PlaybackSnapshot {
     var seekRevision: UInt64 = 0
     var seeking = false
     var avSync = 0.0
+    var videoAspect: Double?
     var sampledAt = ProcessInfo.processInfo.systemUptime
 }
 
@@ -60,11 +62,12 @@ final class MPVPlayer {
         let ready = fileReady && activeEntry == expectedEntry && path == expectedPath
         let snapshot = PlaybackSnapshot(generation: generation, path: expectedPath,
             position: lp_get_double(handle, "time-pos", 0), duration: lp_get_double(handle, "duration", 0),
-            paused: string("pause") == "yes", loaded: ready, eof: ready && string("eof-reached") == "yes", error: failure, seekRevision: seekRevision, seeking: string("seeking") == "yes", avSync: lp_get_double(handle, "avsync", 0))
+            paused: string("pause") == "yes", loaded: ready, eof: ready && string("eof-reached") == "yes", error: failure, seekRevision: seekRevision, seeking: string("seeking") == "yes", avSync: lp_get_double(handle, "avsync", 0),
+            videoAspect: ready ? VideoWindowGeometry.displayAspect(width: lp_get_double(handle, "dwidth", 0), height: lp_get_double(handle, "dheight", 0), rotation: lp_get_double(handle, "video-out-params/rotate", 0)) : nil)
         if let old = lastSnapshot, old.generation == snapshot.generation, old.path == snapshot.path,
            old.position == snapshot.position, old.duration == snapshot.duration, old.paused == snapshot.paused,
            old.loaded == snapshot.loaded, old.eof == snapshot.eof, snapshot.error == nil,
-           old.seekRevision == snapshot.seekRevision, old.seeking == snapshot.seeking { return }
+           old.seekRevision == snapshot.seekRevision, old.seeking == snapshot.seeking, old.videoAspect == snapshot.videoAspect { return }
         lastSnapshot = snapshot
         DispatchQueue.main.async { [weak self] in self?.onUpdate?(snapshot) }
     }
@@ -178,7 +181,7 @@ private final class VideoRenderer: @unchecked Sendable {
         drawableUpdating = true; let revision = drawableRevision
         // Drain previous draws, skip new draws during the main-thread drawable
         // update, then resume. Neither queue waits synchronously for the other.
-        DispatchQueue.main.async { [self] in
+        RunLoop.main.perform(inModes: [.common]) { [self] in
             lock.lock(); let stop = stopped; lock.unlock()
             if !stop { context.update() }
             queue.async { [self] in
@@ -245,6 +248,7 @@ final class MPVVideoView: NSView {
     private let context: NSOpenGLContext
     private var drawableFrame = CGRect.null
     private var drawableSize = CGSize.zero
+    private var drawableUpdateScheduled = false
     var renderedFrames: Int { renderer.statistics.1 }
     var rendererReady: Bool { renderer.statistics.0 }
     var onRenderError: ((String) -> Void)?
@@ -278,6 +282,17 @@ final class MPVVideoView: NSView {
     override func setFrameOrigin(_ newOrigin: NSPoint) { super.setFrameOrigin(newOrigin); updateDrawable() }
     override func viewDidChangeBackingProperties() { super.viewDidChangeBackingProperties(); updateDrawable() }
     private func updateDrawable() {
+        guard prepared, !drawableUpdateScheduled else { return }
+        drawableUpdateScheduled = true
+        // Size, origin and layout often change in one AppKit transaction. Read
+        // the final geometry once, including inside the live-resize run loop.
+        RunLoop.main.perform(inModes: [.common]) { [weak self] in
+            guard let self else { return }
+            self.drawableUpdateScheduled = false
+            self.commitDrawableSize()
+        }
+    }
+    private func commitDrawableSize() {
         guard prepared else { return }
         let pixels = convertToBacking(bounds).size
         let frame = window?.convertToScreen(convert(bounds, to: nil)) ?? .null

@@ -30,8 +30,8 @@ public struct PlayerWindowSize: Codable, Equatable {
     public let width: Double
     public let height: Double
     public init(width: Double = 1260, height: Double = 800) {
-        self.width = bounded(width, 980...7680, fallback: 1260)
-        self.height = bounded(height, 640...4320, fallback: 800)
+        self.width = bounded(width, 240...7680, fallback: 1260)
+        self.height = bounded(height, 240...4320, fallback: 800)
     }
     enum CodingKeys: String, CodingKey { case width, height }
     public init(from decoder: Decoder) throws {
@@ -47,13 +47,14 @@ public struct ViewingPreferences: Codable, Equatable {
     public var windowSize = PlayerWindowSize()
     public var subtitles = SubtitleAppearance()
     public var linkedSubtitleOffsets = false
+    public var fitVideoWindow = false
     public init() {}
     public mutating func normalize() {
         volume = bounded(volume, 0...100, fallback: 80)
         speed = bounded(speed, 0.5...2, fallback: 1)
         subtitles = subtitles.normalized
     }
-    enum CodingKeys: String, CodingKey { case volume, speed, windowSize, subtitles, linkedSubtitleOffsets }
+    enum CodingKeys: String, CodingKey { case volume, speed, windowSize, subtitles, linkedSubtitleOffsets, fitVideoWindow }
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         volume = (try? c.decode(Double.self, forKey: .volume)) ?? 80
@@ -61,6 +62,7 @@ public struct ViewingPreferences: Codable, Equatable {
         windowSize = (try? c.decode(PlayerWindowSize.self, forKey: .windowSize)) ?? PlayerWindowSize()
         subtitles = (try? c.decode(SubtitleAppearance.self, forKey: .subtitles)) ?? SubtitleAppearance()
         linkedSubtitleOffsets = (try? c.decode(Bool.self, forKey: .linkedSubtitleOffsets)) ?? false
+        fitVideoWindow = (try? c.decode(Bool.self, forKey: .fitVideoWindow)) ?? false
         normalize()
     }
 }

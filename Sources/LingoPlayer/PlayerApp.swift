@@ -20,6 +20,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     private var terminationInProgress = false
     private var pendingFiles: [URL] = []
     private var mainWindowTransition = false
+    private var applyingWindowGeometry = false
+    private var restoredVideoWindowSize: NSSize?
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.setActivationPolicy(.regular)
         NSApp.appearance = NSAppearance(named: .darkAqua)
@@ -29,17 +31,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         model.onReattach = { [weak self] in self?.learningWindow?.performClose(nil) }
         model.onShortcutsChanged = { [weak self] in self?.installMenu() }
         let remembered = model.viewing.windowSize
+        if model.viewing.fitVideoWindow { restoredVideoWindowSize = NSSize(width: remembered.width, height: remembered.height) }
         let available = NSScreen.main?.visibleFrame.size ?? NSSize(width: 1260, height: 828)
-        let size = NSSize(width: min(remembered.width, max(980, available.width)), height: min(remembered.height, max(640, available.height - 28)))
+        let size = NSSize(width: min(max(980, remembered.width), available.width), height: min(max(640, remembered.height), available.height - 28))
         let window = NSWindow(contentRect: NSRect(origin: .zero, size: size), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
         window.title = "LingoPlayer"; window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden; window.isOpaque = false; window.backgroundColor = .clear
         window.minSize = NSSize(width: 980, height: 640)
         window.isReleasedWhenClosed = false
-        window.contentView = NSHostingView(rootView: PlayerRootView(model: model).preferredColorScheme(.dark))
+        let content = NSHostingView(rootView: PlayerRootView(model: model).preferredColorScheme(.dark))
+        // The delegate owns window limits, including the smaller cinema and
+        // portrait sizes. SwiftUI's inferred minimum would overwrite them.
+        content.sizingOptions = []
+        window.contentView = content
         window.center(); window.makeKeyAndOrderFront(nil)
         self.window = window
         window.delegate = self
+        model.onWindowGeometryChanged = { [weak self] in self?.applyWindowGeometry() }
+        model.viewing.onWindowModeChanged = { [weak self] in self?.applyWindowGeometry() }
         model.chrome.onVisibilityChange = { [weak window] visible in
             for button in [NSWindow.ButtonType.closeButton, .miniaturizeButton, .zoomButton] {
                 window?.standardWindowButton(button)?.isHidden = !visible
@@ -53,6 +62,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(where: { ["--window-geometry-test", "--window-geometry-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
+            Task { await WindowGeometrySmoke.run(model: model, window: window, folder: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]), restore: CommandLine.arguments[index] == "--window-geometry-restore") }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(of: "--ui-performance-test"), CommandLine.arguments.count > index + 2 {
             Task { await UIResponsivenessSmoke.run(model: model, window: window, video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2])) }
             return
@@ -164,15 +177,72 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         if let closing = notification.object as? NSWindow, closing === learningWindow { learningWindow = nil; model?.isDetached = false; model?.sidebarTab = .learning }
     }
     private func rememberMainWindowSize() {
-        guard let window, !mainWindowTransition, !window.styleMask.contains(.fullScreen), !window.isZoomed,
+        guard let window, !mainWindowTransition, !applyingWindowGeometry, !window.styleMask.contains(.fullScreen), !window.isZoomed,
               let size = window.contentView?.bounds.size, size.width > 0, size.height > 0 else { return }
         model?.viewing.setWindowSize(PlayerWindowSize(width: size.width, height: size.height))
     }
+    private var videoWindowGeometry: VideoWindowGeometry? {
+        guard let model, model.viewing.fitVideoWindow, let aspect = model.videoAspect else { return nil }
+        return VideoWindowGeometry(aspect: aspect, sidebar: model.preferences.sidebarCollapsed ? 0 : 333)
+    }
+    private func availableContentSize(_ window: NSWindow) -> NSSize {
+        window.contentRect(forFrameRect: window.screen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)).size
+    }
+    private func applyWindowGeometry() {
+        guard let window, !mainWindowTransition, !applyingWindowGeometry, !window.styleMask.contains(.fullScreen) else { return }
+        // Keep the current shape while the next video's display size is loading.
+        if model?.viewing.fitVideoWindow == true && model?.media != nil && model?.videoAspect == nil { return }
+        applyingWindowGeometry = true
+        defer { applyingWindowGeometry = false }
+        let available = availableContentSize(window)
+        let current = window.contentView?.bounds.size ?? window.frame.size
+        let target: NSSize
+        if let geometry = videoWindowGeometry {
+            window.contentMinSize = geometry.minimum(in: available)
+            target = geometry.fit(restoredVideoWindowSize ?? current, in: available)
+            restoredVideoWindowSize = nil
+        } else {
+            if model?.viewing.fitVideoWindow == false { restoredVideoWindowSize = nil }
+            let minimum = NSSize(width: min(980, available.width), height: min(640, available.height))
+            window.contentMinSize = minimum
+            target = NSSize(width: min(available.width, max(current.width, minimum.width)), height: min(available.height, max(current.height, minimum.height)))
+        }
+        var frame = window.frameRect(forContentRect: NSRect(origin: .zero, size: target))
+        frame.origin = NSPoint(x: window.frame.midX - frame.width / 2, y: window.frame.maxY - frame.height)
+        if let visible = window.screen?.visibleFrame {
+            frame.origin.x = max(visible.minX, min(frame.origin.x, visible.maxX - frame.width))
+            frame.origin.y = max(visible.minY, min(frame.origin.y, visible.maxY - frame.height))
+        }
+        if abs(window.frame.width - frame.width) > 0.5 || abs(window.frame.height - frame.height) > 0.5 ||
+            abs(window.frame.minX - frame.minX) > 0.5 || abs(window.frame.minY - frame.minY) > 0.5 {
+            window.setFrame(frame, display: true)
+        }
+    }
+    func windowWillResize(_ sender: NSWindow, to frameSize: NSSize) -> NSSize {
+        guard sender === window, !mainWindowTransition, !applyingWindowGeometry,
+              !sender.styleMask.contains(.fullScreen) else { return frameSize }
+        let proposed = sender.contentRect(forFrameRect: NSRect(origin: .zero, size: frameSize)).size
+        let available = availableContentSize(sender)
+        guard let geometry = videoWindowGeometry else {
+            let size = NSSize(width: min(available.width, max(980, proposed.width)), height: min(available.height, max(640, proposed.height)))
+            return sender.frameRect(forContentRect: NSRect(origin: .zero, size: size)).size
+        }
+        let current = sender.contentView?.bounds.size ?? sender.frame.size
+        let usingHeight = abs(proposed.height - current.height) * geometry.aspect > abs(proposed.width - current.width)
+        let size = geometry.fit(proposed, in: available, usingHeight: usingHeight)
+        return sender.frameRect(forContentRect: NSRect(origin: .zero, size: size)).size
+    }
     func windowDidResize(_ notification: Notification) {
-        if let changed = notification.object as? NSWindow, changed === window, !changed.inLiveResize { rememberMainWindowSize() }
+        if let changed = notification.object as? NSWindow, changed === window, !changed.inLiveResize {
+            if videoWindowGeometry != nil { applyWindowGeometry() }
+            rememberMainWindowSize()
+        }
     }
     func windowDidEndLiveResize(_ notification: Notification) {
-        if let changed = notification.object as? NSWindow, changed === window { rememberMainWindowSize() }
+        if let changed = notification.object as? NSWindow, changed === window { applyWindowGeometry(); rememberMainWindowSize() }
+    }
+    func windowDidChangeScreen(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed === window { applyWindowGeometry() }
     }
     func windowWillEnterFullScreen(_ notification: Notification) {
         if let changed = notification.object as? NSWindow, changed === window {
@@ -186,13 +256,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = true }
     }
     func windowDidExitFullScreen(_ notification: Notification) {
-        if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = false }
+        if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = false; applyWindowGeometry() }
     }
     func windowDidFailToEnterFullScreen(_ window: NSWindow) {
-        if window === self.window { mainWindowTransition = false }
+        if window === self.window { mainWindowTransition = false; applyWindowGeometry() }
     }
     func windowDidFailToExitFullScreen(_ window: NSWindow) {
-        if window === self.window { mainWindowTransition = false }
+        if window === self.window { mainWindowTransition = false; applyWindowGeometry() }
     }
     @objc private func openVideo() { model?.chooseVideo() }
     @objc private func openSubtitles() { model?.chooseSubtitle() }

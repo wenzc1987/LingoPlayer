@@ -1,0 +1,1197 @@
+{
+  "baseline": {
+    "checks": {
+      "cancel-manual-import-returns-to-search": true,
+      "cancel-runtime-panel-keeps-settings-draft": true,
+      "cancelled-panels-release-presentation": true,
+      "duplicate-open-keeps-existing-panel-and-filter": true,
+      "file-panel-blocks-playback-and-shortcut-recording": true,
+      "file-panels-keep-playback-clock-running": true,
+      "loaded": true,
+      "manual-import-keeps-search-sheet-as-owner": true,
+      "playback-settings-opened": true,
+      "playback-settings-tabs-selected": true,
+      "runtime-file-panel-attaches-to-settings": true,
+      "settings-tab-preserves-unsaved-draft": true,
+      "settings-tabs-selected": true,
+      "subtitle-panels-opened-and-cancelled": true,
+      "video-panels-opened-and-cancelled": true
+    },
+    "passed": true,
+    "scenarios": [
+      {
+        "main_stall_ms": {
+          "count": 223,
+          "max": 1398.6440629907884,
+          "p95": 35.26140299276449
+        },
+        "name": "playback-settings-open",
+        "visible_ms": [
+          1409.2234470008407,
+          1189.07029699767,
+          1182.0647039858159,
+          1150.7361510011833
+        ]
+      },
+      {
+        "elapsed": 6.525609110976802,
+        "frames": 106,
+        "main_stall_ms": {
+          "count": 306,
+          "max": 200.2365079917945,
+          "p95": 39.52385000069626
+        },
+        "name": "resize-paused",
+        "operation_ms": {
+          "count": 180,
+          "max": 27.814842003863305,
+          "p95": 19.97987600043416
+        }
+      },
+      {
+        "elapsed": 5.8116041680041235,
+        "frames": 128,
+        "main_stall_ms": {
+          "count": 327,
+          "max": 51.301797977648675,
+          "p95": 26.952441994799297
+        },
+        "name": "resize-playing",
+        "operation_ms": {
+          "count": 180,
+          "max": 19.322086998727173,
+          "p95": 16.312129009747878
+        }
+      },
+      {
+        "main_stall_ms": {
+          "count": 280,
+          "max": 58.323985004099086,
+          "p95": 26.3664940232411
+        },
+        "name": "playback-settings-tabs",
+        "operation_ms": {
+          "count": 12,
+          "max": 138.0764510051813,
+          "p95": 138.0764510051813
+        }
+      },
+      {
+        "main_stall_ms": {
+          "count": 238,
+          "max": 122.66418798593804,
+          "p95": 52.53706899587996
+        },
+        "name": "settings-tabs",
+        "operation_ms": {
+          "count": 12,
+          "max": 203.62913900520653,
+          "p95": 203.62913900520653
+        }
+      },
+      {
+        "call_return_ms": [
+          1360.98870402202,
+          288.57267601415515,
+          296.5709670097567
+        ],
+        "main_stall_ms": {
+          "count": 262,
+          "max": 1380.9352280024905,
+          "p95": 11.186454978305846
+        },
+        "name": "video-file-panel",
+        "playback_clock_progressed": true,
+        "visible_ms": [
+          1390.990954998415,
+          310.2681550080888,
+          361.8861199938692
+        ]
+      },
+      {
+        "call_return_ms": [
+          297.9990369931329,
+          294.7609359980561,
+          296.06379801407456
+        ],
+        "main_stall_ms": {
+          "count": 337,
+          "max": 328.5962189931888,
+          "p95": 11.898588980548084
+        },
+        "name": "subtitle-file-panel",
+        "playback_clock_progressed": true,
+        "visible_ms": [
+          354.71704599331133,
+          320.0708040094469,
+          332.8819170128554
+        ]
+      }
+    ]
+  },
+  "release": {
+    "checks": {
+      "cancel-manual-import-returns-to-search": true,
+      "cancel-runtime-panel-keeps-settings-draft": true,
+      "cancelled-panels-release-presentation": true,
+      "duplicate-open-keeps-existing-panel-and-filter": true,
+      "file-panel-blocks-playback-and-shortcut-recording": true,
+      "file-panels-keep-playback-clock-running": true,
+      "loaded": true,
+      "manual-import-keeps-search-sheet-as-owner": true,
+      "playback-settings-opened": true,
+      "playback-settings-tabs-selected": true,
+      "runtime-file-panel-attaches-to-settings": true,
+      "settings-tab-preserves-unsaved-draft": true,
+      "settings-tabs-selected": true,
+      "subtitle-panels-opened-and-cancelled": true,
+      "video-panels-opened-and-cancelled": true
+    },
+    "passed": true,
+    "scenarios": [
+      {
+        "main_stall_ms": {
+          "count": 282,
+          "max": 254.01598699158058,
+          "p95": 15.079201004700735
+        },
+        "name": "playback-settings-open",
+        "visible_ms": [
+          264.47207599994726,
+          164.0260629937984,
+          161.42150000086986,
+          170.14473001472652
+        ]
+      },
+      {
+        "elapsed": 6.149769720999757,
+        "frames": 152,
+        "main_stall_ms": {
+          "count": 327,
+          "max": 160.38614398916252,
+          "p95": 41.20545899262652
+        },
+        "name": "resize-paused",
+        "operation_ms": {
+          "count": 180,
+          "max": 128.20386799285188,
+          "p95": 22.505544999148697
+        }
+      },
+      {
+        "elapsed": 5.461662187997717,
+        "frames": 128,
+        "main_stall_ms": {
+          "count": 376,
+          "max": 50.49258200800978,
+          "p95": 24.15060200495645
+        },
+        "name": "resize-playing",
+        "operation_ms": {
+          "count": 180,
+          "max": 20.720210974104702,
+          "p95": 17.68291200278327
+        }
+      },
+      {
+        "main_stall_ms": {
+          "count": 299,
+          "max": 99.31909899227321,
+          "p95": 22.621461024973538
+        },
+        "name": "playback-settings-tabs",
+        "operation_ms": {
+          "count": 12,
+          "max": 173.5246290138457,
+          "p95": 173.5246290138457
+        }
+      },
+      {
+        "main_stall_ms": {
+          "count": 246,
+          "max": 119.68872700002976,
+          "p95": 48.445656002731994
+        },
+        "name": "settings-tabs",
+        "operation_ms": {
+          "count": 12,
+          "max": 162.5437479908578,
+          "p95": 162.5437479908578
+        }
+      },
+      {
+        "call_return_ms": [
+          1157.7308679989073,
+          288.9382540015504,
+          291.5938879887108
+        ],
+        "main_stall_ms": {
+          "count": 259,
+          "max": 1166.8821529985871,
+          "p95": 16.533615018706765
+        },
+        "name": "video-file-panel",
+        "playback_clock_progressed": true,
+        "visible_ms": [
+          1204.211932985345,
+          309.2167389986571,
+          324.86829700064845
+        ]
+      },
+      {
+        "call_return_ms": [
+          292.3462649923749,
+          288.44652499537915,
+          288.72001299168915
+        ],
+        "main_stall_ms": {
+          "count": 343,
+          "max": 309.0204970014747,
+          "p95": 13.456145980162546
+        },
+        "name": "subtitle-file-panel",
+        "playback_clock_progressed": true,
+        "visible_ms": [
+          319.1943959973287,
+          312.2666960116476,
+          311.7162959824782
+        ]
+      }
+    ]
+  },
+  "hevc": {
+    "checks": {
+      "cancel-manual-import-returns-to-search": true,
+      "cancel-runtime-panel-keeps-settings-draft": true,
+      "cancelled-panels-release-presentation": true,
+      "duplicate-open-keeps-existing-panel-and-filter": true,
+      "file-panel-blocks-playback-and-shortcut-recording": true,
+      "file-panels-keep-playback-clock-running": true,
+      "loaded": true,
+      "manual-import-keeps-search-sheet-as-owner": true,
+      "playback-settings-opened": true,
+      "playback-settings-tabs-selected": true,
+      "runtime-file-panel-attaches-to-settings": true,
+      "settings-tab-preserves-unsaved-draft": true,
+      "settings-tabs-selected": true,
+      "subtitle-panels-opened-and-cancelled": true,
+      "video-panels-opened-and-cancelled": true
+    },
+    "passed": true,
+    "scenarios": [
+      {
+        "main_stall_ms": {
+          "count": 288,
+          "max": 254.98201800859533,
+          "p95": 17.82363299047574
+        },
+        "name": "playback-settings-open",
+        "visible_ms": [
+          265.30361201730557,
+          187.02092801686376,
+          181.803368992405,
+          184.1443290177267
+        ]
+      },
+      {
+        "elapsed": 5.499620262999088,
+        "frames": 119,
+        "main_stall_ms": {
+          "count": 357,
+          "max": 64.53032999183051,
+          "p95": 37.75956200319342
+        },
+        "name": "resize-paused",
+        "operation_ms": {
+          "count": 180,
+          "max": 62.36421997891739,
+          "p95": 14.503351994790137
+        }
+      },
+      {
+        "elapsed": 5.251322316995356,
+        "frames": 113,
+        "main_stall_ms": {
+          "count": 396,
+          "max": 46.51717199361883,
+          "p95": 17.745922998292368
+        },
+        "name": "resize-playing",
+        "operation_ms": {
+          "count": 180,
+          "max": 24.55669900518842,
+          "p95": 16.938462998950854
+        }
+      },
+      {
+        "main_stall_ms": {
+          "count": 284,
+          "max": 107.79203999321908,
+          "p95": 28.27686302247457
+        },
+        "name": "playback-settings-tabs",
+        "operation_ms": {
+          "count": 12,
+          "max": 179.2248949734494,
+          "p95": 179.2248949734494
+        }
+      },
+      {
+        "main_stall_ms": {
+          "count": 240,
+          "max": 96.5998519770801,
+          "p95": 48.11535500106402
+        },
+        "name": "settings-tabs",
+        "operation_ms": {
+          "count": 12,
+          "max": 207.11162297287956,
+          "p95": 207.11162297287956
+        }
+      },
+      {
+        "call_return_ms": [
+          1012.7116850053426,
+          289.67652801657096,
+          292.48221998568624
+        ],
+        "main_stall_ms": {
+          "count": 289,
+          "max": 1016.6707709815819,
+          "p95": 8.529922002926469
+        },
+        "name": "video-file-panel",
+        "playback_clock_progressed": true,
+        "visible_ms": [
+          1035.980683984235,
+          315.8166350040119,
+          322.1673209918663
+        ]
+      },
+      {
+        "call_return_ms": [
+          290.3434879845008,
+          290.99480199511163,
+          309.71931500243954
+        ],
+        "main_stall_ms": {
+          "count": 353,
+          "max": 319.13421097327955,
+          "p95": 9.303195003885776
+        },
+        "name": "subtitle-file-panel",
+        "playback_clock_progressed": true,
+        "visible_ms": [
+          312.5772049825173,
+          309.47733600623906,
+          337.05791100510396
+        ]
+      }
+    ]
+  },
+  "window": {
+    "checks": [
+      {
+        "detail": "aspect=Optional(1.7777777777777777)",
+        "name": "loaded-Wide.mp4",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "native-toggle-enables-mode",
+        "passed": true
+      },
+      {
+        "detail": "(0.0, 0.0, 1260.0, 709.0)",
+        "name": "wide-video-fits-window",
+        "passed": true
+      },
+      {
+        "detail": "(0.0, 0.0, 927.0, 522.0)",
+        "name": "sidebar-false-keeps-video-aspect",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "horizontal-resize-false",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "vertical-resize-false",
+        "passed": true
+      },
+      {
+        "detail": "(0.0, 0.0, 1037.0, 584.0)",
+        "name": "sidebar-true-keeps-video-aspect",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "horizontal-resize-true",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "vertical-resize-true",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "wide-screenshot",
+        "passed": true
+      },
+      {
+        "detail": "aspect=Optional(0.5625000000000002)",
+        "name": "loaded-Portrait.mp4",
+        "passed": true
+      },
+      {
+        "detail": "(0.0, 0.0, 493.0, 875.0)",
+        "name": "rotation-fits-without-cropping",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "portrait-resize-keeps-aspect",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "compact-controls-remain-visible",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "portrait-screenshot",
+        "passed": true
+      },
+      {
+        "detail": "aspect=Optional(3.5555555555555554)",
+        "name": "loaded-Anamorphic.mp4",
+        "passed": true
+      },
+      {
+        "detail": "video=(0.0, 0.0, 996.0, 280.0), window=(0.0, 307.0, 996.0, 280.0), content=Optional((0.0, 0.0, 996.0, 280.0)), minimum=(0.0, 0.0)",
+        "name": "pixel-aspect-fits",
+        "passed": true
+      },
+      {
+        "detail": "aspect=Optional(1.7777777777777777)",
+        "name": "loaded-Wide.mp4",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "fullscreen-unconstrained",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "exit-fullscreen-restores-aspect",
+        "passed": true
+      },
+      {
+        "detail": "minimum=(980.0, 640.0)",
+        "name": "disable-restores-free-resize",
+        "passed": true
+      },
+      {
+        "detail": "frames=60",
+        "name": "rendering-continues-in-event-tracking-mode",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "stop-clears-video-geometry",
+        "passed": true
+      },
+      {
+        "detail": "aspect=Optional(1.7777777777777777)",
+        "name": "loaded-Wide.mp4",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "final-fitted-size",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "rendering-continues",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "window_restore": {
+    "checks": [
+      {
+        "detail": "",
+        "name": "mode-restored",
+        "passed": true
+      },
+      {
+        "detail": "aspect=Optional(1.7777777777777777)",
+        "name": "loaded-Wide.mp4",
+        "passed": true
+      },
+      {
+        "detail": "(270.0, 309.0, 900.0, 507.0)",
+        "name": "fitted-size-restored",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "viewing": {
+    "checks": [
+      {
+        "detail": "",
+        "name": "video_loaded",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "settings_opens",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "offset_status_visible",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_timing-settings",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "native_link_toggle",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "linked_step_keeps_legacy_language_gap_and_waits",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "either_language_can_drive_linked_adjustment",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "reset_is_debounced",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "reset_clears_both_offsets",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "unlinked_adjustment_leaves_other_language_unchanged",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "appearance_tab_has_live_preview",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "native_font_slider_changes_style",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_appearance-settings",
+        "passed": true
+      },
+      {
+        "detail": "before=(460.0, 115.0, 55.0, 34.0), after=(389.5, 196.0, 71.5, 44.0)",
+        "name": "appearance_changes_live_subtitle_size_and_position",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_styled",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "appearance_reset_restores_only_visual_defaults",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "large_subtitles_stay_below_controls_in_small_window",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_large-subtitles",
+        "passed": true
+      },
+      {
+        "detail": "PlayerWindowSize(width: 1100.0, height: 720.0)",
+        "name": "normal_window_size_is_remembered",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "fullscreen_does_not_overwrite_normal_size",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "zero_volume_is_persisted",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "viewing_restore": {
+    "checks": [
+      {
+        "detail": "",
+        "name": "volume_and_speed_restore_in_new_process",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "appearance_and_link_restore_in_new_process",
+        "passed": true
+      },
+      {
+        "detail": "(1100.0, 720.0)",
+        "name": "window_size_restores_in_new_process",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "video_loaded",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "saved_audio_preferences_survive_media_load",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "saved_offsets_restore_independently_of_global_preferences",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_restored",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "chrome": {
+    "checks": [
+      {
+        "detail": "",
+        "name": "screenshot_empty",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "video_loaded",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "notice_expires_and_repeated_failure_stays_quiet",
+        "passed": true
+      },
+      {
+        "detail": "video=(1260.0, 800.0), content=(1260.0, 800.0)",
+        "name": "video_fills_content_without_reserved_bars",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_paused",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "title_visible_with_controls",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "paused_controls_stay_visible",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "blank_click_hides_without_playing",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "title_hides_with_controls",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_immersive",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "volume_shortcut_feedback_without_revealing_controls",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_volume-hidden",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "repeated_shortcut_replaces_feedback_and_restarts_expiry",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "feedback_expires_without_changing_hidden_controls",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "volume_feedback_respects_upper_bound",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "zero_volume_feedback_is_muted",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "speed_shortcut_reports_current_rate",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_speed-feedback",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "forward_shortcut_reports_delta_and_position",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_seek-feedback",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "backward_shortcut_reports_negative_delta",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "seek_boundary_reports_actual_change",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "subtitle_shortcut_reports_result",
+        "passed": true
+      },
+      {
+        "detail": "visible=true, paused=true, holds=[]",
+        "name": "blank_click_reveals_without_playing",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "visible_toolbar_volume_updates_with_feedback",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_volume-visible",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "toolbar_queue_opens_shared_sidebar",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_queue",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_transcript",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "transcript_uses_same_sidebar",
+        "passed": true
+      },
+      {
+        "detail": "clicked=true, locked=true, collapsed=false, tab=learning",
+        "name": "floating_word_click_pauses_and_opens_learning",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_learning",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "continue_keeps_sidebar_and_unfolded_tab",
+        "passed": true
+      },
+      {
+        "detail": "paused=false, holds=[]",
+        "name": "playing_controls_auto_hide",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "word_remains_clickable_with_controls_hidden",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "toolbar_settings_opens_popover",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "configuration_prevents_auto_hide",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_settings",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "native_subtitle_stepper_changes_draft_by_tenth",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "legacy_precise_offset_is_preserved_until_adjustment",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "legacy_offset_steps_from_displayed_tenth",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "subtitle_offsets_wait_for_last_adjustment",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_settings_popup_0",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "subtitle_offsets_apply_after_one_second_even_when_closed",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "debounced_subtitle_offsets_persist",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "returning_offset_to_original_cancels_pending_work",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "reprepare_button_preserves_pending_offsets_and_delay",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "offsets_still_apply_after_reprepare_button",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "offsets_after_reprepare_are_persisted",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "hidden_subtitles_do_not_resize_video",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_minimum",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "minimum_window_keeps_control_actions_available",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "long_subtitle_wraps_below_controls",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_long-subtitle",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "native_fullscreen",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "screenshot_fullscreen",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "loading_media_clears_old_feedback_and_offset_drafts",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "old_offset_draft_does_not_apply_to_loaded_media",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "shutdown_flushes_draft_without_rounding_untouched_offset",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "shutdown_saves_both_pending_offsets_and_playback_state",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "repeated_shutdown_keeps_flushed_offsets",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "keyboard": {
+    "checks": [
+      {
+        "detail": "",
+        "name": "media_loaded_with_custom_space_binding",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "button_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_space_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_space_again_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_right_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_left_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_command_shortcut",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "slider_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_space_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_space_again_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_right_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_left_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_command_shortcut",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "transcript_table_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_space_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_space_again_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_right_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_left_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_command_shortcut",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "typing_space_edits_text_without_playback",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "ime_and_text_editing_keep_shortcuts",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "clicking_another_input_keeps_text_editing",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "video_click_leaves_text_editing",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSWindow), blocked=false, dispatched=1",
+        "name": "space_after_leaving_editor",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSTextView), blocked=false, dispatched=1",
+        "name": "readonly_text_does_not_block_player",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "subtitle_popover_still_blocks_keys",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "settings_still_blocks_keys",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+        "name": "shortcut_after_closing_settings",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+        "name": "command_r_replays_locked_sentence",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "replay_starts_selected_cue",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+        "name": "command_return_resumes_learning",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "resume_unlocks_and_plays",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "detached_button_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "detached_space_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "detached_command_shortcut",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "metadata": {
+    "version": "0.3.1",
+    "build": 13,
+    "baseline_commit": "9f3cba7",
+    "baseline_build": 12,
+    "executable_sha256": "488520f0deef58f43db3953423ee8ab33095b9259da58f7104fa955195bbc310",
+    "swift_tests": 70,
+    "python_tests": 10,
+    "release_native_checks": 183
+  }
+}

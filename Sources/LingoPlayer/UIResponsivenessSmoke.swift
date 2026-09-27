@@ -49,6 +49,21 @@ import Darwin
             if measuring { gaps.append(max(0, current - lastTick - 0.01) * 1000) }; lastTick = current
         }
         RunLoop.main.add(heartbeat, forMode: .common)
+        print("UI_PHASE playback-settings-open"); fflush(stdout)
+        var openingTimes: [Double] = []
+        gaps = []; lastTick = now()
+        for _ in 0..<4 {
+            let visible = Set(NSApp.windows.filter(\.isVisible).map(\.windowNumber))
+            let started = now()
+            model.showSubtitleControls = true
+            let appeared = await wait { NSApp.windows.contains { $0.isVisible && !visible.contains($0.windowNumber) } }
+            NSApp.windows.filter(\.isVisible).forEach { $0.contentView?.layoutSubtreeIfNeeded(); $0.displayIfNeeded() }
+            if appeared { openingTimes.append((now() - started) * 1000) }
+            await delay(0.4)
+            model.showSubtitleControls = false; await delay(0.4)
+        }
+        checks["playback-settings-opened"] = openingTimes.count == 4
+        rows.append(["name": "playback-settings-open", "visible_ms": openingTimes, "main_stall_ms": distribution(gaps)])
         for playing in [false, true] {
             if model.endGate.wantsPlayback != playing { model.togglePlayback() }
             await delay(0.4)
