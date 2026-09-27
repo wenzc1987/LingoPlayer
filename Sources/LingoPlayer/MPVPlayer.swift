@@ -206,24 +206,30 @@ private final class VideoRenderer: @unchecked Sendable {
         }
     }
     func diagnosticFrame() -> NSBitmapImageRep? {
-        queue.sync {
-            guard let renderer, let context, !drawableUpdating else { return nil }
-            CGLLockContext(context.cglContextObj!); defer { CGLUnlockContext(context.cglContextObj!) }
-            context.makeCurrentContext(); defer { NSOpenGLContext.clearCurrentContext() }
-            let width = Int(size.width), height = Int(size.height)
-            guard width > 0, height > 0,
-                  let bitmap = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: width, pixelsHigh: height, bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: width * 4, bitsPerPixel: 32),
-                  let pixels = bitmap.bitmapData else { return nil }
-            lp_render_draw(renderer, Int32(width), Int32(height))
-            glReadBuffer(GLenum(GL_BACK)); glPixelStorei(GLenum(GL_PACK_ALIGNMENT), 1)
-            glReadPixels(0, 0, Int32(width), Int32(height), GLenum(GL_RGBA), GLenum(GL_UNSIGNED_BYTE), pixels)
-            let stride = width * 4
-            for row in 0..<(height / 2) {
-                let top = pixels.advanced(by: row * stride), bottom = pixels.advanced(by: (height - 1 - row) * stride)
-                let saved = Data(bytes: top, count: stride); memcpy(top, bottom, stride); saved.copyBytes(to: bottom, count: stride)
-            }
-            context.flushBuffer(); return bitmap
+        queue.sync { readFrame() }
+    }
+    func captureFrame() async -> NSBitmapImageRep? {
+        await withCheckedContinuation { continuation in
+            queue.async { [self] in continuation.resume(returning: readFrame()) }
         }
+    }
+    private func readFrame() -> NSBitmapImageRep? {
+        guard !stopped, let renderer, let context, !drawableUpdating else { return nil }
+        CGLLockContext(context.cglContextObj!); defer { CGLUnlockContext(context.cglContextObj!) }
+        context.makeCurrentContext(); defer { NSOpenGLContext.clearCurrentContext() }
+        let width = Int(size.width), height = Int(size.height)
+        guard width > 0, height > 0,
+              let bitmap = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: width, pixelsHigh: height, bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: width * 4, bitsPerPixel: 32),
+              let pixels = bitmap.bitmapData else { return nil }
+        lp_render_draw(renderer, Int32(width), Int32(height))
+        glReadBuffer(GLenum(GL_BACK)); glPixelStorei(GLenum(GL_PACK_ALIGNMENT), 1)
+        glReadPixels(0, 0, Int32(width), Int32(height), GLenum(GL_RGBA), GLenum(GL_UNSIGNED_BYTE), pixels)
+        let stride = width * 4
+        for row in 0..<(height / 2) {
+            let top = pixels.advanced(by: row * stride), bottom = pixels.advanced(by: (height - 1 - row) * stride)
+            let saved = Data(bytes: top, count: stride); memcpy(top, bottom, stride); saved.copyBytes(to: bottom, count: stride)
+        }
+        context.flushBuffer(); return bitmap
     }
     func shutdown() {
         lock.lock(); stopped = true; lock.unlock()
@@ -300,6 +306,7 @@ final class MPVVideoView: NSView {
         drawableFrame = frame; drawableSize = pixels; renderer.resize(pixels)
     }
     func diagnosticFrame() -> NSBitmapImageRep? { let bitmap = renderer.diagnosticFrame(); bitmap?.size = bounds.size; return bitmap }
+    func captureFrame() async -> NSBitmapImageRep? { await renderer.captureFrame() }
     func shutdown() { renderer.shutdown(); context.clearDrawable() }
 }
 

@@ -48,13 +48,15 @@ public struct ViewingPreferences: Codable, Equatable {
     public var subtitles = SubtitleAppearance()
     public var linkedSubtitleOffsets = false
     public var fitVideoWindow = false
+    public var screenshot = ScreenshotPreferences()
     public init() {}
     public mutating func normalize() {
         volume = bounded(volume, 0...100, fallback: 80)
         speed = bounded(speed, 0.5...2, fallback: 1)
         subtitles = subtitles.normalized
+        screenshot = screenshot.normalized
     }
-    enum CodingKeys: String, CodingKey { case volume, speed, windowSize, subtitles, linkedSubtitleOffsets, fitVideoWindow }
+    enum CodingKeys: String, CodingKey { case volume, speed, windowSize, subtitles, linkedSubtitleOffsets, fitVideoWindow, screenshot }
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         volume = (try? c.decode(Double.self, forKey: .volume)) ?? 80
@@ -63,6 +65,7 @@ public struct ViewingPreferences: Codable, Equatable {
         subtitles = (try? c.decode(SubtitleAppearance.self, forKey: .subtitles)) ?? SubtitleAppearance()
         linkedSubtitleOffsets = (try? c.decode(Bool.self, forKey: .linkedSubtitleOffsets)) ?? false
         fitVideoWindow = (try? c.decode(Bool.self, forKey: .fitVideoWindow)) ?? false
+        screenshot = (try? c.decode(ScreenshotPreferences.self, forKey: .screenshot)) ?? ScreenshotPreferences()
         normalize()
     }
 }

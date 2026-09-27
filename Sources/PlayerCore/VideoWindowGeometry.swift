@@ -19,7 +19,8 @@ public struct VideoWindowGeometry {
         return CGSize(width: height * aspect + sidebar, height: height)
     }
     public func minimum(in available: CGSize) -> CGSize {
-        let height = min(maximum(in: available).height, max(280, min(480, 480 / aspect)))
+        // Leave room for the title, wrapped captions and the expanded toolbar.
+        let height = min(maximum(in: available).height, max(360, min(480, 480 / aspect)))
         return CGSize(width: height * aspect + sidebar, height: height)
     }
     public func fit(_ proposed: CGSize, in available: CGSize, usingHeight: Bool = false) -> CGSize {

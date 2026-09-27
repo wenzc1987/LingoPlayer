@@ -11,6 +11,7 @@ import AppKit
         let panel = reusablePanel ?? NSOpenPanel()
         reusablePanel = panel
         panel.canChooseDirectories = false; panel.canChooseFiles = true
+        panel.canCreateDirectories = false
         panel.allowsMultipleSelection = false; panel.allowedContentTypes = []
         panel.message = ""; panel.nameFieldStringValue = ""
         configure(panel)

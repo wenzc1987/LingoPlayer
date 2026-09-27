@@ -65,7 +65,7 @@ import PlayerCore
             record("fitted-size-restored", matches(16.0 / 9) && abs(window.frame.width - 900) < 2, "\(window.frame)")
         } else {
             model.setSidebarCollapsed(true)
-            model.showSubtitleControls = true; await delay(0.6)
+            model.chrome.show(); await delay(0.3)
             let toggle = NSApp.windows.filter(\.isVisible).compactMap { find($0, "fit-video-window") }.first
             _ = toggle?.perform(NSSelectorFromString("accessibilityPerformPress")); await delay(0.5)
             record("native-toggle-enables-mode", toggle != nil && model.viewing.fitVideoWindow)

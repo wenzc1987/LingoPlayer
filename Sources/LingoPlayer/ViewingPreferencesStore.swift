@@ -6,6 +6,7 @@ import PlayerCore
     @Published private(set) var subtitles: SubtitleAppearance
     @Published private(set) var linkedSubtitleOffsets: Bool
     @Published private(set) var fitVideoWindow: Bool
+    @Published private(set) var screenshot: ScreenshotPreferences
     var onWindowModeChanged: (() -> Void)?
     private var values: ViewingPreferences
     private let storage: StorageWorker
@@ -18,6 +19,7 @@ import PlayerCore
         self.storage = storage
         let loaded = (try? Data(contentsOf: Self.url)).flatMap { try? JSONDecoder().decode(ViewingPreferences.self, from: $0) } ?? ViewingPreferences()
         values = loaded; subtitles = loaded.subtitles; linkedSubtitleOffsets = loaded.linkedSubtitleOffsets; fitVideoWindow = loaded.fitVideoWindow
+        screenshot = loaded.screenshot
     }
     private func update(_ change: (inout ViewingPreferences) -> Void) {
         var next = values; change(&next); next.normalize()
@@ -28,6 +30,7 @@ import PlayerCore
         if linkedSubtitleOffsets != next.linkedSubtitleOffsets { linkedSubtitleOffsets = next.linkedSubtitleOffsets }
         let windowModeChanged = fitVideoWindow != next.fitVideoWindow
         if windowModeChanged { fitVideoWindow = next.fitVideoWindow }
+        if screenshot != next.screenshot { screenshot = next.screenshot }
         storage.write(next, to: Self.url)
         if windowModeChanged { onWindowModeChanged?() }
     }
@@ -37,4 +40,5 @@ import PlayerCore
     func setSubtitles(_ value: SubtitleAppearance) { update { $0.subtitles = value } }
     func setLinkedOffsets(_ value: Bool) { update { $0.linkedSubtitleOffsets = value } }
     func setFitVideoWindow(_ value: Bool) { update { $0.fitVideoWindow = value } }
+    func setScreenshot(_ value: ScreenshotPreferences) { update { $0.screenshot = value } }
 }

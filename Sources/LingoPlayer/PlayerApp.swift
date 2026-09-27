@@ -26,7 +26,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         NSApplication.shared.setActivationPolicy(.regular)
         NSApp.appearance = NSAppearance(named: .darkAqua)
         if let icon = Bundle.main.url(forResource: "AppIcon", withExtension: "icns") { NSApp.applicationIconImage = NSImage(contentsOf: icon) }
-        let model = AppModel(); self.model = model
+        let toolbarTest = CommandLine.arguments.contains { ["--toolbar-test", "--toolbar-restore"].contains($0) }
+        let model = AppModel(screenshotClipboard: toolbarTest ? .withUniqueName() : .general); self.model = model
         model.onDetach = { [weak self] in self?.detachLearning() }
         model.onReattach = { [weak self] in self?.learningWindow?.performClose(nil) }
         model.onShortcutsChanged = { [weak self] in self?.installMenu() }
@@ -47,6 +48,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         window.center(); window.makeKeyAndOrderFront(nil)
         self.window = window
         window.delegate = self
+        model.onToggleFullScreen = { [weak self, weak window] in
+            guard self?.mainWindowTransition == false else { return }
+            window?.toggleFullScreen(nil)
+        }
         model.onWindowGeometryChanged = { [weak self] in self?.applyWindowGeometry() }
         model.viewing.onWindowModeChanged = { [weak self] in self?.applyWindowGeometry() }
         model.chrome.onVisibilityChange = { [weak window] visible in
@@ -62,6 +67,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(where: { ["--toolbar-test", "--toolbar-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
+            Task { await ToolbarSmoke.run(model: model, window: window, video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]), restore: CommandLine.arguments[index] == "--toolbar-restore") }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(where: { ["--window-geometry-test", "--window-geometry-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
             Task { await WindowGeometrySmoke.run(model: model, window: window, folder: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]), restore: CommandLine.arguments[index] == "--window-geometry-restore") }
             return
@@ -247,22 +256,38 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     func windowWillEnterFullScreen(_ notification: Notification) {
         if let changed = notification.object as? NSWindow, changed === window {
             rememberMainWindowSize(); mainWindowTransition = true
+            model?.windowPresentation.isTransitioning = true
         }
     }
     func windowDidEnterFullScreen(_ notification: Notification) {
-        if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = false }
+        if let changed = notification.object as? NSWindow, changed === window {
+            mainWindowTransition = false
+            model?.windowPresentation.isFullScreen = true; model?.windowPresentation.isTransitioning = false
+        }
     }
     func windowWillExitFullScreen(_ notification: Notification) {
-        if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = true }
+        if let changed = notification.object as? NSWindow, changed === window {
+            mainWindowTransition = true; model?.windowPresentation.isTransitioning = true
+        }
     }
     func windowDidExitFullScreen(_ notification: Notification) {
-        if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = false; applyWindowGeometry() }
+        if let changed = notification.object as? NSWindow, changed === window {
+            mainWindowTransition = false
+            model?.windowPresentation.isFullScreen = false; model?.windowPresentation.isTransitioning = false
+            applyWindowGeometry()
+        }
     }
     func windowDidFailToEnterFullScreen(_ window: NSWindow) {
-        if window === self.window { mainWindowTransition = false; applyWindowGeometry() }
+        if window === self.window { recoverWindowTransition(window) }
     }
     func windowDidFailToExitFullScreen(_ window: NSWindow) {
-        if window === self.window { mainWindowTransition = false; applyWindowGeometry() }
+        if window === self.window { recoverWindowTransition(window) }
+    }
+    private func recoverWindowTransition(_ window: NSWindow) {
+        mainWindowTransition = false
+        model?.windowPresentation.isFullScreen = window.styleMask.contains(.fullScreen)
+        model?.windowPresentation.isTransitioning = false
+        applyWindowGeometry()
     }
     @objc private func openVideo() { model?.chooseVideo() }
     @objc private func openSubtitles() { model?.chooseSubtitle() }

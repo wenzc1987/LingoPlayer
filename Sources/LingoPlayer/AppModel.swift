@@ -36,6 +36,9 @@ final class AppModel: ObservableObject {
     let chrome = PlayerChrome()
     let viewing: ViewingPreferencesStore
     let filePanels = FilePanelPresenter()
+    let windowPresentation = PlayerWindowPresentation()
+    let screenshots: ScreenshotController
+    var onToggleFullScreen: (() -> Void)?
     @Published var sentenceLoop: SentenceLoop?
     @Published var practiceMessage = ""
     var loopIterations = 0
@@ -131,7 +134,8 @@ final class AppModel: ObservableObject {
     var replayCue: SubtitleCue?
     var onDetach: (() -> Void)?
 
-    init() {
+    init(screenshotClipboard: NSPasteboard = .general) {
+        screenshots = ScreenshotController(pasteboard: screenshotClipboard)
         let loaded = RuntimeSettings.load()
         player = MPVPlayer(library: loaded.libmpv)
         videoView = MPVVideoView(player: player)
@@ -675,6 +679,7 @@ final class AppModel: ObservableObject {
         lastSavedAt = Date()
     }
     func prepareShutdown() async {
+        await screenshots.finishPendingCapture()
         player.onUpdate = nil; player.pause(true)
         // Preserve the last values the user selected without starting new
         // transcript/alignment work while the application is shutting down.

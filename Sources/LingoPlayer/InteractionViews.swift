@@ -154,14 +154,18 @@ struct SettingsPanel: View {
             Picker("设置页面", selection: $page) {
                 Text("字幕与环境").tag(0)
                 Text("快捷键").tag(1)
-            }.pickerStyle(.segmented).labelsHidden().frame(width: 280).accessibilityIdentifier("settings-page")
+                Text("截图").tag(2)
+            }.pickerStyle(.segmented).labelsHidden().frame(width: 360).accessibilityIdentifier("settings-page")
             ZStack {
                 RuntimeSettingsPanel(model: model)
                     .opacity(page == 0 ? 1 : 0)
-                    .allowsHitTesting(page == 0).accessibilityHidden(page != 0)
+                    .allowsHitTesting(page == 0).accessibilityHidden(page != 0).disabled(page != 0)
                 ShortcutSettingsPanel(model: model)
                     .opacity(page == 1 ? 1 : 0)
                     .allowsHitTesting(page == 1).accessibilityHidden(page != 1)
+                ScreenshotSettingsPanel(model: model)
+                    .opacity(page == 2 ? 1 : 0)
+                    .allowsHitTesting(page == 2).accessibilityHidden(page != 2).disabled(page != 2)
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }.padding(22).frame(width: 690, height: 670).background(Palette.background)
             .onChange(of: page) { _, _ in if model.recordingAction != nil { model.recordingAction = nil } }

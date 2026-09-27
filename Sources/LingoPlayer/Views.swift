@@ -86,7 +86,7 @@ struct PlayerStage: View {
                             .allowsHitTesting(false).accessibilityIdentifier("playback-title")
                             .transition(.opacity)
                     }
-                    PlaybackControls(model: model, compact: geometry.size.width < 620)
+                    PlaybackControls(model: model, compact: geometry.size.width < 680, narrow: geometry.size.width < 400)
                     .frame(width: min(860, max(0, geometry.size.width - 32)))
                     // Keep native hover tracking out of the subtitle area below.
                     .onHover { chrome.hold(.pointer, active: $0) }
@@ -133,37 +133,7 @@ struct SubtitleStrip: View {
             .accessibilityHidden(model.preferences.subtitleDisplay == .hidden)
     }
     private var content: some View {
-        VStack(spacing: 8) {
-            if !model.activeEnglish.isEmpty || !model.activeChinese.isEmpty {
-                ForEach(model.activeEnglish) { cue in
-                    WordWrap(spacing: 1, lineSpacing: 4) {
-                        ForEach(cue.tokens) { token in
-                            let spoken = model.currentWordID == "\(cue.id):\(token.id)"
-                            let locked = presentation.lockedWordID == "\(cue.id):\(token.id)"
-                            if token.isWord {
-                                Button { model.lock(cue: cue, token: token) } label: {
-                                    Text(token.text).font(.system(size: viewing.subtitles.englishSize, weight: spoken ? .semibold : .medium))
-                                        .foregroundStyle(spoken ? .black : .white.opacity(0.93))
-                                        .padding(.horizontal, 3).padding(.vertical, 3)
-                                        .background(spoken ? Palette.accent : .clear, in: RoundedRectangle(cornerRadius: 5))
-                                        .overlay { if locked { RoundedRectangle(cornerRadius: 5).stroke(Palette.accent.opacity(0.75), lineWidth: 1) } }
-                                        .contentShape(Rectangle())
-                                }.buttonStyle(.plain).help("暂停并学习 \(token.text)").accessibilityIdentifier("subtitle-word-\(cue.id)-\(token.id)")
-                            } else {
-                                Text(token.text.replacingOccurrences(of: "\n", with: " ")).font(.system(size: max(14, viewing.subtitles.englishSize - 2))).foregroundStyle(.white.opacity(0.8)).padding(.vertical, 3)
-                            }
-                        }
-                    }
-                }
-                if !model.bilingualText.isEmpty { Text(model.bilingualText).font(.system(size: viewing.subtitles.chineseSize)).foregroundStyle(.white.opacity(0.85)).multilineTextAlignment(.center).opacity(model.preferences.subtitleDisplay == .bilingual ? 1 : 0).accessibilityHidden(model.preferences.subtitleDisplay != .bilingual) }
-            }
-        }
-        .padding(.horizontal, 12).padding(.vertical, 8)
-        .background {
-            if !model.activeEnglish.isEmpty || !model.activeChinese.isEmpty {
-                RoundedRectangle(cornerRadius: 10).fill(.black.opacity(viewing.subtitles.backgroundOpacity))
-            }
-        }
+        SubtitleCaptionContent(frame: SubtitleFrame(model: model)) { cue, token in model.lock(cue: cue, token: token) }
     }
 }
 
@@ -216,7 +186,10 @@ struct PlaybackControls: View {
     @ObservedObject var model: AppModel
     @ObservedObject var playback: PlaybackPresentation
     var compact: Bool
-    init(model: AppModel, compact: Bool = false) { self.model = model; playback = model.playback; self.compact = compact }
+    var narrow: Bool
+    init(model: AppModel, compact: Bool = false, narrow: Bool = false) {
+        self.model = model; playback = model.playback; self.compact = compact; self.narrow = narrow
+    }
     @State private var seeking = false
     @State private var draft = 0.0
     var body: some View {
@@ -228,12 +201,14 @@ struct PlaybackControls: View {
                     model.chrome.hold(.scrubbing, active: active)
                     if active { model.cancelSentenceLoop(); draft = playback.position; seeking = true }
                     else { seeking = false; model.seek(draft) }
-                }).disabled(!model.canPlay).accessibilityLabel("播放进度")
+                }).disabled(!model.canPlay).accessibilityLabel("播放进度").help("拖动调整播放进度")
                 Text(clock(model.duration)).monospacedDigit().frame(minWidth: 45, alignment: .trailing)
             }.font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
             buttonLayout {
                HStack(spacing: compact ? 4 : 8) {
-                Button { model.chooseVideo() } label: { icon("folder") }.help(model.media?.title ?? "打开视频")
+                Button { model.chooseVideo() } label: { icon("folder") }
+                    .help(model.media.map { "打开视频 · 当前：\($0.title)" } ?? "打开视频")
+                    .accessibilityLabel("打开视频").accessibilityIdentifier("open-video")
                 Spacer(minLength: 0)
                 action(.previousSentence, "backward.end")
                 action(.backward, "gobackward.5")
@@ -241,19 +216,20 @@ struct PlaybackControls: View {
                     Image(systemName: model.paused ? "play.fill" : "pause.fill").font(.system(size: 18))
                         .foregroundStyle(.black).frame(width: 44, height: 36)
                         .background(Palette.accent, in: RoundedRectangle(cornerRadius: 10))
-                }.disabled(!model.canPlay).help(model.help(.playPause)).accessibilityIdentifier("action-playPause")
+                }.disabled(!model.canPlay).help((model.paused ? "播放" : "暂停") + " · " + model.help(.playPause)).accessibilityIdentifier("action-playPause")
                 action(.forward, "goforward.5")
                 action(.nextSentence, "forward.end")
                 action(.toggleSentenceLoop, "repeat.1", active: model.sentenceLoop != nil)
                 Spacer(minLength: 0)
                }
+               toolLayout {
                HStack(spacing: compact ? 4 : 8) {
                 if compact { Spacer(minLength: 0) }
                 Button { model.playerPopover = .subtitles } label: { icon("captions.bubble") }
-                    .help("字幕显示、导入、搜索与全文").accessibilityIdentifier("subtitle-menu")
+                    .help("字幕：\(model.preferences.subtitleDisplay.title) · 显示、导入、搜索与全文").accessibilityIdentifier("subtitle-menu")
                     .popover(isPresented: popover(.subtitles)) { SubtitleMenuPanel(model: model) }
                 Button { model.playerPopover = .speed } label: { Text("\(model.speed.formatted())×").font(.system(size: 12)).frame(width: 32, height: 32) }
-                    .help("播放速度").popover(isPresented: popover(.speed)) {
+                    .help("播放速度：\(model.speed.formatted())×").accessibilityIdentifier("speed-control").popover(isPresented: popover(.speed)) {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("播放速度").font(.headline).padding(.bottom, 6)
                             ForEach(AppModel.speedSteps, id: \.self) { value in
@@ -275,20 +251,26 @@ struct PlaybackControls: View {
                                 Text("音量 \(Int(playback.volume.rounded()))%").monospacedDigit()
                             }.font(.headline)
                             Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...100).frame(width: 180)
-                                .accessibilityLabel("音量").accessibilityIdentifier("volume-slider")
+                                .accessibilityLabel("音量").accessibilityIdentifier("volume-slider").help("调整音量，当前 \(Int(playback.volume.rounded()))%")
                         }.padding(20)
                     }
                 Button { model.openSidebar(.queue) } label: { icon("list.bullet", active: !model.preferences.sidebarCollapsed && model.sidebarTab == .queue) }
-                    .help("展开播放列表").accessibilityIdentifier("open-queue")
+                    .help(!model.preferences.sidebarCollapsed && model.sidebarTab == .queue ? "播放列表已展开" : "展开播放列表").accessibilityIdentifier("open-queue")
                 Button { model.perform(.toggleSidebarVisibility) } label: { icon("sidebar.right", active: !model.preferences.sidebarCollapsed) }
-                    .help(model.help(.toggleSidebarVisibility)).accessibilityIdentifier("toggle-sidebar")
+                    .help((model.preferences.sidebarCollapsed ? "展开侧栏" : "收起侧栏") + " · " + model.help(.toggleSidebarVisibility)).accessibilityIdentifier("toggle-sidebar")
+                if compact { Spacer(minLength: 0) }
+               }
+               HStack(spacing: compact ? 4 : 8) {
+                if compact { Spacer(minLength: 0) }
+                WindowToolButtons(model: model)
                 Button { model.showSubtitleControls = true } label: {
                     icon("slider.horizontal.3").overlay(alignment: .topTrailing) {
                         if model.alignmentTaskStatus.canRetry { Circle().fill(.orange).frame(width: 5, height: 5) }
                     }
-                }.help("播放设置").accessibilityIdentifier("quick-settings")
+                }.help(model.alignmentTaskStatus.canRetry ? "播放设置：逐词任务可重试" : "播放设置").accessibilityIdentifier("quick-settings")
                     .popover(isPresented: $model.showSubtitleControls) { SubtitleControls(model: model) }
                 if compact { Spacer(minLength: 0) }
+               }
                }
             }.buttonStyle(.plain).foregroundStyle(.white.opacity(0.9))
         }
@@ -301,12 +283,15 @@ struct PlaybackControls: View {
     private var buttonLayout: AnyLayout {
         compact ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
     }
+    private var toolLayout: AnyLayout {
+        narrow ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
+    }
     private func icon(_ name: String, active: Bool = false) -> some View {
         Image(systemName: name).font(.system(size: 16)).foregroundStyle(active ? Palette.accent : .white.opacity(0.9)).frame(width: 28, height: 32)
     }
     private func action(_ action: PlayerAction, _ symbol: String, active: Bool = false) -> some View {
         Button { model.perform(action) } label: { icon(symbol, active: active) }
-            .disabled(!model.canPerform(action)).help(model.help(action)).accessibilityIdentifier("action-" + action.rawValue)
+            .disabled(!model.canPerform(action)).help(action == .toggleSentenceLoop ? (model.sentenceLoop == nil ? "开启单句循环 · " : "关闭单句循环 · ") + model.help(action) : model.help(action)).accessibilityIdentifier("action-" + action.rawValue)
     }
     private func popover(_ value: PlayerPopover) -> Binding<Bool> {
         Binding(get: { model.playerPopover == value }, set: { if !$0 && model.playerPopover == value { model.playerPopover = nil } })
@@ -462,11 +447,6 @@ struct SubtitleControls: View {
     }
     private var timingControls: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Toggle("无黑边", isOn: Binding(get: { viewing.fitVideoWindow }, set: { viewing.setFitVideoWindow($0) }))
-                .toggleStyle(.switch).controlSize(.small).accessibilityIdentifier("fit-video-window")
-            Text("非全屏时，窗口随视频比例缩放，完整显示画面。影片本身的黑边保持不变。")
-                .font(.caption).foregroundStyle(.secondary)
-            Divider()
             HStack {
                 Label(model.subtitleOffsetStatus, systemImage: model.pendingSubtitleOffsets.isEmpty ? "checkmark.circle" : "clock")
                     .foregroundStyle(model.pendingSubtitleOffsets.isEmpty ? Palette.accent : .orange)
