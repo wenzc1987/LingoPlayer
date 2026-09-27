@@ -1,0 +1,310 @@
+{
+  "checks" : [
+    {
+      "detail" : "",
+      "name" : "screenshot_empty",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "video_loaded",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "notice_expires_and_repeated_failure_stays_quiet",
+      "passed" : true
+    },
+    {
+      "detail" : "video=(1260.0, 800.0), content=(1260.0, 800.0)",
+      "name" : "video_fills_content_without_reserved_bars",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_paused",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "title_visible_with_controls",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "paused_controls_stay_visible",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "blank_click_hides_without_playing",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "title_hides_with_controls",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_immersive",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "volume_shortcut_feedback_without_revealing_controls",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_volume-hidden",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "repeated_shortcut_replaces_feedback_and_restarts_expiry",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "feedback_expires_without_changing_hidden_controls",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "volume_feedback_respects_upper_bound",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "zero_volume_feedback_is_muted",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "speed_shortcut_reports_current_rate",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_speed-feedback",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "forward_shortcut_reports_delta_and_position",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_seek-feedback",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "backward_shortcut_reports_negative_delta",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "seek_boundary_reports_actual_change",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "subtitle_shortcut_reports_result",
+      "passed" : true
+    },
+    {
+      "detail" : "visible=true, paused=true, holds=[]",
+      "name" : "blank_click_reveals_without_playing",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "visible_toolbar_volume_updates_with_feedback",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_volume-visible",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "toolbar_queue_opens_shared_sidebar",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_queue",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_transcript",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "transcript_uses_same_sidebar",
+      "passed" : true
+    },
+    {
+      "detail" : "clicked=true, locked=true, collapsed=false, tab=learning",
+      "name" : "floating_word_click_pauses_and_opens_learning",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_learning",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "continue_keeps_sidebar_and_unfolded_tab",
+      "passed" : true
+    },
+    {
+      "detail" : "paused=false, holds=[]",
+      "name" : "playing_controls_auto_hide",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "word_remains_clickable_with_controls_hidden",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "toolbar_settings_opens_popover",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "configuration_prevents_auto_hide",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_settings",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "native_subtitle_stepper_changes_draft_by_tenth",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "legacy_precise_offset_is_preserved_until_adjustment",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "legacy_offset_steps_from_displayed_tenth",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "subtitle_offsets_wait_for_last_adjustment",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_settings_popup_0",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "subtitle_offsets_apply_after_one_second_even_when_closed",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "debounced_subtitle_offsets_persist",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "returning_offset_to_original_cancels_pending_work",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "reprepare_button_preserves_pending_offsets_and_delay",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "offsets_still_apply_after_reprepare_button",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "offsets_after_reprepare_are_persisted",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "hidden_subtitles_do_not_resize_video",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_minimum",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "minimum_window_keeps_control_actions_available",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "long_subtitle_wraps_below_controls",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_long-subtitle",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "native_fullscreen",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "screenshot_fullscreen",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "loading_media_clears_old_feedback_and_offset_drafts",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "old_offset_draft_does_not_apply_to_loaded_media",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "shutdown_flushes_draft_without_rounding_untouched_offset",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "shutdown_saves_both_pending_offsets_and_playback_state",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "repeated_shutdown_keeps_flushed_offsets",
+      "passed" : true
+    }
+  ],
+  "passed" : true
+}

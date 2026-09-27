@@ -167,6 +167,18 @@ import PlayerCore
             model.scheduleSubtitleOffset(oldEnglishOffset + 0.1, language: .english)
             model.scheduleSubtitleOffset(oldEnglishOffset, language: .english)
             record("returning_offset_to_original_cancels_pending_work", model.pendingSubtitleOffsets.isEmpty)
+            model.showSubtitleControls = true; await delay()
+            model.scheduleSubtitleOffset(-0.3, language: .english)
+            model.scheduleSubtitleOffset(0.2, language: .chinese)
+            let reprepareClicked = await clickButton("reprepare-alignment")
+            record("reprepare_button_preserves_pending_offsets_and_delay", reprepareClicked && model.englishOffset == oldEnglishOffset && model.chineseOffset == oldChineseOffset && model.pendingSubtitleOffsets[.english] == -0.3 && model.pendingSubtitleOffsets[.chinese] == 0.2)
+            await delay(0.8)
+            record("offsets_still_apply_after_reprepare_button", model.englishOffset == -0.3 && model.chineseOffset == 0.2 && model.pendingSubtitleOffsets.isEmpty)
+            await model.store?.flush()
+            let reprepareOffsets = try? await model.store?.load(SavedPlayback.self, key: model.media!.key, table: "playback")
+            record("offsets_after_reprepare_are_persisted", reprepareOffsets?.englishOffset == -0.3 && reprepareOffsets?.chineseOffset == 0.2)
+            model.showSubtitleControls = false
+            model.setOffset(oldEnglishOffset, language: .english); model.setOffset(oldChineseOffset, language: .chinese)
             if model.endGate.wantsPlayback { model.togglePlayback() }
             model.setSidebarCollapsed(true); model.setSubtitleDisplay(.hidden); await delay()
             record("hidden_subtitles_do_not_resize_video", model.videoView.bounds.size == stage)
@@ -196,6 +208,23 @@ import PlayerCore
             record("loading_media_clears_old_feedback_and_offset_drafts", model.chrome.feedback == nil && model.pendingSubtitleOffsets.isEmpty)
             _ = await wait { model.playbackReady }; await delay(1.2)
             record("old_offset_draft_does_not_apply_to_loaded_media", model.englishOffset == oldEnglishOffset)
+            // Use the application's real shutdown and storage paths. The final
+            // NSApp termination will prepare shutdown again, so it must be safe
+            // to repeat without overwriting the flushed draft with old values.
+            model.setOffset(0.25, language: .english)
+            model.scheduleSubtitleOffset(0.2, language: .chinese)
+            await model.prepareShutdown()
+            let partialShutdown = try? await model.store?.load(SavedPlayback.self, key: model.media!.key, table: "playback")
+            record("shutdown_flushes_draft_without_rounding_untouched_offset", partialShutdown?.englishOffset == 0.25 && partialShutdown?.chineseOffset == 0.2)
+            let shutdownPosition = model.position, shutdownTail = model.sentenceTailPadding
+            model.scheduleSubtitleOffset(-0.3, language: .english)
+            model.scheduleSubtitleOffset(0.4, language: .chinese)
+            await model.prepareShutdown()
+            let shutdownOffsets = try? await model.store?.load(SavedPlayback.self, key: model.media!.key, table: "playback")
+            record("shutdown_saves_both_pending_offsets_and_playback_state", shutdownOffsets?.englishOffset == -0.3 && shutdownOffsets?.chineseOffset == 0.4 && shutdownOffsets?.position == shutdownPosition && shutdownOffsets?.sentenceTailPadding == shutdownTail && model.pendingSubtitleOffsets.isEmpty)
+            await delay(1.1); await model.prepareShutdown()
+            let repeatedShutdown = try? await model.store?.load(SavedPlayback.self, key: model.media!.key, table: "playback")
+            record("repeated_shutdown_keeps_flushed_offsets", repeatedShutdown?.englishOffset == -0.3 && repeatedShutdown?.chineseOffset == 0.4 && model.englishOffset == -0.3 && model.chineseOffset == 0.4)
         }
         let result: [String: Any] = ["passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "checks": checks]
         try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]).write(to: output.appendingPathComponent("chrome.json"))

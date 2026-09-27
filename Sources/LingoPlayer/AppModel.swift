@@ -640,8 +640,13 @@ final class AppModel: ObservableObject {
         lastSavedAt = Date()
     }
     func prepareShutdown() async {
+        player.onUpdate = nil; player.pause(true)
+        // Preserve the last values the user selected without starting new
+        // transcript/alignment work while the application is shutting down.
+        if let value = pendingSubtitleOffsets[.english] { englishOffset = value }
+        if let value = pendingSubtitleOffsets[.chinese] { chineseOffset = value }
         cancelPendingSubtitleOffsets(); chrome.resetFeedback()
-        savePlayback(); player.onUpdate = nil; player.pause(true)
+        savePlayback()
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
         await aligner.waitForCancellation(); await store?.flush()
     }

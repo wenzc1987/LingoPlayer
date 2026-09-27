@@ -440,7 +440,8 @@ struct SubtitleControls: View {
                 }
             }
             Text(model.subtitleStatus).font(.caption).foregroundStyle(.secondary)
-            Button("重新准备逐词高亮") { model.setOffset(model.englishOffset, language: .english) }
+            Button("重新准备逐词高亮") { model.restartAlignment() }
+                .accessibilityIdentifier("reprepare-alignment")
             Divider()
             Text(model.practiceMessage.isEmpty ? model.alignmentStatus : model.practiceMessage)
                 .font(.caption).foregroundStyle(.secondary).lineLimit(3)
