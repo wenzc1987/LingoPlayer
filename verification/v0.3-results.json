@@ -1,0 +1,703 @@
+{
+  "date": "2026-09-26",
+  "version": "0.3.0",
+  "build": "3",
+  "platform": "macOS-15.8-x86_64-i386-64bit",
+  "binary_sha256": "c9eab3228256666192718e794d8102333b6b8cbb568fefa8bbcbc9c7300a7813",
+  "codesign_verified": true,
+  "unit_tests": {
+    "swift_passed": 50,
+    "swift_total": 50,
+    "python_passed": 6,
+    "python_total": 6
+  },
+  "gui_checks_total": 126,
+  "gui_groups": {
+    "practice": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "v02_custom_bindings_win_new_default_conflicts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "independent_files_overlap_and_unmatched_chinese",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "literal_case_insensitive_search",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_search_returns_both_overlaps",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "literal_no_results",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "return_current_clears_search_and_resumes_following",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timestamp_navigation_preserves_pause_and_locked_card",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continuous_loop_plays_and_preserves_locked_card",
+          "passed": true
+        },
+        {
+          "detail": "position=0.20833333333333331 → 0.20833333333333331, loops=3 → 3",
+          "name": "pause_preserves_loop_and_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "next_sentence_retargets_paused_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "previous_sentence_retargets_paused_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timestamp_retargets_existing_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toggle_off_preserves_position_and_pause",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "gap_disables_toolbar_loop_but_row_can_start",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_learning_exits_loop_and_unlocks",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "one_shot_exits_loop_and_pauses_with_card",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "scrub_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "five_second_jump_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_offset_keeps_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "english_offset_exits_loop_and_updates_jump",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "loop_uses_english_offset",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "audio_selection_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "iterations=20, position=7.6, ",
+          "name": "twenty_tail_loops_at_double_speed_never_autoplay_or_finish",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "old_loop_seek_result_is_ignored",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_shortcut_cycles_to_english_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_mode_preserves_learning_and_video_geometry",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "bilingual_restores_without_geometry_change",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "search_field_keeps_player_shortcuts_native",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_blocks_new_actions",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_shortcut_starts_loop_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_shortcuts_share_loop_and_display_state",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "bilingual_replacement_resets_loop_search_and_browsing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "rapid_media_switch_clears_loop_and_stale_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "five_thousand_rows_prepare_and_search",
+          "passed": true
+        },
+        {
+          "detail": "following=false, origin=(0.0, 533753.0) → (0.0, 533753.0)",
+          "name": "native_manual_scroll_stops_automatic_follow",
+          "passed": true
+        },
+        {
+          "detail": "visible cell views=5",
+          "name": "native_table_virtualizes_large_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "return_current_scrolls_native_table_back",
+          "passed": true
+        },
+        {
+          "detail": "clock delta=2.1666666666666665, maximum main actor gap=0.26878809928894043",
+          "name": "playback_advances_during_search_and_scroll_without_rebuild",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_only_navigation_and_disabled_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_only_timestamp_preserves_pause",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 27.669343948364258,
+      "metrics": {
+        "main_actor_max_gap_seconds": 0.26878809928894043,
+        "tail_loop_iterations": 20,
+        "transcript_5000_prepare_seconds": 0.2424999475479126,
+        "transcript_5000_search_seconds_including_debounce": 0.2850910425186157
+      },
+      "passed": true,
+      "version": "0.3.0"
+    },
+    "practice_restore": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "restart_paused_with_display_preference_and_no_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_resets_search_and_following",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new_action_custom_bindings_restore",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_keeps_queue_and_unfinished_progress",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 1.2081480026245117,
+      "metrics": {},
+      "passed": true,
+      "version": "0.3.0"
+    },
+    "interaction": {
+      "checks": [
+        {
+          "detail": "974 lime pixels",
+          "name": "finder_icon_resolves_lime_artwork",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "app_version_and_dock_icon_packaged",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_about_window_opens",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "multi_file_drop_decodes_all_urls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "batch_natural_sort_dedup_and_first_play",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_window_shortcut_toggles_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "add_does_not_interrupt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reorder_preserves_current",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_noncurrent_keeps_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_current_plays_original_successor",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clear_stops_and_clears_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorder_conflict_preserves_existing_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorder_escape_cancels",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clear_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorded_binding_updates_menu_immediately",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_all_defaults",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_sheet_blocks_player_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "marked_text_and_editing_keep_native_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "popover_blocks_navigation_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detach_selects_queue_tab",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_window_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "close_detached_restores_learning_tab",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sidebar_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sidebar_three_tab_cycle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sentence_navigation_offset_gap_preserves_lock_pause",
+          "passed": true
+        },
+        {
+          "detail": "已跳过：Episode4.mp4（文件缺失或无法读取）",
+          "name": "natural_eof_skips_unavailable_and_advances_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "natural_finish_remembered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "queue_tail_stops_without_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "completed_video_reopens_from_start",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "scrub_to_end_does_not_autoplay",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sentence_replay_at_eof_never_autoplays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_last_current_stops",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "all_unavailable_stop_with_message",
+          "passed": true
+        },
+        {
+          "detail": "Episode2.en.srt",
+          "name": "rapid_switch_filters_old_media_and_subtitles",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "autoplay_off_stays_on_current",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_position_saved_for_restart",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 16.109122037887573,
+      "passed": true,
+      "version": "0.3.0"
+    },
+    "queue_restore": {
+      "checks": [
+        {
+          "detail": "position=1.25, paused=true, items=[\"Episode10.mp4\", \"Episode2.mp4\", \"Episode1.mp4\"]",
+          "name": "restart_restores_order_current_and_position_paused",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_stays_paused_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "shortcuts_and_autoplay_restore_in_new_process",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 1.6198599338531494,
+      "passed": true,
+      "version": "0.3.0"
+    },
+    "mp4": {
+      "alignment_status": "逐词模型未就绪 · 可点词查阅",
+      "checks": [
+        {
+          "detail": "英文 5 句 · 中文 5 句",
+          "name": "video_opens_with_real_renderer_and_english_subtitles",
+          "passed": true
+        },
+        {
+          "detail": "7",
+          "name": "rendered_video_frames",
+          "passed": true
+        },
+        {
+          "detail": "clear.en.srt / clear.zh.srt",
+          "name": "bilingual_subtitles_discovered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "click_word_pauses_and_locks",
+          "passed": true
+        },
+        {
+          "detail": "concord",
+          "name": "real_ecdict_lookup",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "normal_play_preserves_locked_word",
+          "passed": true
+        },
+        {
+          "detail": "position=3.5416666666666665, end=3.505",
+          "name": "replay_sentence_stops_at_boundary",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_window_shares_selection",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "closing_learning_window_restores_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_learning_unlocks_and_plays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "seek_and_speed_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_offset_keeps_english_visible",
+          "passed": true
+        },
+        {
+          "detail": "157 words; 逐词准备完成 · 5 句可用",
+          "name": "local_mfa_alignment_produces_words",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "playback_clock_drives_word_highlight",
+          "passed": true
+        },
+        {
+          "detail": "12684 colored samples",
+          "name": "actual_gl_framebuffer_contains_video",
+          "passed": true
+        },
+        {
+          "detail": "0.004822969436645508 seconds",
+          "name": "reopening_alignment_reuses_cache",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offset_change_invalidates_word_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "model_unavailable_keeps_playback_running",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new_video_clears_old_subtitles_and_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "missing_subtitles_do_not_stop_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "manual_bilingual_ass_import",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 43.00135803222656,
+      "passed": true,
+      "subtitle_status": "英文 5 句 · 中文 5 句"
+    },
+    "mkv": {
+      "alignment_status": "逐词模型未就绪 · 可点词查阅",
+      "checks": [
+        {
+          "detail": "英文 5 句 · 中文 5 句",
+          "name": "video_opens_with_real_renderer_and_english_subtitles",
+          "passed": true
+        },
+        {
+          "detail": "15",
+          "name": "rendered_video_frames",
+          "passed": true
+        },
+        {
+          "detail": "embedded-3.srt / embedded-4.srt",
+          "name": "bilingual_subtitles_discovered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "click_word_pauses_and_locks",
+          "passed": true
+        },
+        {
+          "detail": "concord",
+          "name": "real_ecdict_lookup",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "normal_play_preserves_locked_word",
+          "passed": true
+        },
+        {
+          "detail": "position=3.564, end=3.569",
+          "name": "replay_sentence_stops_at_boundary",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_window_shares_selection",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "closing_learning_window_restores_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_learning_unlocks_and_plays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "seek_and_speed_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_offset_keeps_english_visible",
+          "passed": true
+        },
+        {
+          "detail": "157 words; 逐词准备完成 · 5 句可用",
+          "name": "local_mfa_alignment_produces_words",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "playback_clock_drives_word_highlight",
+          "passed": true
+        },
+        {
+          "detail": "12678 colored samples",
+          "name": "actual_gl_framebuffer_contains_video",
+          "passed": true
+        },
+        {
+          "detail": "0.004941105842590332 seconds",
+          "name": "reopening_alignment_reuses_cache",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offset_change_invalidates_word_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "audio_change_invalidates_word_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "model_unavailable_keeps_playback_running",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new_video_clears_old_subtitles_and_timings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "missing_subtitles_do_not_stop_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "manual_bilingual_ass_import",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 41.752098083496094,
+      "passed": true,
+      "subtitle_status": "英文 5 句 · 中文 5 句"
+    }
+  },
+  "pending_acceptance": [
+    "真实影视三类场景至少 100 词人工起点标注及 ±200 ms / 90% 目标",
+    "OpenSubtitles 用户授权配置下的线上搜索与下载联调",
+    "实体第二显示器布局及第三方输入法人工遍历"
+  ]
+}

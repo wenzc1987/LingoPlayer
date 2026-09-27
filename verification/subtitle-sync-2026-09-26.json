@@ -1,0 +1,339 @@
+{
+  "date": "2026-09-26",
+  "media_title": "The Shawshank Redemption (1994) RM4K (1080p BluRay x265 afm72)",
+  "subtitle_sha256": "7d8139b60312f981563aaa54b28bb5e1ec64b1284675447fa2fe47251d3a2119",
+  "saved_offsets": {
+    "english": 0,
+    "chinese": 0
+  },
+  "external_cue": {
+    "id": "cue-799-en",
+    "text": "Why don't we have a seat and talk it over.",
+    "start": 3234.51,
+    "end": 3237.48
+  },
+  "embedded_pgs_cue": {
+    "stream": 3,
+    "start": 3233.313,
+    "end": 3236.275,
+    "verified_frame": "embedded-09.png"
+  },
+  "wide_window": {
+    "id": "screenshot-wide",
+    "start": 3232,
+    "end": 3237.8,
+    "tokens": [
+      {
+        "id": 0,
+        "text": "Why",
+        "isWord": true
+      },
+      {
+        "id": 2,
+        "text": "don't",
+        "isWord": true
+      },
+      {
+        "id": 4,
+        "text": "we",
+        "isWord": true
+      },
+      {
+        "id": 6,
+        "text": "have",
+        "isWord": true
+      },
+      {
+        "id": 8,
+        "text": "a",
+        "isWord": true
+      },
+      {
+        "id": 10,
+        "text": "seat",
+        "isWord": true
+      },
+      {
+        "id": 12,
+        "text": "and",
+        "isWord": true
+      },
+      {
+        "id": 14,
+        "text": "talk",
+        "isWord": true
+      },
+      {
+        "id": 16,
+        "text": "it",
+        "isWord": true
+      },
+      {
+        "id": 18,
+        "text": "over",
+        "isWord": true
+      }
+    ]
+  },
+  "wide_alignment": {
+    "words": [
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 0,
+        "start": 3233.4899999856952,
+        "end": 3233.6000000000004
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 2,
+        "start": 3233.6000000000004,
+        "end": 3233.7399999856952
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 4,
+        "start": 3233.7399999856952,
+        "end": 3233.8200000286106
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 6,
+        "start": 3233.8200000286106,
+        "end": 3233.9800001144413
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 8,
+        "start": 3233.9800001144413,
+        "end": 3234.1399999618534
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 10,
+        "start": 3234.1399999618534,
+        "end": 3234.8200000286106
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 12,
+        "start": 3234.8200000286106,
+        "end": 3234.9800001144413
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 14,
+        "start": 3234.9800001144413,
+        "end": 3235.2400001049045
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 16,
+        "start": 3235.2400001049045,
+        "end": 3235.300000047684
+      },
+      {
+        "cueID": "screenshot-wide",
+        "tokenIndex": 18,
+        "start": 3235.300000047684,
+        "end": 3235.500000095368
+      }
+    ],
+    "completed": [
+      "screenshot-wide"
+    ],
+    "failures": {},
+    "elapsed": 20.6777373799996,
+    "peakMemoryMB": 390.3984375
+  },
+  "original_and_shifted_alignment": {
+    "words": [
+      {
+        "cueID": "original",
+        "tokenIndex": 0,
+        "start": 3234.590000004173,
+        "end": 3234.700000003577
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 2,
+        "start": 3234.700000003577,
+        "end": 3235.0099999761587
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 4,
+        "start": 3235.0499999976164,
+        "end": 3235.119999990464
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 6,
+        "start": 3235.119999990464,
+        "end": 3235.1700000023848
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 8,
+        "start": 3235.1700000023848,
+        "end": 3235.2100000238424
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 10,
+        "start": 3235.2100000238424,
+        "end": 3235.2999999976164
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 12,
+        "start": 3235.2999999976164,
+        "end": 3237.41999994278
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 14,
+        "start": 3237.44999991417,
+        "end": 3237.540000066758
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 16,
+        "start": 3237.540000066758,
+        "end": 3237.5700000381476
+      },
+      {
+        "cueID": "original",
+        "tokenIndex": 18,
+        "start": 3237.5700000381476,
+        "end": 3237.6300000000006
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 0,
+        "start": 3233.490000013114,
+        "end": 3233.5999999976166
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 2,
+        "start": 3233.5999999976166,
+        "end": 3233.7399999833115
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 4,
+        "start": 3233.7399999833115,
+        "end": 3233.820000026227
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 6,
+        "start": 3233.820000026227,
+        "end": 3233.979999992848
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 8,
+        "start": 3233.979999992848,
+        "end": 3234.1400000190743
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 10,
+        "start": 3234.1400000190743,
+        "end": 3234.819999966622
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 12,
+        "start": 3234.819999966622,
+        "end": 3234.980000052453
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 14,
+        "start": 3234.980000052453,
+        "end": 3235.239999923707
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 16,
+        "start": 3235.239999923707,
+        "end": 3235.300000104905
+      },
+      {
+        "cueID": "offset-minus-1.2",
+        "tokenIndex": 18,
+        "start": 3235.300000104905,
+        "end": 3235.49999991417
+      }
+    ],
+    "completed": [
+      "original",
+      "offset-minus-1.2"
+    ],
+    "failures": {},
+    "elapsed": 18.675694003002718,
+    "peakMemoryMB": 419.921875
+  },
+  "note": "Forced alignment estimates are not manual phonetic annotation. PGS boundaries independently confirm source subtitle timing mismatch. Only the screenshot passage is calibrated.",
+  "native_replay": {
+    "loaded": true,
+    "startup_error": "",
+    "runs": [
+      {
+        "cue_end": 3237.48,
+        "cue_start": 3234.51,
+        "offset": 0,
+        "replay_finished": true,
+        "requested_end": 3237.48,
+        "requested_start": 3234.51,
+        "seek_confirmation_ms": 524.5360169938067,
+        "settled": true,
+        "stopped_position": 3237.484,
+        "first_stable_sample_position": 3234.565,
+        "first_stable_sample_difference_ms": 54.99999999983629,
+        "maximum_sample_delivery_ms": 275.6094270007452,
+        "median_sample_delivery_ms": 13.655043003382161,
+        "maximum_absolute_av_sync_seconds": 0.0001224639944608641,
+        "stable_sample_count": 72
+      },
+      {
+        "cue_end": 3237.48,
+        "cue_start": 3234.51,
+        "offset": 0,
+        "replay_finished": true,
+        "requested_end": 3237.48,
+        "requested_start": 3234.51,
+        "seek_confirmation_ms": 200.28592500602826,
+        "settled": true,
+        "stopped_position": 3237.484,
+        "first_stable_sample_position": 3234.565,
+        "first_stable_sample_difference_ms": 54.99999999983629,
+        "maximum_sample_delivery_ms": 185.01286499667913,
+        "median_sample_delivery_ms": 0.38792450504843146,
+        "maximum_absolute_av_sync_seconds": 0.01065410233745509,
+        "stable_sample_count": 72
+      },
+      {
+        "cue_end": 3237.48,
+        "cue_start": 3234.51,
+        "offset": -1.2,
+        "replay_finished": true,
+        "requested_end": 3236.28,
+        "requested_start": 3233.3100000000004,
+        "seek_confirmation_ms": 553.7208959867712,
+        "settled": true,
+        "stopped_position": 3236.316,
+        "first_stable_sample_position": 3233.355,
+        "first_stable_sample_difference_ms": 44.99999999961801,
+        "maximum_sample_delivery_ms": 154.5472440047888,
+        "median_sample_delivery_ms": 1.4973924990044907,
+        "maximum_absolute_av_sync_seconds": 0.010680227995707475,
+        "stable_sample_count": 70
+      }
+    ],
+    "measurement_note": "First stable sample is sampled during resumed playback, not an exact measurement of the decoder seek error. seek_confirmation_ms includes scheduling latency in the diagnostic task. Native test uses the current app sources and an isolated, muted temporary state directory."
+  },
+  "diagnostic_workspace": "/tmp/lingoplayer-sync-check"
+}

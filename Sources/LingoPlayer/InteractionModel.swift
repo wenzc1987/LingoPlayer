@@ -1,7 +1,10 @@
 import AppKit
 import PlayerCore
 
-enum SidebarTab: String, CaseIterable { case learning = "学习", queue = "播放列表" }
+enum SidebarTab: String, CaseIterable {
+    case learning = "学习", transcript = "字幕", queue = "播放列表"
+    var next: Self { Self.allCases[(Self.allCases.firstIndex(of: self)! + 1) % Self.allCases.count] }
+}
 
 @MainActor
 extension AppModel {
@@ -9,24 +12,47 @@ extension AppModel {
     static var preferenceURL: URL { RuntimeSettings.supportDirectory.appendingPathComponent("interaction.json") }
     func loadInteractionState() {
         if let data = try? Data(contentsOf: Self.preferenceURL), let value = try? JSONDecoder().decode(InteractionPreferences.self, from: data) { preferences = value }
-        queueState = (try? store?.load(PlaybackQueue.self, key: "main", table: "queue")) ?? PlaybackQueue()
-        for item in queueState.items {
-            if let value = try? store?.load(PlaybackProgress.self, key: item.id, table: "progress") { progress[item.id] = value }
+        if !preferences.conflictNotices.isEmpty {
+            shortcutMessage = "新动作与已有快捷键冲突，已保留旧绑定。请为以下动作设置快捷键：" + preferences.conflictNotices.compactMap { PlayerAction(rawValue: $0)?.title }.joined(separator: "、")
+        }
+        stateTask = Task { [weak self] in
+            guard let self else { return }
+            if let state = try? await store?.read({ db -> (PlaybackQueue, [String: PlaybackProgress]) in
+                let queue = try db.load(PlaybackQueue.self, key: "main", table: "queue") ?? PlaybackQueue()
+                var progress: [String: PlaybackProgress] = [:]
+                for item in queue.items { progress[item.id] = try db.load(PlaybackProgress.self, key: item.id, table: "progress") }
+                return (queue, progress)
+            }) { queueState = state.0; progress = state.1; lastPersistedQueue = state.0 }
+            interactionReady = true
         }
     }
     func restoreQueue() {
-        if let current = queueState.currentID { playQueueItem(current, restoring: true) }
+        Task { await stateTask?.value; if let current = queueState.currentID { playQueueItem(current, restoring: true) } }
     }
     func persistQueue() {
-        do { try store?.save(queueState, key: "main", table: "queue") }
-        catch { queueMessage = "列表保存失败：\(error.localizedDescription)" }
+        guard queueState != lastPersistedQueue else { return }
+        lastPersistedQueue = queueState; store?.save(queueState, key: "main", table: "queue")
     }
     @discardableResult func updatePreferences(_ updated: InteractionPreferences) -> Bool {
-        do {
-            try FileManager.default.createDirectory(at: RuntimeSettings.supportDirectory, withIntermediateDirectories: true)
-            try JSONEncoder().encode(updated).write(to: Self.preferenceURL, options: .atomic)
-            preferences = updated; onShortcutsChanged?(); return true
-        } catch { shortcutMessage = "设置保存失败：\(error.localizedDescription)"; queueMessage = shortcutMessage; return false }
+        guard preferences != updated else { return true }
+        let bindingsChanged = PlayerAction.allCases.contains { preferences.shortcut(for: $0) != updated.shortcut(for: $0) }
+        preferences = updated; store?.write(updated, to: Self.preferenceURL)
+        if bindingsChanged { onShortcutsChanged?() }
+        refreshDictionary(); return true
+    }
+    var learningVisible: Bool { !preferences.cardHidden && (isDetached || (!preferences.sidebarCollapsed && sidebarTab == .learning)) }
+    func closeLearningCard() {
+        learning.resumeFollowing(); lookupTask?.cancel(); lookupID = UUID(); dictionaryEntry = nil; lastDictionaryKey = ""
+        var updated = preferences; updated.cardHidden = true; updatePreferences(updated)
+    }
+    func setSidebarCollapsed(_ value: Bool) {
+        var updated = preferences; updated.sidebarCollapsed = value; updatePreferences(updated)
+    }
+    func revealLearningCard() {
+        var updated = preferences; updated.cardHidden = false
+        if !isDetached { updated.sidebarCollapsed = false; sidebarTab = .learning }
+        updatePreferences(updated)
+        if isDetached { onDetach?() }
     }
     func bind(_ shortcut: Shortcut?, to action: PlayerAction) {
         var updated = preferences
@@ -42,18 +68,21 @@ extension AppModel {
     }
     func canPerform(_ action: PlayerAction) -> Bool {
         switch action {
-        case .toggleSidebar: return true
+        case .toggleSidebar, .toggleSidebarVisibility, .cycleSubtitleDisplay: return true
+        case .toggleSentenceLoop: return sentenceLoop != nil || currentLoopCandidate != nil
         case .previousVideo: return queueState.adjacent(-1) != nil
         case .nextVideo: return queueState.adjacent(1) != nil
         case .replaySentence: return playbackReady && selected != nil
         case .previousSentence, .nextSentence:
-            guard playbackReady, let target = SentenceNavigation.target(cues: english, position: position, offset: englishOffset, direction: action == .previousSentence ? -1 : 1) else { return false }
+            guard playbackReady, let target = adjacentSentence(action == .previousSentence ? -1 : 1).map({ max(0, $0.start + englishOffset) }) else { return false }
             return duration <= 0 || target < duration
         default: return playbackReady
         }
     }
     func perform(_ action: PlayerAction) {
         guard canPerform(action) else { return }
+        OperationMetrics.shared.begin(action, model: self)
+        defer { OperationMetrics.shared.end() }
         switch action {
         case .playPause: togglePlayback()
         case .replaySentence: replaySentence()
@@ -61,14 +90,17 @@ extension AppModel {
         case .backward: seek(position - 5)
         case .forward: seek(position + 5)
         case .previousSentence, .nextSentence:
-            if let target = SentenceNavigation.target(cues: english, position: position, offset: englishOffset, direction: action == .previousSentence ? -1 : 1) { seek(target) }
+            navigateAdjacentSentence(action == .previousSentence ? -1 : 1)
         case .volumeDown: setVolume(volume - 5)
         case .volumeUp: setVolume(volume + 5)
         case .slower: setSpeed(Self.speedSteps.last { $0 < speed } ?? Self.speedSteps[0])
         case .faster: setSpeed(Self.speedSteps.first { $0 > speed } ?? Self.speedSteps.last!)
         case .previousVideo, .nextVideo:
             if let next = queueState.adjacent(action == .previousVideo ? -1 : 1) { playQueueItem(next) }
-        case .toggleSidebar: sidebarTab = sidebarTab == .learning ? .queue : .learning
+        case .toggleSidebar: setSidebarCollapsed(false); sidebarTab = sidebarTab.next
+        case .toggleSidebarVisibility: setSidebarCollapsed(!preferences.sidebarCollapsed)
+        case .toggleSentenceLoop: toggleSentenceLoop()
+        case .cycleSubtitleDisplay: setSubtitleDisplay(preferences.subtitleDisplay.next)
         }
     }
     func acceptFiles(_ urls: [URL]) {
@@ -78,6 +110,7 @@ extension AppModel {
         for subtitle in subtitles { importSubtitle(subtitle) }
     }
     func ingest(_ urls: [URL], adding: Bool = false) {
+        guard interactionReady else { Task { await stateTask?.value; ingest(urls, adding: adding) }; return }
         let batch = queueState.append(urls.filter { $0.isFileURL })
         persistQueue()
         if !adding || media == nil, let first = batch.first { playQueueItem(first) }
@@ -123,6 +156,7 @@ extension AppModel {
     func stopMedia() {
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
         sessionID = UUID(); searchID = UUID(); lookupID = UUID(); player.stop()
+        sentenceLoop = nil; practiceMessage = ""; transcript.reset(); seekRevision = 0
         endGate.begin(sessionID, purpose: .normal, playing: false)
         media = nil; position = 0; duration = 0; paused = true; awaitingLoad = false
         queueState.currentID = nil; replayRange = nil; replayArmed = false; seekTarget = nil

@@ -5,7 +5,7 @@ struct RuntimeSettings: Codable {
     var libmpv = ""
     var ffmpeg = ""
     var ffprobe = ""
-    var python = "/usr/bin/python3"
+    var python = ""
     var mfa = ""
     var dictionary = ""
     var acousticModel = "english_mfa"
@@ -30,6 +30,7 @@ struct RuntimeSettings: Codable {
             return candidates.first { FileManager.default.fileExists(atPath: $0) } ?? ""
         }
         let roots = runtimeRoots.map(\.path)
+        settings.python = locate(settings.python, roots.map { $0 + "/aligner/bin/python" } + ["/usr/bin/python3"])
         settings.libmpv = locate(settings.libmpv, [Bundle.main.bundlePath + "/Contents/Frameworks/libmpv.2.dylib"] + roots.map { $0 + "/lib/libmpv.2.dylib" } + ["/opt/homebrew/lib/libmpv.dylib", "/usr/local/lib/libmpv.dylib"])
         settings.ffmpeg = locate(settings.ffmpeg, roots.map { $0 + "/aligner/bin/ffmpeg" } + ["/opt/homebrew/bin/ffmpeg", "/usr/local/bin/ffmpeg"])
         settings.ffprobe = locate(settings.ffprobe, roots.map { $0 + "/aligner/bin/ffprobe" } + ["/opt/homebrew/bin/ffprobe", "/usr/local/bin/ffprobe"])

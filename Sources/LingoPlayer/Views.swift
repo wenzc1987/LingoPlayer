@@ -28,17 +28,31 @@ struct PlayerRootView: View {
                     SubtitleStrip(model: model)
                     PlaybackControls(model: model)
                 }
-                Rectangle().fill(Palette.border).frame(width: 1)
+                Rectangle().fill(Palette.border).frame(width: model.preferences.sidebarCollapsed ? 0 : 1)
                 SidebarPanel(model: model).frame(width: 332)
+                    .frame(width: model.preferences.sidebarCollapsed ? 0 : 332, alignment: .leading).clipped()
+                    .allowsHitTesting(!model.preferences.sidebarCollapsed).accessibilityHidden(model.preferences.sidebarCollapsed)
             }
             footer
         }
         .background(Palette.background)
         .tint(Palette.accent)
+        .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
         .frame(minWidth: 960, minHeight: 610)
         .onDrop(of: [.fileURL], isTargeted: $dropTargeted) { providers in
             FileDropReader.read(providers) { model.acceptFiles($0) }
             return true
+        }
+        .sheet(isPresented: $model.showAlignmentDetails) {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack { Text("逐词任务诊断").font(.headline); Spacer(); Button("关闭") { model.showAlignmentDetails = false } }
+                Text("记录仅保存在本机；最多 20 次、共 20 MB，不保留提取音频。").font(.caption).foregroundStyle(.secondary)
+                ScrollView { Text(model.alignmentDetails).font(.system(size: 11, design: .monospaced)).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
+                HStack {
+                    if let url = model.alignmentTaskStatus.diagnostic { Button("在 Finder 中显示") { NSWorkspace.shared.activateFileViewerSelecting([url]) } }
+                    Spacer(); Button("重新检查并重试") { model.showAlignmentDetails = false; model.retryAlignment() }
+                }
+            }.padding(24).frame(width: 720, height: 480)
         }
         .sheet(isPresented: $model.showSettings) { SettingsPanel(model: model) }
         .sheet(isPresented: $model.showSubtitleSearch) { SubtitleSearchPanel(model: model) }
@@ -76,6 +90,8 @@ struct PlayerRootView: View {
             if model.isDetached {
                 Button { model.onDetach?() } label: { Label("学习窗口", systemImage: "rectangle.on.rectangle") }
             }
+            Button { model.perform(.toggleSidebarVisibility) } label: { Image(systemName: "sidebar.right") }
+                .help(model.help(.toggleSidebarVisibility)).accessibilityIdentifier("toggle-sidebar")
             Button { model.showSettings = true } label: { Image(systemName: "gearshape") }.help("设置与运行环境")
         }
         .buttonStyle(.borderless)
@@ -104,7 +120,9 @@ struct PlayerRootView: View {
     private var footer: some View {
         HStack(spacing: 8) {
             Circle().fill(model.hasRuntime ? Palette.accent : .orange).frame(width: 5, height: 5)
-            Text(model.alignmentStatus).lineLimit(1).help(model.alignmentStatus)
+            Text(model.practiceMessage.isEmpty ? model.alignmentStatus : model.practiceMessage).lineLimit(1).help(model.practiceMessage.isEmpty ? model.alignmentStatus : model.practiceMessage)
+            if model.alignmentTaskStatus.diagnostic != nil { Button("查看详情") { model.viewAlignmentDetails() }.buttonStyle(.borderless) }
+            if model.alignmentTaskStatus.canRetry { Button("重试") { model.retryAlignment() }.buttonStyle(.borderless) }
             Spacer(minLength: 12)
             Text("音频仅在本机处理").foregroundStyle(Palette.muted)
         }
@@ -116,7 +134,15 @@ struct PlayerRootView: View {
 
 struct SubtitleStrip: View {
     @ObservedObject var model: AppModel
+    @ObservedObject var presentation: SubtitlePresentation
+    @ObservedObject var learning: LearningPresentation
+    init(model: AppModel) { self.model = model; presentation = model.subtitles; learning = model.learningPresentation }
     var body: some View {
+        content.opacity(model.preferences.subtitleDisplay == .hidden ? 0 : 1)
+            .allowsHitTesting(model.preferences.subtitleDisplay != .hidden)
+            .accessibilityHidden(model.preferences.subtitleDisplay == .hidden)
+    }
+    private var content: some View {
         VStack(spacing: 8) {
             if model.activeEnglish.isEmpty && model.activeChinese.isEmpty {
                 Text(model.media == nil ? "英文字幕中的单词可以直接点击" : model.english.isEmpty ? "导入英文字幕，开启点词学习" : "等待下一句对白…")
@@ -141,7 +167,7 @@ struct SubtitleStrip: View {
                         }
                     }
                 }
-                if !model.bilingualText.isEmpty { Text(model.bilingualText).font(.system(size: 14)).foregroundStyle(Palette.muted).multilineTextAlignment(.center) }
+                if !model.bilingualText.isEmpty { Text(model.bilingualText).font(.system(size: 14)).foregroundStyle(Palette.muted).multilineTextAlignment(.center).opacity(model.preferences.subtitleDisplay == .bilingual ? 1 : 0).accessibilityHidden(model.preferences.subtitleDisplay != .bilingual) }
             }
         }
         .frame(maxWidth: .infinity, minHeight: 102)
@@ -179,14 +205,16 @@ struct WordWrap: Layout {
 
 struct PlaybackControls: View {
     @ObservedObject var model: AppModel
+    @ObservedObject var playback: PlaybackPresentation
+    init(model: AppModel) { self.model = model; playback = model.playback }
     @State private var seeking = false
     @State private var draft = 0.0
     var body: some View {
         VStack(spacing: 14) {
             HStack(spacing: 12) {
-                Text(clock(seeking ? draft : model.position)).monospacedDigit().frame(width: 52, alignment: .leading)
-                Slider(value: Binding(get: { seeking ? draft : model.position }, set: { draft = $0 }), in: 0...max(1, model.duration), onEditingChanged: { active in
-                    if active { draft = model.position; seeking = true }
+                Text(clock(seeking ? draft : playback.position)).monospacedDigit().frame(width: 52, alignment: .leading)
+                Slider(value: Binding(get: { seeking ? draft : playback.position }, set: { draft = $0 }), in: 0...max(1, model.duration), onEditingChanged: { active in
+                    if active { model.cancelSentenceLoop(); draft = playback.position; seeking = true }
                     else { seeking = false; model.seek(draft) }
                 }).disabled(!model.canPlay)
                 Text(clock(model.duration)).monospacedDigit().frame(width: 52, alignment: .trailing)
@@ -194,28 +222,39 @@ struct PlaybackControls: View {
             HStack(spacing: 16) {
                 Button { model.perform(.previousSentence) } label: { Image(systemName: "backward.end") }
                     .disabled(!model.canPerform(.previousSentence)).help(model.help(.previousSentence))
-                Button { model.perform(.backward) } label: { Image(systemName: "gobackward.5").font(.system(size: 20)) }.help(model.help(.backward))
+                Button { model.perform(.backward) } label: { Image(systemName: "gobackward.5").font(.system(size: 20)) }.help(model.help(.backward)).accessibilityIdentifier("action-backward")
                 Button { model.perform(.playPause) } label: {
                     Image(systemName: model.paused ? "play.fill" : "pause.fill").font(.system(size: 18)).foregroundStyle(.black)
                         .frame(width: 44, height: 38).background(Palette.accent, in: RoundedRectangle(cornerRadius: 12))
-                }.help(model.help(.playPause))
-                Button { model.perform(.forward) } label: { Image(systemName: "goforward.5").font(.system(size: 20)) }.help(model.help(.forward))
+                }.help(model.help(.playPause)).accessibilityIdentifier("action-playPause")
+                Button { model.perform(.forward) } label: { Image(systemName: "goforward.5").font(.system(size: 20)) }.help(model.help(.forward)).accessibilityIdentifier("action-forward")
                 Button { model.perform(.nextSentence) } label: { Image(systemName: "forward.end") }
                     .disabled(!model.canPerform(.nextSentence)).help(model.help(.nextSentence))
-                Spacer()
+                Button { model.perform(.toggleSentenceLoop) } label: {
+                    Image(systemName: "repeat.1").font(.system(size: 18))
+                        .foregroundStyle(model.sentenceLoop != nil ? Palette.accent : .secondary)
+                }.disabled(!model.canPerform(.toggleSentenceLoop)).help(model.help(.toggleSentenceLoop))
+                Spacer(minLength: 4)
+                Menu {
+                    ForEach(SubtitleDisplayMode.allCases, id: \.self) { mode in Button(mode.title) { model.setSubtitleDisplay(mode) } }
+                } label: { Text(model.preferences.subtitleDisplay.title).font(.system(size: 11)) }
+                    .help(model.help(.cycleSubtitleDisplay))
                 Menu {
                     ForEach(AppModel.speedSteps, id: \.self) { value in Button("\(value.formatted())×") { model.setSpeed(value) } }
                 } label: { Text("\(model.speed.formatted())×").monospacedDigit().frame(width: 36) }.help(model.help(.slower) + " / " + model.help(.faster))
                 Image(systemName: "speaker.wave.2").foregroundStyle(Palette.muted)
-                Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...100).frame(width: 80)
+                Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...100).frame(minWidth: 40, idealWidth: 65, maxWidth: 80)
             }.buttonStyle(.plain).disabled(!model.canPlay)
         }.padding(.horizontal, 28).padding(.bottom, 22).padding(.top, 8)
+            .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
     }
 }
 
 struct LearningPanel: View {
     @ObservedObject var model: AppModel
     var detached: Bool
+    @ObservedObject var presentation: LearningPresentation
+    init(model: AppModel, detached: Bool) { self.model = model; self.detached = detached; presentation = model.learningPresentation }
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
@@ -228,11 +267,19 @@ struct LearningPanel: View {
                     Button { model.onDetach?() } label: { Image(systemName: "arrow.up.forward.square") }
                         .buttonStyle(.plain).foregroundStyle(Palette.muted).help("移至独立学习窗口")
                 }
+                if !model.preferences.cardHidden {
+                    Button { model.closeLearningCard() } label: { Image(systemName: "xmark") }
+                        .buttonStyle(.plain).foregroundStyle(Palette.muted).help("关闭词卡 · 点击字幕单词可重新打开")
+                        .accessibilityIdentifier("close-word-card")
+                }
             }.padding(22)
             Rectangle().fill(Palette.border).frame(height: 1)
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
-                    if let selection = model.selected {
+                    if model.preferences.cardHidden {
+                        Text("词卡已关闭\n点击视频字幕中的单词，重新开始学习。")
+                            .font(.system(size: 13)).foregroundStyle(Palette.muted).lineSpacing(7).padding(.top, 30)
+                    } else if model.learningVisible, let selection = model.selected {
                         VStack(alignment: .leading, spacing: 9) {
                             Text("当前单词").font(.system(size: 10, weight: .medium)).foregroundStyle(Palette.muted)
                             Text(selection.token.text).font(.system(size: 34, weight: .semibold, design: .rounded)).foregroundStyle(Palette.accent).textSelection(.enabled)
@@ -272,7 +319,7 @@ struct LearningPanel: View {
             }
             Spacer(minLength: 0)
             VStack(spacing: 10) {
-                if model.learning.isLocked {
+                if !model.preferences.cardHidden && model.learning.isLocked {
                     Button { model.perform(.resumeLearning) } label: {
                         Label("继续学习", systemImage: "play.fill").frame(maxWidth: .infinity).padding(.vertical, 8)
                     }.buttonStyle(.borderedProminent).foregroundStyle(.black).help(model.help(.resumeLearning))

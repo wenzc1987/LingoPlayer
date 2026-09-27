@@ -15,12 +15,21 @@ final class AppModel: ObservableObject {
     @Published var queueState = PlaybackQueue()
     @Published var progress: [String: PlaybackProgress] = [:]
     @Published var preferences = InteractionPreferences()
-    @Published var sidebarTab: SidebarTab = .learning
+    @Published var sidebarTab: SidebarTab = .learning { didSet { if sidebarTab != oldValue { refreshDictionary() } } }
     @Published var recordingAction: PlayerAction?
     @Published var shortcutMessage = ""
     @Published var queueMessage = ""
     var onReattach: (() -> Void)?
     var onShortcutsChanged: (() -> Void)?
+    let transcript = TranscriptController()
+    let playback = PlaybackPresentation()
+    let mediaPresentation = MediaPresentation()
+    let subtitles = SubtitlePresentation()
+    let learningPresentation = LearningPresentation()
+    @Published var sentenceLoop: SentenceLoop?
+    @Published var practiceMessage = ""
+    var loopIterations = 0
+    var seekRevision: UInt64 = 0
     var endGate = PlaybackEndGate()
     var restoring = false
     var completed = false
@@ -29,15 +38,16 @@ final class AppModel: ObservableObject {
     var playbackReady: Bool { media != nil && !awaitingLoad }
     @Published var settings = RuntimeSettings.load()
     @Published var media: MediaIdentity?
-    @Published var position = 0.0
-    @Published var duration = 0.0
-    @Published var paused = true
-    @Published var speed = 1.0
-    @Published var volume = 80.0
-    @Published var english: [SubtitleCue] = []
-    @Published var chinese: [SubtitleCue] = []
-    @Published var activeEnglish: [SubtitleCue] = []
-    @Published var activeChinese: [SubtitleCue] = []
+    var position = 0.0 { didSet { playback.updatePosition(position) } }
+    var duration: Double { get { playback.duration } set { if newValue != playback.duration { playback.duration = newValue; mediaPresentation.duration = newValue } } }
+    var paused: Bool { get { playback.paused } set { if newValue != playback.paused { playback.paused = newValue }; if newValue { playback.updatePosition(position, immediate: true) } } }
+    var speed: Double { get { playback.speed } set { if newValue != playback.speed { playback.speed = newValue } } }
+    var volume: Double { get { playback.volume } set { if newValue != playback.volume { playback.volume = newValue } } }
+    @Published var english: [SubtitleCue] = [] { didSet { englishIndex = TimelineIndex(starts: english.map(\.start), ends: english.map(\.end)) } }
+    @Published var chinese: [SubtitleCue] = [] { didSet { chineseIndex = TimelineIndex(starts: chinese.map(\.start), ends: chinese.map(\.end)) } }
+    var englishIndex = TimelineIndex(), chineseIndex = TimelineIndex(), wordIndex = TimelineIndex()
+    var activeEnglish: [SubtitleCue] { get { subtitles.english } set { if newValue != subtitles.english { subtitles.english = newValue } } }
+    var activeChinese: [SubtitleCue] { get { subtitles.chinese } set { if newValue != subtitles.chinese { subtitles.chinese = newValue } } }
     @Published var englishOffset = 0.0
     @Published var chineseOffset = 0.0
     @Published var englishSource = "未加载"
@@ -46,12 +56,16 @@ final class AppModel: ObservableObject {
     @Published var selectedAudio = -1
     @Published var subtitleOptions: [SubtitleOption] = []
     @Published var subtitleStatus = "打开视频后自动发现字幕"
+    @Published var alignmentTaskStatus = AlignmentTaskStatus(.idle, "")
+    @Published var showAlignmentDetails = false
+    @Published var alignmentDetails = ""
     @Published var alignmentStatus = "导入英文字幕后可准备逐词高亮"
-    @Published var learning = LearningState()
-    @Published var dictionaryEntry: DictionaryEntry?
-    @Published var dictionaryStatus = "词典释义 · ECDICT"
-    @Published var currentWordID: String?
-    @Published var isDetached = false
+    var learningState = LearningState()
+    var learning: LearningState { get { learningState } set { learningState = newValue; if learningVisible && newValue != learningPresentation.state { learningPresentation.state = newValue } } }
+    var dictionaryEntry: DictionaryEntry? { get { learningPresentation.entry } set { if newValue != learningPresentation.entry { learningPresentation.entry = newValue } } }
+    var dictionaryStatus: String { get { learningPresentation.status } set { if newValue != learningPresentation.status { learningPresentation.status = newValue } } }
+    var currentWordID: String? { get { subtitles.wordID } set { if newValue != subtitles.wordID { subtitles.wordID = newValue } } }
+    @Published var isDetached = false { didSet { if oldValue != isDetached { refreshDictionary() } } }
     @Published var showSettings = false
     @Published var settingsPage = 0
     @Published var showSubtitleSearch = false
@@ -70,9 +84,12 @@ final class AppModel: ObservableObject {
     let player: MPVPlayer
     let videoView: MPVVideoView
     let aligner = AlignmentCoordinator()
-    var store: SQLiteStore?
+    var store: StorageWorker?
+    var stateTask: Task<Void, Never>?
+    var interactionReady = false
+    var lastPersistedQueue: PlaybackQueue?
     var dictionary: ECDictionary?
-    var timings: [TimedWord] = []
+    var timings: [TimedWord] = [] { didSet { wordIndex = TimelineIndex(starts: timings.map(\.start), ends: timings.map(\.end)) } }
     var englishPath: String?
     var chinesePath: String?
     var englishDigest = ""
@@ -85,7 +102,7 @@ final class AppModel: ObservableObject {
     var searchID = UUID()
     var lastDictionaryKey = ""
     var lastSavedAt = Date.distantPast
-    var awaitingLoad = false
+    var awaitingLoad = false { didSet { let value = media != nil && !awaitingLoad; if playback.ready != value { playback.ready = value; mediaPresentation.ready = value } } }
     var replayRange: ClosedRange<Double>?
     var replayArmed = false
     var onDetach: (() -> Void)?
@@ -94,13 +111,17 @@ final class AppModel: ObservableObject {
         let loaded = RuntimeSettings.load()
         player = MPVPlayer(library: loaded.libmpv)
         videoView = MPVVideoView(player: player)
-        do { store = try SQLiteStore(url: RuntimeSettings.supportDirectory.appendingPathComponent("library.sqlite")) }
-        catch { alert = error.localizedDescription }
+        store = StorageWorker(url: RuntimeSettings.supportDirectory.appendingPathComponent("library.sqlite"))
+        store?.onError = { [weak self] message in Task { @MainActor in self?.queueMessage = "本地数据保存失败：\(message)" } }
         player.onUpdate = { [weak self] snapshot in self?.receive(snapshot) }
         videoView.onRenderError = { [weak self] message in self?.alert = message }
         aligner.onChange = { [weak self] words, status in
-            self?.timings = words; self?.alignmentStatus = status; self?.refreshLearning()
+            guard let self else { return }
+            if self.timings != words { self.timings = words }
+            if self.alignmentStatus != status { self.alignmentStatus = status }
+            self.refreshLearning()
         }
+        aligner.onStatus = { [weak self] status in if self?.alignmentTaskStatus != status { self?.alignmentTaskStatus = status } }
         loadInteractionState()
         configureDictionary()
         if let error = player.startupError { subtitleStatus = error }
@@ -135,10 +156,22 @@ final class AppModel: ObservableObject {
         savePlayback()
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
         sessionID = UUID(); searchID = UUID(); lookupID = UUID()
+        sentenceLoop = nil; practiceMessage = ""; seekRevision = 0; transcript.reset()
         let session = sessionID
         guard let identity = try? MediaIdentity(url: url) else { alert = "无法读取视频文件。"; return }
         media = identity
-        saved = (try? store?.load(SavedPlayback.self, key: identity.key, table: "playback")) ?? SavedPlayback()
+        awaitingLoad = true; player.pause(true)
+        english = []; chinese = []; activeEnglish = []; activeChinese = []
+        learning.reset(); currentWordID = nil; dictionaryEntry = nil; lastDictionaryKey = ""
+        openTask = Task { [weak self] in
+            guard let self else { return }
+            let restored = try? await store?.load(SavedPlayback.self, key: identity.key, table: "playback")
+            guard !Task.isCancelled, sessionID == session else { return }
+            saved = restored ?? SavedPlayback()
+            finishLoadMedia(url, identity: identity, session: session, restoring: restoring)
+        }
+    }
+    private func finishLoadMedia(_ url: URL, identity: MediaIdentity, session: UUID, restoring: Bool) {
         english = []; chinese = []; activeEnglish = []; activeChinese = []; timings = []
         learning.reset(); currentWordID = nil; dictionaryEntry = nil; lastDictionaryKey = ""
         englishPath = nil; chinesePath = nil; englishDigest = ""
@@ -239,19 +272,33 @@ final class AppModel: ObservableObject {
         if language != .english, !parsed.chinese.isEmpty, !onlyMissing || chinese.isEmpty {
             chinese = parsed.chinese; chinesePath = url.path; chineseSource = url.lastPathComponent
         }
-        if replacedEnglish { learning.reset(); restartAlignment() }
+        if replacedEnglish {
+            cancelSentenceLoop(); replayRange = nil; replayArmed = false
+            endGate.purpose = .normal; learning.reset(); restartAlignment()
+        }
+        refreshTranscript(reset: replacedEnglish)
         refreshLearning(); savePlayback()
     }
     func setOffset(_ value: Double, language: SubtitleLanguage) {
         guard value.isFinite else { return }
-        if language == .english { englishOffset = value; learning.reset(); replayRange = nil; endGate.purpose = .normal; restartAlignment() }
+        if language == .english { cancelSentenceLoop(); englishOffset = value; learning.reset(); replayRange = nil; endGate.purpose = .normal; restartAlignment() }
         else { chineseOffset = value; if let locked = learning.locked { learning.lock(selection(cue: locked.cue, token: locked.token)) } }
-        refreshLearning(); savePlayback()
+        refreshTranscript(); refreshLearning(); savePlayback()
     }
     func selectAudio(_ stream: Int) {
         guard audioStreams.contains(where: { $0.id == stream }) else { return }
+        cancelSentenceLoop()
         selectedAudio = stream; player.selectAudio(streamIndex: stream)
         learning.reset(); replayRange = nil; endGate.purpose = .normal; restartAlignment(); savePlayback()
+    }
+    func retryAlignment() { aligner.retry(settings: settings) }
+    func viewAlignmentDetails() {
+        alignmentDetails = "正在读取诊断记录…"; showAlignmentDetails = true
+        let url = alignmentTaskStatus.diagnostic
+        Task {
+            let text = await Task.detached(priority: .utility) { url.flatMap { try? String(contentsOf: $0, encoding: .utf8) } ?? "暂无失败记录。" }.value
+            alignmentDetails = text
+        }
     }
     func restartAlignment() {
         timings = []; currentWordID = nil
@@ -260,9 +307,10 @@ final class AppModel: ObservableObject {
         aligner.updatePosition(position)
     }
     func receive(_ snapshot: PlaybackSnapshot) {
+        OperationMetrics.shared.observe(snapshot)
         guard let media, snapshot.generation == sessionID, snapshot.path == media.path else { return }
         if let error = snapshot.error { failCurrent(error); return }
-        guard snapshot.loaded else { return }
+        guard snapshot.loaded, snapshot.seekRevision == seekRevision else { return }
         if awaitingLoad {
             awaitingLoad = false
             duration = max(0, snapshot.duration)
@@ -278,15 +326,29 @@ final class AppModel: ObservableObject {
             if seekTarget != nil { return }
         }
         if let target = seekTarget {
-            if abs(snapshot.position - target) < 0.3 && !snapshot.eof { seekTarget = nil }
+            if abs(snapshot.position - target) < max(0.08, speed * 0.12) && !snapshot.seeking && !snapshot.eof { seekTarget = nil }
             else if Date() < seekDeadline { return }
-            else { seekTarget = nil }
+            else {
+                seekTarget = nil
+                if sentenceLoop != nil {
+                    cancelSentenceLoop(); endGate.wantsPlayback = false; paused = true; player.pause(true)
+                    practiceMessage = "无法定位循环句首，已暂停。请重试或选择另一句。"
+                    return
+                }
+            }
         }
+        if position == snapshot.position && duration == snapshot.duration && paused == snapshot.paused && !snapshot.eof && replayRange == nil && sentenceLoop == nil { return }
         position = snapshot.position.isFinite ? max(0, snapshot.position) : 0
         duration = snapshot.duration.isFinite ? max(0, snapshot.duration) : 0
         paused = snapshot.paused
         let naturalEnd = endGate.observe(generation: snapshot.generation, eof: snapshot.eof)
-        if let range = replayRange {
+        if let loop = sentenceLoop {
+            if endGate.wantsPlayback && loop.reachedEnd(at: position, eof: snapshot.eof) {
+                loopIterations += 1
+                requestSeek(loop.start); player.pause(false); paused = false
+                refreshLearning(); return
+            }
+        } else if let range = replayRange {
             if range.contains(position) { replayArmed = true }
             if (replayArmed && position >= range.upperBound - 0.025) || snapshot.eof {
                 player.pause(true); paused = true; endGate.wantsPlayback = false
@@ -302,17 +364,22 @@ final class AppModel: ObservableObject {
     }
     func requestSeek(_ time: Double) {
         seekTarget = time; seekDeadline = Date().addingTimeInterval(2)
-        player.seek(time); position = time
+        seekRevision &+= 1
+        player.seek(time, revision: seekRevision); position = time; playback.updatePosition(time, immediate: true)
+        transcript.updatePosition(time)
     }
     func togglePlayback() {
         guard canPlay else { return }
         replayRange = nil; replayArmed = false
         let playing = !endGate.wantsPlayback
-        endGate.purpose = .normal; endGate.wantsPlayback = playing; restoring = false
-        if playing && (completed || (duration > 0 && position >= duration - 0.05)) { completed = false; requestSeek(0) }
+        endGate.purpose = sentenceLoop == nil ? .normal : .sentenceLoop
+        endGate.wantsPlayback = playing; restoring = false
+        if playing, let loop = sentenceLoop, loop.reachedEnd(at: position, eof: false) { requestSeek(loop.start) }
+        else if playing && (completed || (duration > 0 && position >= duration - 0.05)) { completed = false; requestSeek(0) }
         paused = !playing; player.pause(paused)
     }
     func seek(_ time: Double) {
+        cancelSentenceLoop()
         let target = max(0, duration > 0 ? min(time, duration) : time)
         replayRange = nil; replayArmed = false; completed = false
         endGate.purpose = .normal
@@ -327,10 +394,12 @@ final class AppModel: ObservableObject {
     func setVolume(_ value: Double) { volume = min(100, max(0, value)); player.set("volume", String(volume)) }
     func lock(cue: SubtitleCue, token: WordToken) {
         guard token.isWord else { return }
+        revealLearningCard()
         replayRange = nil; replayArmed = false
         learning.lock(selection(cue: cue, token: token)); endGate.wantsPlayback = false; player.pause(true); paused = true; refreshDictionary()
     }
     func resumeLearning() {
+        cancelSentenceLoop()
         replayRange = nil; replayArmed = false; learning.resumeFollowing()
         endGate.purpose = .normal; endGate.wantsPlayback = true; restoring = false
         if completed || (duration > 0 && position >= duration - 0.05) { completed = false; requestSeek(0) }
@@ -338,6 +407,7 @@ final class AppModel: ObservableObject {
     }
     func replaySentence() {
         guard let selected else { return }
+        cancelSentenceLoop()
         learning.lock(selected)
         let start = selected.playbackStart, end = selected.playbackEnd
         guard end > start else { return }
@@ -347,15 +417,16 @@ final class AppModel: ObservableObject {
     }
     func selection(cue: SubtitleCue, token: WordToken) -> LearningSelection {
         let contextTime = cue.contains(position, offset: englishOffset) ? position : (cue.start + cue.end) / 2 + englishOffset
-        let translation = Timeline.active(chinese, at: contextTime, offset: chineseOffset).map(\.text).joined(separator: "\n")
+        let translation = chineseIndex.active(at: contextTime - chineseOffset).map { chinese[$0] }.map(\.text).joined(separator: "\n")
         return LearningSelection(cue: cue, token: token, chinese: translation, offset: englishOffset)
     }
     func refreshLearning() {
-        let en = Timeline.active(english, at: position, offset: englishOffset)
-        let zh = Timeline.active(chinese, at: position, offset: chineseOffset)
+        transcript.updatePosition(position)
+        let en = englishIndex.active(at: position - englishOffset).map { english[$0] }
+        let zh = chineseIndex.active(at: position - chineseOffset).map { chinese[$0] }
         if activeEnglish != en { activeEnglish = en }
         if activeChinese != zh { activeChinese = zh }
-        if let word = Timeline.spoken(timings, at: position), let cue = en.first(where: { $0.id == word.cueID }), let token = cue.tokens.first(where: { $0.id == word.tokenIndex }) {
+        if let word = wordIndex.active(at: position).first.map({ timings[$0] }), let cue = en.first(where: { $0.id == word.cueID }), let token = cue.tokens.first(where: { $0.id == word.tokenIndex }) {
             currentWordID = "\(word.cueID):\(word.tokenIndex)"
             let next = selection(cue: cue, token: token)
             if learning.spoken != next { learning.follow(next) }
@@ -371,6 +442,11 @@ final class AppModel: ObservableObject {
         lastDictionaryKey = ""; refreshDictionary()
     }
     func refreshDictionary() {
+        guard learningVisible else {
+            if !lastDictionaryKey.isEmpty { lookupTask?.cancel(); lookupID = UUID(); lastDictionaryKey = ""; dictionaryEntry = nil }
+            return
+        }
+        if learningPresentation.state != learningState { learningPresentation.state = learningState }
         let key = selected.map { $0.cue.id + ":" + String($0.token.id) + ":" + $0.token.normalized } ?? ""
         guard key != lastDictionaryKey else { return }
         lastDictionaryKey = key; lookupTask?.cancel(); lookupID = UUID(); dictionaryEntry = nil
@@ -470,17 +546,20 @@ final class AppModel: ObservableObject {
         saved.position = position; saved.englishPath = englishPath ?? self.saved.englishPath; saved.chinesePath = chinesePath ?? self.saved.chinesePath
         saved.englishOffset = englishOffset; saved.chineseOffset = chineseOffset
         saved.audioStream = selectedAudio >= 0 ? selectedAudio : nil
-        do { try store?.save(saved, key: media.key, table: "playback") }
-        catch { subtitleStatus = "本地进度保存失败：\(error.localizedDescription)" }
+        store?.save(saved, key: media.key, table: "playback")
         let record = PlaybackProgress(mediaKey: media.key, position: position, duration: duration, finished: completed)
         progress[media.path] = record
-        do { try store?.save(record, key: media.path, table: "progress") }
-        catch { queueMessage = "进度保存失败：\(error.localizedDescription)" }
+        store?.save(record, key: media.path, table: "progress")
         persistQueue()
         lastSavedAt = Date()
     }
+    func prepareShutdown() async {
+        savePlayback(); player.onUpdate = nil; player.pause(true)
+        openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
+        await aligner.waitForCancellation(); await store?.flush()
+    }
     func shutdown() {
-        savePlayback(); openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
+         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel(); transcript.reset()
         videoView.shutdown(); player.shutdown()
     }
 }

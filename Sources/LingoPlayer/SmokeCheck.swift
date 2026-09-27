@@ -116,7 +116,7 @@ enum SmokeCheck {
                 model.resumeLearning()
                 let beforeMissingModel = model.position
                 try await Task.sleep(nanoseconds: 500_000_000)
-                record("model_unavailable_keeps_playback_running", model.alignmentStatus.contains("未就绪") && !model.paused && model.position > beforeMissingModel)
+                record("model_unavailable_keeps_playback_running", model.alignmentTaskStatus.phase == .environmentFailure && !model.paused && model.position > beforeMissingModel)
                 let sibling = video.deletingLastPathComponent()
                 let noSubtitles = sibling.appendingPathComponent("no-subtitles.mp4")
                 if FileManager.default.fileExists(atPath: noSubtitles.path) {

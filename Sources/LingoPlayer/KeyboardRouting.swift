@@ -38,7 +38,7 @@ final class KeyboardRouter {
     func uninstall() { if let monitor { NSEvent.removeMonitor(monitor) }; monitor = nil }
     var blocked: Bool {
         guard let model, isPlayerWindow(NSApp.keyWindow) else { return true }
-        if model.showSettings || model.showSubtitleSearch || model.showSubtitleControls || model.alert != nil || model.recordingAction != nil { return true }
+        if model.showSettings || model.showSubtitleSearch || model.showSubtitleControls || model.showAlignmentDetails || model.alert != nil || model.recordingAction != nil { return true }
         if NSApp.modalWindow != nil || NSApp.keyWindow?.attachedSheet != nil { return true }
         let responder = NSApp.keyWindow?.firstResponder
         return responder is NSTextView || responder is NSTextField || responder is NSControl

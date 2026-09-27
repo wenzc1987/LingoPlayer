@@ -21,7 +21,7 @@ enum InteractionSmoke {
         }
         func press(_ code: UInt16, _ characters: String, _ flags: NSEvent.ModifierFlags = [], in target: NSWindow? = nil) async {
             let target = target ?? window
-            target.makeKeyAndOrderFront(nil); target.makeFirstResponder(target.contentView)
+            target.makeKeyAndOrderFront(nil); target.makeFirstResponder(target.contentView); target.becomeKey()
             NSApp.postEvent(event(code, characters, flags, in: target), atStart: false); await delay()
         }
         func screenshot(_ target: NSWindow, _ name: String) {
@@ -61,7 +61,7 @@ enum InteractionSmoke {
                 if let color = iconBitmap.colorAt(x: x, y: y)?.usingColorSpace(.deviceRGB), color.greenComponent > 0.7 && color.redComponent > 0.5 && color.blueComponent < 0.6 { limePixels += 1 }
             } }
             record("finder_icon_resolves_lime_artwork", limePixels > 500, "\(limePixels) lime pixels")
-            record("app_version_and_dock_icon_packaged", Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String == "0.2.0" && NSApp.applicationIconImage != nil && Bundle.main.url(forResource: "AppIcon", withExtension: "icns") != nil)
+            record("app_version_and_dock_icon_packaged", Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String == "0.3.1" && NSApp.applicationIconImage != nil && Bundle.main.url(forResource: "AppIcon", withExtension: "icns") != nil)
             NSApp.orderFrontStandardAboutPanel(nil); await delay(0.3)
             if let about = NSApp.windows.first(where: { $0 !== window && $0.isVisible && $0.frame.height < 500 }) {
                 screenshot(about, "about.png"); about.orderOut(nil)
@@ -132,7 +132,9 @@ enum InteractionSmoke {
             closeDetached(); await delay(0.2)
             record("close_detached_restores_learning_tab", !model.isDetached && model.sidebarTab == .learning)
             await press(37, "l", .command)
-            record("sidebar_shortcut", model.sidebarTab == .queue)
+            record("sidebar_shortcut", model.sidebarTab == .transcript)
+            await press(37, "l", .command)
+            record("sidebar_three_tab_cycle", model.sidebarTab == .queue)
             screenshot(window, "queue.png")
             // Play intent remains paused during sentence navigation, and the locked word survives.
             model.setOffset(0.25, language: .english)
@@ -191,7 +193,7 @@ enum InteractionSmoke {
             model.savePlayback()
             record("resume_position_saved_for_restart", model.paused && abs(model.position - 1.25) < 0.2)
         }
-        let result: [String: Any] = ["version": "0.2.0", "passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "elapsed_seconds": Date().timeIntervalSince(start), "checks": checks]
+        let result: [String: Any] = ["version": "0.3.1", "passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "elapsed_seconds": Date().timeIntervalSince(start), "checks": checks]
         let name = restoreOnly ? "restore.json" : "interaction.json"
         if let data = try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]) { try? data.write(to: output.appendingPathComponent(name)) }
         NSApp.terminate(nil)

@@ -3,6 +3,8 @@ import Foundation
 public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
     case playPause, replaySentence, resumeLearning, backward, forward, previousSentence, nextSentence
     case volumeDown, volumeUp, slower, faster, previousVideo, nextVideo, toggleSidebar
+    case toggleSentenceLoop, cycleSubtitleDisplay
+    case toggleSidebarVisibility
     public var id: String { rawValue }
     public var title: String {
         switch self {
@@ -19,7 +21,10 @@ public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
         case .faster: return "提高倍速"
         case .previousVideo: return "上一部视频"
         case .nextVideo: return "下一部视频"
-        case .toggleSidebar: return "切换学习／播放列表"
+        case .toggleSidebar: return "切换学习／字幕／播放列表"
+        case .toggleSentenceLoop: return "开启／关闭单句循环"
+        case .cycleSubtitleDisplay: return "切换视频字幕显示"
+        case .toggleSidebarVisibility: return "展开／折叠侧栏"
         }
     }
     public var defaultShortcut: Shortcut {
@@ -38,6 +43,9 @@ public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
         case .previousVideo: return .init(123, "←", [.command, .shift])
         case .nextVideo: return .init(124, "→", [.command, .shift])
         case .toggleSidebar: return .init(37, "l", .command)
+        case .toggleSentenceLoop: return .init(15, "r", [.command, .shift])
+        case .cycleSubtitleDisplay: return .init(11, "b", .command)
+        case .toggleSidebarVisibility: return .init(37, "l", [.command, .option])
         }
     }
 }
@@ -74,14 +82,22 @@ public struct Shortcut: Codable, Hashable {
 
 public struct InteractionPreferences: Codable, Equatable {
     public var autoplay = true
+    public var subtitleDisplay: SubtitleDisplayMode = .bilingual
+    public var sidebarCollapsed = false
+    public var cardHidden = false
+    public private(set) var conflictNotices: [String] = []
     /// Explicit nil bindings are stored as disabled action names, so missing fields retain defaults.
     private var bindings: [String: Shortcut] = [:]
     private var disabled: Set<String> = []
     public init() {}
-    enum CodingKeys: String, CodingKey { case autoplay, bindings, disabled }
+    enum CodingKeys: String, CodingKey { case autoplay, bindings, disabled, subtitleDisplay, conflictNotices, sidebarCollapsed, cardHidden }
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         autoplay = try c.decodeIfPresent(Bool.self, forKey: .autoplay) ?? true
+        subtitleDisplay = try c.decodeIfPresent(SubtitleDisplayMode.self, forKey: .subtitleDisplay) ?? .bilingual
+        sidebarCollapsed = try c.decodeIfPresent(Bool.self, forKey: .sidebarCollapsed) ?? false
+        cardHidden = try c.decodeIfPresent(Bool.self, forKey: .cardHidden) ?? false
+        conflictNotices = try c.decodeIfPresent([String].self, forKey: .conflictNotices) ?? []
         let incoming = try c.decodeIfPresent([String: Shortcut].self, forKey: .bindings) ?? [:]
         disabled = try c.decodeIfPresent(Set<String>.self, forKey: .disabled) ?? []
         // Reconcile a partial file deterministically; never install duplicate or reserved bindings.
@@ -91,7 +107,10 @@ public struct InteractionPreferences: Codable, Equatable {
         var used: [Shortcut] = []
         for action in PlayerAction.allCases {
             if let shortcut = shortcut(for: action) {
-                if used.contains(where: { $0.matches(shortcut) }) { disabled.insert(action.rawValue) }
+                if used.contains(where: { $0.matches(shortcut) }) {
+                    disabled.insert(action.rawValue)
+                    if !conflictNotices.contains(action.rawValue) { conflictNotices.append(action.rawValue) }
+                }
                 else { used.append(shortcut) }
             }
         }
@@ -108,7 +127,8 @@ public struct InteractionPreferences: Codable, Equatable {
             if let other = conflict(shortcut, excluding: action) { return "与“\(other.title)”冲突，请先清除该操作的绑定。" }
             bindings[action.rawValue] = shortcut; disabled.remove(action.rawValue)
         } else { bindings.removeValue(forKey: action.rawValue); disabled.insert(action.rawValue) }
+        conflictNotices.removeAll { $0 == action.rawValue }
         return nil
     }
-    public mutating func resetAll() { bindings = [:]; disabled = [] }
+    public mutating func resetAll() { bindings = [:]; disabled = []; conflictNotices = [] }
 }

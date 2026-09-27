@@ -1,0 +1,511 @@
+{
+  "version": "0.3.1",
+  "environment": {
+    "os": "macOS 15.8",
+    "cpu": "Intel Core i5-8259U",
+    "ram_gib": 8,
+    "build": "Release"
+  },
+  "performance": [
+    {
+      "subtitles": "user-film",
+      "state": "paused",
+      "baseline_feedback_ms": {
+        "count": 60,
+        "max": 182.93575900315773,
+        "p95": 147.82517800631467
+      },
+      "feedback_ms": {
+        "count": 60,
+        "max": 146.6718769952422,
+        "p95": 34.99500500038266
+      },
+      "pause_confirmation_ms": {},
+      "execution_ms": {
+        "count": 60,
+        "max": 0.36941299913451076,
+        "p95": 0.3665830008685589
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 13.460467991535552,
+        "p95": 0.4085269902134314
+      },
+      "submitted": 60,
+      "native_pause_samples": 0,
+      "seek_confirmation_ms": {
+        "count": 0,
+        "p95": null,
+        "max": null
+      },
+      "passed": true
+    },
+    {
+      "subtitles": "user-film",
+      "state": "playing",
+      "baseline_feedback_ms": {
+        "count": 60,
+        "max": 169.88302899699192,
+        "p95": 151.15657400747295
+      },
+      "feedback_ms": {
+        "count": 60,
+        "max": 44.369145995005965,
+        "p95": 41.078256006585434
+      },
+      "pause_confirmation_ms": {
+        "count": 20,
+        "max": 38.608128001214936,
+        "p95": 23.3058370067738
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 0.37204100226517767,
+        "p95": 0.35555999784264714
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 9.413734995177947,
+        "p95": 0.6323760026134551
+      },
+      "submitted": 60,
+      "native_pause_samples": 20,
+      "seek_confirmation_ms": {
+        "count": 20,
+        "p95": 473.3266320108669,
+        "max": 506.68522200430743
+      },
+      "passed": true
+    },
+    {
+      "subtitles": "user-film",
+      "state": "aligning",
+      "baseline_feedback_ms": {
+        "count": 60,
+        "max": 196.24626100994647,
+        "p95": 189.90425499214325
+      },
+      "feedback_ms": {
+        "count": 60,
+        "max": 56.27766299585346,
+        "p95": 50.94448500312865
+      },
+      "pause_confirmation_ms": {
+        "count": 20,
+        "max": 61.74816000566352,
+        "p95": 43.08532099821605
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 3.2257530110655352,
+        "p95": 2.504568998119794
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 29.882273011025973,
+        "p95": 7.266361993970349
+      },
+      "submitted": 60,
+      "native_pause_samples": 20,
+      "seek_confirmation_ms": {
+        "count": 20,
+        "p95": 447.6003490126459,
+        "max": 494.71455000457354
+      },
+      "passed": true
+    },
+    {
+      "subtitles": "5000",
+      "state": "paused",
+      "baseline_feedback_ms": {
+        "count": 60,
+        "max": 121.04817599174567,
+        "p95": 79.91201199183706
+      },
+      "feedback_ms": {
+        "count": 60,
+        "max": 37.2278700087918,
+        "p95": 32.45763298764359
+      },
+      "pause_confirmation_ms": {},
+      "execution_ms": {
+        "count": 60,
+        "max": 0.3742380067706108,
+        "p95": 0.3652760060504079
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 12.33083099941723,
+        "p95": 0.42818899964913726
+      },
+      "submitted": 60,
+      "native_pause_samples": 0,
+      "seek_confirmation_ms": {
+        "count": 0,
+        "p95": null,
+        "max": null
+      },
+      "passed": true
+    },
+    {
+      "subtitles": "5000",
+      "state": "playing",
+      "baseline_feedback_ms": {
+        "count": 60,
+        "max": 233.63373200118076,
+        "p95": 112.85664800379891
+      },
+      "feedback_ms": {
+        "count": 60,
+        "max": 42.7063149982132,
+        "p95": 36.294749996159226
+      },
+      "pause_confirmation_ms": {
+        "count": 20,
+        "max": 48.114962002728134,
+        "p95": 35.45363601006102
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 0.5393090104917064,
+        "p95": 0.35755000135395676
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 18.835256996680982,
+        "p95": 0.7394850108539686
+      },
+      "submitted": 60,
+      "native_pause_samples": 20,
+      "seek_confirmation_ms": {
+        "count": 20,
+        "p95": 487.0501260011224,
+        "max": 518.7814200035064
+      },
+      "passed": true
+    },
+    {
+      "subtitles": "5000",
+      "state": "aligning",
+      "baseline_feedback_ms": {
+        "count": 58,
+        "max": 1573.1690389948199,
+        "p95": 1112.0512909983518
+      },
+      "feedback_ms": {
+        "count": 60,
+        "max": 42.86689400032628,
+        "p95": 36.56466300890315
+      },
+      "pause_confirmation_ms": {
+        "count": 20,
+        "max": 31.653946003643796,
+        "p95": 30.212411991669796
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 7.596028997795656,
+        "p95": 7.010539004113525
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 0.596391997532919,
+        "p95": 0.468730999273248
+      },
+      "submitted": 60,
+      "native_pause_samples": 20,
+      "seek_confirmation_ms": {
+        "count": 20,
+        "p95": 444.3941019999329,
+        "max": 561.4138349919813
+      },
+      "passed": true
+    }
+  ],
+  "pending": [
+    "真实影视逐词精度人工抽检",
+    "OpenSubtitles线上联调"
+  ],
+  "maximum_observed_avsync_seconds": 0.010688595993769201,
+  "regressions": {
+    "v031-display-render/display.json": {
+      "passed": true,
+      "checks": 16
+    },
+    "v031-display-render/display-restore.json": {
+      "passed": true,
+      "checks": 3
+    },
+    "v031-practice-release/practice.json": {
+      "passed": true,
+      "checks": 40
+    },
+    "v031-practice-release/practice-restore.json": {
+      "passed": true,
+      "checks": 4
+    },
+    "v031-interaction-delivery/interaction.json": {
+      "passed": true,
+      "checks": 36
+    },
+    "v031-interaction-delivery/restore.json": {
+      "passed": true,
+      "checks": 3
+    },
+    "v031-mp4-delivery/smoke.json": {
+      "passed": true,
+      "checks": 21
+    },
+    "v031-mkv-delivery/smoke.json": {
+      "passed": true,
+      "checks": 22
+    }
+  },
+  "unit_tests": {
+    "swift": 56,
+    "python": 10,
+    "passed": true
+  },
+  "original_failure_reproduction": {
+    "reproduced": false,
+    "original_reason": "unknown: original log was deleted",
+    "batch_elapsed_seconds": 24.005047082901,
+    "words": 72,
+    "metrics": {
+      "elapsed_seconds": 23.53310329200758,
+      "words": 72,
+      "date": "2026-09-26T04:53:59Z",
+      "failed_cues": 1,
+      "peak_memory_mb": 412.37109375,
+      "cues": 12
+    },
+    "partial_failure_reason": "出现未识别词，保留整句字幕",
+    "continued_after_failed_cue": true
+  },
+  "artifact": {
+    "version": "0.3.1",
+    "build": "4",
+    "configuration": "Release",
+    "path": "dist/LingoPlayer.app",
+    "code_signature_verification": "codesign --verify --deep --strict passed",
+    "binary_sha256": "b860ea67d4e1c69c7b34bf97524f1ce50a458a47b5615efded06de4d7162ab22"
+  },
+  "rendering_change": "Plain NSView owns the NSOpenGLContext; drawable updates and rendering are coordinated asynchronously to avoid implicit NSOpenGLView main-thread CGL lock waits.",
+  "button_performance": [
+    {
+      "subtitles": "user-film",
+      "state": "paused",
+      "feedback_ms": {
+        "count": 60,
+        "max": 71.04968700150494,
+        "p95": 44.68645500310231
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 35.03225800523069,
+        "p95": 20.395961997564882
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 0.3639330097939819,
+        "p95": 0.3458620049059391
+      },
+      "pause_confirmation_ms": {},
+      "submitted": 60,
+      "passed": true,
+      "verified_action_sequence": true
+    },
+    {
+      "subtitles": "user-film",
+      "state": "playing",
+      "feedback_ms": {
+        "count": 60,
+        "max": 67.20083199616056,
+        "p95": 61.61247398995329
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 42.59090499544982,
+        "p95": 33.6718140024459
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 0.8658739970996976,
+        "p95": 0.3893450048053637
+      },
+      "pause_confirmation_ms": {
+        "count": 20,
+        "max": 59.85579700791277,
+        "p95": 57.104431005427614
+      },
+      "submitted": 60,
+      "passed": true,
+      "verified_action_sequence": true
+    },
+    {
+      "subtitles": "user-film",
+      "state": "aligning",
+      "feedback_ms": {
+        "count": 60,
+        "max": 137.0719490078045,
+        "p95": 63.631012992118485
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 80.54750401061028,
+        "p95": 29.177352000260726
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 4.63141399086453,
+        "p95": 2.358918995014392
+      },
+      "pause_confirmation_ms": {
+        "count": 20,
+        "max": 57.459774005110376,
+        "p95": 53.628417997970246
+      },
+      "submitted": 60,
+      "passed": true,
+      "verified_action_sequence": true
+    },
+    {
+      "subtitles": "5000",
+      "state": "paused",
+      "feedback_ms": {
+        "count": 60,
+        "max": 109.49952800001483,
+        "p95": 44.761801007553004
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 54.04861499846447,
+        "p95": 20.685586001491174
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 0.5447029980132356,
+        "p95": 0.3612789878388867
+      },
+      "pause_confirmation_ms": {},
+      "submitted": 60,
+      "passed": true,
+      "verified_action_sequence": true
+    },
+    {
+      "subtitles": "5000",
+      "state": "playing",
+      "feedback_ms": {
+        "count": 60,
+        "max": 58.707664007670246,
+        "p95": 52.15682501147967
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 30.45437901164405,
+        "p95": 28.912924011819996
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 0.42248499812558293,
+        "p95": 0.36679900949820876
+      },
+      "pause_confirmation_ms": {
+        "count": 20,
+        "max": 58.237780001945794,
+        "p95": 57.539536006515846
+      },
+      "submitted": 60,
+      "passed": true,
+      "verified_action_sequence": true
+    },
+    {
+      "subtitles": "5000",
+      "state": "aligning",
+      "feedback_ms": {
+        "count": 60,
+        "max": 74.4024849991547,
+        "p95": 58.601979006198235
+      },
+      "dispatch_ms": {
+        "count": 60,
+        "max": 45.462667010724545,
+        "p95": 32.91754399833735
+      },
+      "execution_ms": {
+        "count": 60,
+        "max": 7.578786986414343,
+        "p95": 7.114259002264589
+      },
+      "pause_confirmation_ms": {
+        "count": 20,
+        "max": 65.32165099633858,
+        "p95": 54.34861499816179
+      },
+      "submitted": 60,
+      "passed": true,
+      "verified_action_sequence": true
+    }
+  ],
+  "button_input_method": "Native NSEvent mouse down/up (8 ms separation), posted through NSApp; accessibility geometry resolved before timing. Application UI paint probe, not physical screen latency.",
+  "button_pre_render_fix": {
+    "5000_paused_p95_ms": 104.907,
+    "5000_playing_p95_ms": 146.745,
+    "5000_playing_max_ms": 274.155,
+    "passed": false,
+    "resolution": "Sampled implicit NSOpenGLView CGL lock during layout; replaced surface with plain NSView and coordinated rendering."
+  },
+  "maximum_avsync_ms": 10.688595993769201,
+  "performance_summary": {
+    "keyboard_events": 360,
+    "mouse_events": 360,
+    "native_play_pause_confirmations": 160,
+    "all_conditions_passed": true
+  },
+  "native_performance_metrics": {
+    "main_actor_max_gap_seconds": 0.0713040828704834,
+    "tail_loop_iterations": 20,
+    "transcript_5000_prepare_seconds": 0.14873790740966797,
+    "transcript_5000_search_seconds_including_debounce": 0.21426403522491455
+  },
+  "utf8_diagnostic_truncation": "Validated oversized Chinese output remains readable and within byte limit.",
+  "diagnostic_cleanup": {
+    "remaining_latest_job_directories": 0,
+    "text_only_failure_stores": [
+      {
+        "records": 5,
+        "bytes": 3336
+      },
+      {
+        "records": 1,
+        "bytes": 388
+      },
+      {
+        "records": 2,
+        "bytes": 776
+      },
+      {
+        "records": 7,
+        "bytes": 2723
+      },
+      {
+        "records": 9,
+        "bytes": 3528
+      },
+      {
+        "records": 2,
+        "bytes": 764
+      },
+      {
+        "records": 2,
+        "bytes": 764
+      },
+      {
+        "records": 2,
+        "bytes": 21669
+      }
+    ],
+    "remaining_player_or_project_alignment_processes": 0,
+    "aborted_baseline_and_test_job_directories_removed": 2
+  }
+}

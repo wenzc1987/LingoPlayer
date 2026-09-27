@@ -59,7 +59,7 @@ public struct PlaybackProgress: Codable, Equatable {
     }
 }
 
-public enum PlaybackPurpose { case normal, sentenceReplay, restoration }
+public enum PlaybackPurpose { case normal, sentenceReplay, sentenceLoop, restoration }
 
 /// An EOF edge is consumed exactly once, including edges suppressed during replay.
 public struct PlaybackEndGate {
@@ -73,6 +73,7 @@ public struct PlaybackEndGate {
         self.generation = generation; self.purpose = purpose; wantsPlayback = playing
         sawClear = false; consumed = false
     }
+    public mutating func suppressCurrentEOF() { consumed = true }
     public mutating func observe(generation: UUID, eof: Bool) -> Bool {
         guard self.generation == generation else { return false }
         if !eof { sawClear = true; consumed = false; return false }

@@ -20,15 +20,22 @@ struct SidebarPanel: View {
             Picker("右侧面板", selection: $model.sidebarTab) {
                 ForEach(SidebarTab.allCases, id: \.self) { Text($0.rawValue).tag($0) }
             }.pickerStyle(.segmented).labelsHidden().padding(16).help(model.help(.toggleSidebar))
-            if model.sidebarTab == .queue { QueuePanel(model: model) }
-            else if model.isDetached {
+            ZStack {
+                TranscriptPanel(model: model, transcript: model.transcript)
+                    .opacity(model.sidebarTab == .transcript ? 1 : 0)
+                    .allowsHitTesting(model.sidebarTab == .transcript).accessibilityHidden(model.sidebarTab != .transcript)
+                if model.sidebarTab == .queue { QueuePanel(model: model) }
+                else if model.sidebarTab == .learning {
+                    if model.isDetached {
                 VStack(spacing: 18) {
                     Image(systemName: "macwindow.on.rectangle").font(.system(size: 32)).foregroundStyle(Palette.accent)
                     Text("学习区已在独立窗口中打开").foregroundStyle(.secondary)
                     Button("定位学习窗口") { model.onDetach?() }
                     Button("收回到侧栏") { model.onReattach?() }
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else { LearningPanel(model: model, detached: false) }
+                    } else { LearningPanel(model: model, detached: false) }
+                }
+            }
         }.background(Palette.panel)
     }
 }
@@ -155,6 +162,10 @@ struct ShortcutSettingsPanel: View {
     @ObservedObject var model: AppModel
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
+            if !model.preferences.conflictNotices.isEmpty {
+                Text("已有绑定已保留，以下新动作需要设置快捷键：" + model.preferences.conflictNotices.compactMap { PlayerAction(rawValue: $0)?.title }.joined(separator: "、"))
+                    .font(.caption).foregroundStyle(.orange)
+            }
             Text("点击组合键后按下新按键，Esc 取消。更改立即保存。")
                 .font(.system(size: 12)).foregroundStyle(.secondary)
             ScrollView {

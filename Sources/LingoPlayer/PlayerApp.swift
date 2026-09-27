@@ -16,6 +16,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     private var learningWindow: NSWindow?
     private var model: AppModel?
     private var keyboard: KeyboardRouter?
+    private var terminationPrepared = false
+    private var terminationInProgress = false
     private var pendingFiles: [URL] = []
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.setActivationPolicy(.regular)
@@ -40,6 +42,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(where: { ["--display-test", "--display-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
+            Task { [weak self] in
+                await DisplaySmoke.run(model: model, window: window, folder: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]), restore: CommandLine.arguments[index] == "--display-restore", detach: { self?.detachLearning() }, closeDetached: { self?.learningWindow?.performClose(nil) })
+            }
+            return
+        }
+        if let index = CommandLine.arguments.firstIndex(of: "--alignment-repro"), CommandLine.arguments.count > index + 2 {
+            Task { await AlignmentReproduction.run(model: model, request: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2])) }; return
+        }
+        if let index = CommandLine.arguments.firstIndex(of: "--response-test"), CommandLine.arguments.count > index + 2 {
+            Task { await ResponsivenessSmoke.run(model: model, window: window,
+                request: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2])) }
+            return
+        }
+        if let index = CommandLine.arguments.firstIndex(where: { ["--practice-test", "--practice-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
+            let restore = CommandLine.arguments[index] == "--practice-restore"
+            let folder = URL(fileURLWithPath: CommandLine.arguments[index + 1])
+            let output = URL(fileURLWithPath: CommandLine.arguments[index + 2])
+            Task { [weak self] in
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                await PracticeSmoke.run(model: model, window: window, keyboard: keyboard, folder: folder, output: output, restoreOnly: restore,
+                    detach: { self?.detachLearning() }, learningWindow: { self?.learningWindow }, closeDetached: { self?.learningWindow?.performClose(nil) })
+            }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(where: { ["--interaction-test", "--interaction-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
             let restore = CommandLine.arguments[index] == "--interaction-restore"
             let folder = URL(fileURLWithPath: CommandLine.arguments[index + 1])
@@ -70,6 +97,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         sender.reply(toOpenOrPrint: .success)
     }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        if terminationPrepared { return .terminateNow }
+        if !terminationInProgress {
+            terminationInProgress = true
+            Task {
+                await model?.prepareShutdown(); terminationPrepared = true
+                // Re-enter termination outside the active Swift concurrency job;
+                // AppKit's nested terminateLater loop otherwise stalls that job.
+                DispatchQueue.main.async { sender.terminate(nil) }
+            }
+        }
+        return .terminateCancel
+    }
     func applicationWillTerminate(_ notification: Notification) { keyboard?.uninstall(); model?.shutdown() }
     private func detachLearning() {
         guard let model else { return }

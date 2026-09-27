@@ -10,11 +10,18 @@ public struct SubtitleCue: Codable, Equatable, Identifiable, Sendable {
     public var id: String
     public var start: Double
     public var end: Double
-    public var text: String
+    public var text: String { didSet { cachedTokens = WordToken.tokenize(text) } }
+    private var cachedTokens: [WordToken]
+    enum CodingKeys: String, CodingKey { case id, start, end, text }
     public init(id: String, start: Double, end: Double, text: String) {
-        self.id = id; self.start = start; self.end = end; self.text = text
+        self.id = id; self.start = start; self.end = end; self.text = text; cachedTokens = WordToken.tokenize(text)
     }
-    public var tokens: [WordToken] { WordToken.tokenize(text) }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(id: try values.decode(String.self, forKey: .id), start: try values.decode(Double.self, forKey: .start),
+                  end: try values.decode(Double.self, forKey: .end), text: try values.decode(String.self, forKey: .text))
+    }
+    public var tokens: [WordToken] { cachedTokens }
     public func contains(_ time: Double, offset: Double = 0) -> Bool {
         time >= start + offset && time < end + offset
     }
@@ -31,13 +38,13 @@ public struct WordToken: Codable, Equatable, Identifiable, Sendable {
         text.lowercased().replacingOccurrences(of: "’", with: "'")
     }
     public static func tokenize(_ text: String) -> [WordToken] {
-        let regex = try! NSRegularExpression(pattern: "[A-Za-z]+(?:['’\\-][A-Za-z]+)*|[^A-Za-z]+")
         let ns = text as NSString
         return regex.matches(in: text, range: NSRange(location: 0, length: ns.length)).enumerated().map { index, match in
             let value = ns.substring(with: match.range)
             return WordToken(id: index, text: value, isWord: value.first?.isASCII == true && value.first?.isLetter == true)
         }
     }
+    private static let regex = try! NSRegularExpression(pattern: "[A-Za-z]+(?:['’\\-][A-Za-z]+)*|[^A-Za-z]+")
 }
 
 public struct TimedWord: Codable, Equatable, Sendable {
@@ -63,7 +70,7 @@ public struct LearningSelection: Equatable, Sendable {
 }
 
 /// The spoken word is transient; the reader's selection remains stable while locked.
-public struct LearningState: Sendable {
+public struct LearningState: Sendable, Equatable {
     public private(set) var spoken: LearningSelection?
     public private(set) var locked: LearningSelection?
     public var selected: LearningSelection? { locked ?? spoken }

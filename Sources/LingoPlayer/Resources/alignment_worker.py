@@ -19,7 +19,8 @@ import tempfile
 import time
 import wave
 
-WORKER_VERSION = 1
+WORKER_VERSION = 2
+STAGE = "prepare"
 
 
 def normalize(word):
@@ -90,6 +91,8 @@ def prepare_dictionary(job, working):
 
 
 def run_job(job, working):
+    global STAGE
+    STAGE = "ffmpeg"
     started = time.monotonic()
     corpus, aligned = working / "corpus", working / "aligned"
     corpus.mkdir(); aligned.mkdir()
@@ -100,7 +103,7 @@ def run_job(job, working):
     segment_end = max(c["end"] for c in cues) + 0.2
     audio = working / "segment.wav"
     subprocess.run([job["ffmpeg"], "-nostdin", "-v", "error", "-y", "-ss", str(segment_start), "-i", job["video"], "-t", str(segment_end - segment_start), "-map", "0:" + str(job["stream"]), "-vn", "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", str(audio)], check=True)
-    windows = {}
+    windows, failures = {}, {}
     with wave.open(str(audio), "rb") as source:
         rate, frames = source.getframerate(), source.getnframes()
         for index, cue in enumerate(cues):
@@ -109,6 +112,9 @@ def run_job(job, working):
             end = min(segment_end, cue["end"] + 0.15)
             start_frame = min(frames, max(0, round((start - segment_start) * rate)))
             count = min(frames - start_frame, max(0, round((end - start) * rate)))
+            if count < 160 or not cue["tokens"] or cue["end"] <= cue["start"]:
+                failures[cue["id"]] = "本句没有有效音频或可对齐单词"
+                continue
             source.setpos(start_frame)
             with wave.open(str(corpus / (label + ".wav")), "wb") as target:
                 target.setnchannels(1); target.setsampwidth(2); target.setframerate(rate)
@@ -116,19 +122,31 @@ def run_job(job, working):
             transcript = " ".join(token["text"].replace("’", "'") for token in cue["tokens"])
             (corpus / (label + ".lab")).write_text(transcript, encoding="utf-8")
             windows[cue["id"]] = (label, start_frame / rate + segment_start)
+    if not windows:
+        return {"words": [], "completed": [c["id"] for c in cues], "failures": failures, "elapsed": time.monotonic() - started, "peakMemoryMB": 0}
+    STAGE = "dictionary"
     environment = os.environ.copy()
     environment["PATH"] = str(Path(job["mfa"]).parent) + os.pathsep + environment.get("PATH", "")
     environment["MFA_ROOT_DIR"] = job["modelRoot"]
     dictionary = prepare_dictionary(job, working)
+    STAGE = "mfa"
     command = [job["mfa"], "align", str(corpus), str(dictionary), job["acousticModel"], str(aligned), "--output_format", "json", "--single_speaker", "--no_use_mp", "--num_jobs", "1", "--clean", "--temporary_directory", str(working / "mfa-temp")]
     # File output bounds memory and avoids pipe deadlocks. stderr remains diagnostic.
     with (working / "mfa.log").open("w") as log:
         process = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, env=environment)
     if process.returncode:
-        tail = (working / "mfa.log").read_text(errors="replace")[-5000:]
-        raise RuntimeError("MFA 运行失败，请检查模型安装与运行环境。\n" + tail)
-    words, failures = [], {}
+        log = (working / "mfa.log").read_text(errors="replace")
+        # A corpus with no alignable speech is a content failure. Configuration,
+        # database and model exceptions still stop the worker for explicit retry.
+        if "NoAlignmentsError" not in log and "No utterances" not in log and "No files were found" not in log:
+            raise RuntimeError("MFA 非零退出（%s），详见本地日志。\n%s" % (process.returncode, log))
+        for cue in cues:
+            failures.setdefault(cue["id"], "MFA 未找到可对齐的语音，保留整句")
+    STAGE = "word-mapping"
+    words = []
     for cue in cues:
+        if cue["id"] in failures:
+            continue
         label, audio_start = windows[cue["id"]]
         files = list(aligned.rglob(label + ".json"))
         try:
@@ -166,10 +184,19 @@ def main():
     with context as folder:
         try:
             result = run_job(job, Path(folder))
-        except Exception:
-            log = Path(folder) / "mfa.log"
-            if log.exists():
-                shutil.copyfile(log, Path(args.output).with_suffix(".error.log"))
+            if result["failures"]:
+                with Path(args.output).with_suffix(".error.log").open("w") as diagnostic:
+                    for log in sorted(Path(folder).rglob("*.log")):
+                        diagnostic.write("\n=== " + str(log.relative_to(folder)) + " ===\n" + log.read_text(errors="replace"))
+        except Exception as error:
+            # Copy text diagnostics before TemporaryDirectory removes audio and
+            # MFA's working database. Never copy corpus WAVs into retained logs.
+            log_files = sorted(Path(folder).rglob("*.log"))
+            with Path(args.output).with_suffix(".error.log").open("w") as diagnostic:
+                for log in log_files:
+                    diagnostic.write("\n=== " + str(log.relative_to(folder)) + " ===\n")
+                    diagnostic.write(log.read_text(errors="replace"))
+            Path(args.output).with_suffix(".error.json").write_text(json.dumps({"stage": STAGE, "message": str(error), "exitCode": getattr(error, "returncode", None)}, ensure_ascii=False))
             raise
     output = Path(args.output)
     temporary = output.with_suffix(".tmp")
