@@ -4,13 +4,23 @@ import PlayerCore
 
 enum PlayerPopover { case subtitles, speed, volume }
 
+struct PlaybackFeedback: Equatable {
+    let id = UUID()
+    let symbol: String
+    let title: String
+    let detail: String?
+    let volume: Double?
+}
+
 @MainActor final class PlayerChrome: ObservableObject {
     @Published private(set) var state = ControlVisibility()
     @Published private(set) var notice: String?
+    @Published private(set) var feedback: PlaybackFeedback?
     var visible: Bool { state.visible }
     var onVisibilityChange: ((Bool) -> Void)?
     private var timer: Task<Void, Never>?
     private var noticeTimer: Task<Void, Never>?
+    private var feedbackTimer: Task<Void, Never>?
     private var noticeKey: String?
     private var revision = UUID()
     private var now: Double { ProcessInfo.processInfo.systemUptime }
@@ -38,6 +48,17 @@ enum PlayerPopover { case subtitles, speed, volume }
         }
     }
     func resetNotice() { noticeTimer?.cancel(); noticeTimer = nil; notice = nil; noticeKey = nil }
+    func showFeedback(_ title: String, symbol: String, detail: String? = nil, volume: Double? = nil) {
+        let next = PlaybackFeedback(symbol: symbol, title: title, detail: detail, volume: volume)
+        feedbackTimer?.cancel(); feedback = next
+        // Each key repeat extends the feedback without revealing the controls.
+        feedbackTimer = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 1_400_000_000)
+            guard !Task.isCancelled, self?.feedback?.id == next.id else { return }
+            self?.feedback = nil
+        }
+    }
+    func resetFeedback() { feedbackTimer?.cancel(); feedbackTimer = nil; feedback = nil }
     private func change(_ update: (inout ControlVisibility) -> Void) {
         var next = state; update(&next)
         guard next != state else { return }

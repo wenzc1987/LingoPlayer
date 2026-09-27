@@ -71,6 +71,17 @@ struct PlayerStage: View {
                     .background(GeometryReader { proxy in Color.clear.preference(key: SubtitleHeightKey.self, value: proxy.size.height) })
                     .padding(.bottom, 24)
                 if chrome.visible {
+                    if let title = model.media?.title {
+                        Text("《\(title)》")
+                            .font(.system(size: 16, weight: .medium)).foregroundStyle(.white.opacity(0.94))
+                            .lineLimit(1).truncationMode(.middle)
+                            .padding(.horizontal, 90).padding(.top, 34).padding(.bottom, 22)
+                            .frame(maxWidth: .infinity)
+                            .background(LinearGradient(colors: [.black.opacity(0.6), .clear], startPoint: .top, endPoint: .bottom))
+                            .frame(maxHeight: .infinity, alignment: .top)
+                            .allowsHitTesting(false).accessibilityIdentifier("playback-title")
+                            .transition(.opacity)
+                    }
                     PlaybackControls(model: model)
                     .frame(width: min(860, max(0, geometry.size.width - 32)))
                     // Keep native hover tracking out of the subtitle area below.
@@ -78,6 +89,9 @@ struct PlayerStage: View {
                     .padding(.bottom, model.media == nil ? 24 : max(76, subtitleHeight) + 42)
                     .transition(.opacity)
                 }
+                PlaybackFeedbackOverlay(chrome: chrome)
+                    .padding(.top, 94).frame(maxHeight: .infinity, alignment: .top)
+                    .allowsHitTesting(false)
                 if let notice = chrome.notice {
                     Text(notice).font(.system(size: 12)).foregroundStyle(.white)
                         .padding(12).background(.black.opacity(0.8), in: RoundedRectangle(cornerRadius: 10))
@@ -239,11 +253,19 @@ struct PlaybackControls: View {
                             }
                         }.padding(16)
                     }
-                Button { model.playerPopover = .volume } label: { icon(model.volume == 0 ? "speaker.slash" : "speaker.wave.2") }
-                    .help("音量").popover(isPresented: popover(.volume)) {
+                Button { model.playerPopover = .volume } label: {
+                    VolumeSymbol(volume: playback.volume).font(.system(size: 16)).frame(width: 28, height: 32)
+                }
+                    .help("音量 \(Int(playback.volume.rounded()))%")
+                    .accessibilityLabel("音量 \(Int(playback.volume.rounded()))%")
+                    .accessibilityIdentifier("volume-control").popover(isPresented: popover(.volume)) {
                         VStack(spacing: 12) {
-                            Text("音量 \(Int(model.volume))%").font(.headline)
+                            HStack {
+                                VolumeSymbol(volume: playback.volume)
+                                Text("音量 \(Int(playback.volume.rounded()))%").monospacedDigit()
+                            }.font(.headline)
                             Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...100).frame(width: 180)
+                                .accessibilityLabel("音量").accessibilityIdentifier("volume-slider")
                         }.padding(20)
                     }
                 Button { model.openSidebar(.queue) } label: { icon("list.bullet", active: !model.preferences.sidebarCollapsed && model.sidebarTab == .queue) }
@@ -399,17 +421,14 @@ struct SubtitleControls: View {
             Text("播放设置").font(.headline)
             ForEach(SubtitleLanguage.allCases, id: \.self) { language in
                 VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Text(language.title)
-                        Spacer()
-                        TextField("偏移", value: Binding(get: { language == .english ? model.englishOffset : model.chineseOffset }, set: { model.setOffset($0, language: language) }), format: .number.precision(.fractionLength(2)))
-                            .frame(width: 72).textFieldStyle(.roundedBorder)
-                        Text("秒").foregroundStyle(.secondary)
+                    Stepper(value: Binding(get: { model.subtitleOffsetDraft(language) }, set: { model.scheduleSubtitleOffset($0, language: language) }), step: 0.1) {
+                        Text("\(language.title)字幕 \(model.subtitleOffsetDraft(language), specifier: "%.1f") 秒").monospacedDigit()
                     }
+                    .disabled(model.media == nil).accessibilityIdentifier("subtitle-offset-\(language.rawValue)")
                     Text(language == .english ? model.englishSource : model.chineseSource).font(.caption).foregroundStyle(.secondary).lineLimit(2)
                 }
             }
-            Text("正数延后显示，负数提前显示。调整英文时间后会重新准备逐词高亮。").font(.caption).foregroundStyle(.secondary)
+            Text("每次调整 0.1 秒，停止调整 1 秒后生效。正数延后显示，负数提前显示；英文时间生效后会重新准备逐词高亮。").font(.caption).foregroundStyle(.secondary)
             Divider()
             Stepper(value: Binding(get: { model.sentenceTailPadding }, set: { model.setSentenceTailPadding($0) }), in: 0...3, step: 0.1) {
                 Text("句尾多播 \(model.sentenceTailPadding, specifier: "%.1f") 秒")

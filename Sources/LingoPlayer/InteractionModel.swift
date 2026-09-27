@@ -95,23 +95,40 @@ extension AppModel {
         OperationMetrics.shared.begin(action, model: self)
         defer { OperationMetrics.shared.end() }
         switch action {
-        case .playPause: togglePlayback()
-        case .replaySentence: replaySentence()
-        case .resumeLearning: resumeLearning()
-        case .backward: seek(position - 5)
-        case .forward: seek(position + 5)
+        case .playPause:
+            togglePlayback()
+            chrome.showFeedback(paused ? "已暂停" : "继续播放", symbol: paused ? "pause.fill" : "play.fill")
+        case .replaySentence:
+            replaySentence()
+            chrome.showFeedback("回放本句", symbol: "arrow.counterclockwise", detail: clock(position))
+        case .resumeLearning:
+            resumeLearning()
+            chrome.showFeedback("继续学习", symbol: "play.fill")
+        case .backward, .forward:
+            let previous = position
+            seek(position + (action == .forward ? 5 : -5))
+            let delta = ((position - previous) * 10).rounded() / 10
+            chrome.showFeedback("\(delta > 0 ? "+" : "")\(delta.formatted())s", symbol: action == .forward ? "goforward.5" : "gobackward.5", detail: clock(position))
         case .previousSentence, .nextSentence:
             navigateAdjacentSentence(action == .previousSentence ? -1 : 1)
+            chrome.showFeedback(action == .previousSentence ? "上一句" : "下一句", symbol: action == .previousSentence ? "backward.end.fill" : "forward.end.fill", detail: clock(position))
         case .volumeDown: setVolume(volume - 5)
         case .volumeUp: setVolume(volume + 5)
         case .slower: setSpeed(Self.speedSteps.last { $0 < speed } ?? Self.speedSteps[0])
         case .faster: setSpeed(Self.speedSteps.first { $0 > speed } ?? Self.speedSteps.last!)
         case .previousVideo, .nextVideo:
-            if let next = queueState.adjacent(action == .previousVideo ? -1 : 1) { playQueueItem(next) }
+            if let next = queueState.adjacent(action == .previousVideo ? -1 : 1) {
+                playQueueItem(next)
+                chrome.showFeedback(action == .previousVideo ? "上一部视频" : "下一部视频", symbol: action == .previousVideo ? "backward.fill" : "forward.fill", detail: media?.title)
+            }
         case .toggleSidebar: setSidebarCollapsed(false); sidebarTab = sidebarTab.next
         case .toggleSidebarVisibility: setSidebarCollapsed(!preferences.sidebarCollapsed)
-        case .toggleSentenceLoop: toggleSentenceLoop()
-        case .cycleSubtitleDisplay: setSubtitleDisplay(preferences.subtitleDisplay.next)
+        case .toggleSentenceLoop:
+            toggleSentenceLoop()
+            chrome.showFeedback(sentenceLoop == nil ? "已关闭单句循环" : "单句循环", symbol: "repeat.1", detail: sentenceLoop.map { "\(clock($0.start)) – \(clock($0.end))" })
+        case .cycleSubtitleDisplay:
+            setSubtitleDisplay(preferences.subtitleDisplay.next)
+            chrome.showFeedback(preferences.subtitleDisplay.title, symbol: "captions.bubble", detail: "字幕显示")
         }
     }
     func acceptFiles(_ urls: [URL]) {
@@ -165,6 +182,7 @@ extension AppModel {
     }
     func moveQueueItem(_ id: String, before target: String?) { queueState.move(id, before: target); persistQueue() }
     func stopMedia() {
+        chrome.resetFeedback(); cancelPendingSubtitleOffsets()
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
         sessionID = UUID(); searchID = UUID(); lookupID = UUID(); player.stop()
         sentenceLoop = nil; practiceMessage = ""; transcript.reset(); seekRevision = 0

@@ -51,6 +51,8 @@ final class AppModel: ObservableObject {
     var activeChinese: [SubtitleCue] { get { subtitles.chinese } set { if newValue != subtitles.chinese { subtitles.chinese = newValue } } }
     @Published var englishOffset = 0.0
     @Published var chineseOffset = 0.0
+    @Published private(set) var pendingSubtitleOffsets: [SubtitleLanguage: Double] = [:]
+    private var subtitleOffsetTask: Task<Void, Never>?
     @Published var sentenceTailPadding = SentenceLoop.defaultTailPadding
     @Published var englishSource = "未加载"
     @Published var chineseSource = "未加载"
@@ -173,6 +175,7 @@ final class AppModel: ObservableObject {
     func open(_ url: URL) { ingest([url]) }
     func loadMedia(_ url: URL, restoring: Bool = false) {
         chrome.resetNotice()
+        chrome.resetFeedback(); cancelPendingSubtitleOffsets()
         savePlayback()
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
         sessionID = UUID(); searchID = UUID(); lookupID = UUID()
@@ -303,9 +306,43 @@ final class AppModel: ObservableObject {
     }
     func setOffset(_ value: Double, language: SubtitleLanguage) {
         guard value.isFinite else { return }
+        pendingSubtitleOffsets.removeValue(forKey: language)
+        if pendingSubtitleOffsets.isEmpty { subtitleOffsetTask?.cancel(); subtitleOffsetTask = nil }
         if language == .english { cancelSentenceLoop(); englishOffset = value; learning.reset(); cancelReplay(); endGate.purpose = .normal; restartAlignment() }
         else { chineseOffset = value; if let locked = learning.locked { learning.lock(selection(cue: locked.cue, token: locked.token)) } }
         refreshTranscript(); refreshLearning(); savePlayback()
+    }
+    func subtitleOffsetDraft(_ language: SubtitleLanguage) -> Double {
+        let value = pendingSubtitleOffsets[language] ?? (language == .english ? englishOffset : chineseOffset)
+        // Older versions allowed hundredths. Step from the displayed tenth,
+        // while keeping the saved precision until the user actually adjusts it.
+        let rounded = (value * 10).rounded() / 10
+        return rounded == 0 ? 0 : rounded
+    }
+    func scheduleSubtitleOffset(_ value: Double, language: SubtitleLanguage) {
+        guard value.isFinite, media != nil else { return }
+        let rounded = (value * 10).rounded() / 10
+        guard rounded.isFinite else { return }
+        let applied = language == .english ? englishOffset : chineseOffset
+        if rounded == applied { pendingSubtitleOffsets.removeValue(forKey: language) }
+        else { pendingSubtitleOffsets[language] = rounded }
+        subtitleOffsetTask?.cancel(); subtitleOffsetTask = nil
+        guard !pendingSubtitleOffsets.isEmpty else { return }
+        let session = sessionID
+        // Keep the draft in the model so dismissing the popover does not lose it.
+        // Both languages share the quiet period; switching media cancels it.
+        subtitleOffsetTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            guard !Task.isCancelled, let self, self.sessionID == session else { return }
+            let pending = self.pendingSubtitleOffsets
+            self.subtitleOffsetTask = nil; self.pendingSubtitleOffsets = [:]
+            for language in SubtitleLanguage.allCases {
+                if let value = pending[language] { self.setOffset(value, language: language) }
+            }
+        }
+    }
+    func cancelPendingSubtitleOffsets() {
+        subtitleOffsetTask?.cancel(); subtitleOffsetTask = nil; pendingSubtitleOffsets = [:]
     }
     func setSentenceTailPadding(_ value: Double) {
         guard value.isFinite else { return }
@@ -423,8 +460,19 @@ final class AppModel: ObservableObject {
         requestSeek(target)
         aligner.updatePosition(target, seek: true); refreshLearning()
     }
-    func setSpeed(_ value: Double) { speed = value; player.set("speed", String(value)) }
-    func setVolume(_ value: Double) { volume = min(100, max(0, value)); player.set("volume", String(volume)) }
+    func setSpeed(_ value: Double) {
+        guard value.isFinite, value > 0 else { return }
+        speed = value; player.set("speed", String(value))
+        if playbackReady { chrome.showFeedback("\(value.formatted())×", symbol: "speedometer", detail: "播放速度") }
+    }
+    func setVolume(_ value: Double) {
+        guard value.isFinite else { return }
+        let previous = Int(volume.rounded())
+        volume = min(100, max(0, value)); player.set("volume", String(volume))
+        let current = Int(volume.rounded()), delta = Int(volume.rounded()) - previous
+        let detail = delta == 0 ? (current == 0 ? "静音" : current == 100 ? "最大音量" : "音量") : "音量 \(delta > 0 ? "+" : "")\(delta)%"
+        if playbackReady { chrome.showFeedback("\(current)%", symbol: "speaker.wave.3.fill", detail: detail, volume: volume) }
+    }
     func lock(cue: SubtitleCue, token: WordToken) {
         guard token.isWord else { return }
         revealLearningCard()
@@ -592,11 +640,13 @@ final class AppModel: ObservableObject {
         lastSavedAt = Date()
     }
     func prepareShutdown() async {
+        cancelPendingSubtitleOffsets(); chrome.resetFeedback()
         savePlayback(); player.onUpdate = nil; player.pause(true)
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
         await aligner.waitForCancellation(); await store?.flush()
     }
     func shutdown() {
+        cancelPendingSubtitleOffsets(); chrome.resetFeedback()
          openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel(); transcript.reset()
         videoView.shutdown(); player.shutdown()
     }

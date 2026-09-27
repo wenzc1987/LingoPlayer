@@ -39,6 +39,14 @@ import PlayerCore
             }
             return false
         }
+        func press(_ action: PlayerAction, repeatKey: Bool = false) async {
+            guard let shortcut = model.preferences.shortcut(for: action) else { return }
+            window.makeKeyAndOrderFront(nil); window.makeFirstResponder(nil)
+            NSApp.postEvent(NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: shortcut.menuModifiers,
+                timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: window.windowNumber, context: nil,
+                characters: shortcut.menuKey, charactersIgnoringModifiers: shortcut.menuKey, isARepeat: repeatKey, keyCode: shortcut.keyCode)!, atStart: false)
+            await delay(0.12)
+        }
         try? FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
         model.settings.autoSearch = false; model.settings.mfa = "/missing/chrome-smoke"; model.setVolume(0); model.player.set("mute", "yes")
         NSApp.activate(ignoringOtherApps: true); window.makeKeyAndOrderFront(nil)
@@ -61,14 +69,46 @@ import PlayerCore
             let stage = model.videoView.bounds.size
             record("video_fills_content_without_reserved_bars", stage.width > window.contentView!.bounds.width - 2 && stage.height >= window.contentView!.bounds.height - 2, "video=\(stage), content=\(window.contentView!.bounds.size)")
             screenshot("paused")
+            record("title_visible_with_controls", element(window, id: "playback-title") != nil)
             await delay(3.2); record("paused_controls_stay_visible", model.chrome.visible)
             let midpoint = model.videoView.convert(NSPoint(x: stage.width / 2, y: stage.height / 2), to: nil)
             await click(midpoint)
             record("blank_click_hides_without_playing", !model.chrome.visible && model.paused)
+            record("title_hides_with_controls", element(window, id: "playback-title") == nil)
             screenshot("immersive")
+            model.setVolume(50); model.chrome.resetFeedback()
+            await press(.volumeUp)
+            record("volume_shortcut_feedback_without_revealing_controls", model.volume == 55 && model.chrome.feedback?.title == "55%" && model.chrome.feedback?.detail == "音量 +5%" && !model.chrome.visible && element(window, id: "playback-feedback") != nil)
+            screenshot("volume-hidden")
+            await delay(0.7); await press(.volumeDown, repeatKey: true); await delay(0.7)
+            record("repeated_shortcut_replaces_feedback_and_restarts_expiry", model.volume == 50 && model.chrome.feedback?.title == "50%" && model.chrome.feedback?.detail == "音量 -5%")
+            await delay(0.8)
+            record("feedback_expires_without_changing_hidden_controls", model.chrome.feedback == nil && !model.chrome.visible)
+            model.setVolume(100); await press(.volumeUp)
+            record("volume_feedback_respects_upper_bound", model.volume == 100 && model.chrome.feedback?.title == "100%" && model.chrome.feedback?.detail == "最大音量")
+            model.setVolume(0); await press(.volumeDown)
+            record("zero_volume_feedback_is_muted", model.volume == 0 && model.chrome.feedback?.volume == 0 && model.chrome.feedback?.detail == "静音")
+            model.setSpeed(1); await press(.faster)
+            record("speed_shortcut_reports_current_rate", model.speed == 1.25 && model.chrome.feedback?.title == "1.25×")
+            screenshot("speed-feedback"); model.setSpeed(1)
+            model.seek(8); _ = await wait { model.seekTarget == nil }
+            await press(.forward)
+            record("forward_shortcut_reports_delta_and_position", model.chrome.feedback?.title == "+5s" && model.chrome.feedback?.detail == "00:13")
+            screenshot("seek-feedback")
+            await press(.backward)
+            record("backward_shortcut_reports_negative_delta", model.chrome.feedback?.title == "-5s")
+            model.seek(1); _ = await wait { model.seekTarget == nil }; await press(.backward)
+            record("seek_boundary_reports_actual_change", model.chrome.feedback?.title == "-1s" && model.chrome.feedback?.detail == "00:00")
+            await press(.cycleSubtitleDisplay)
+            record("subtitle_shortcut_reports_result", model.chrome.feedback?.title == model.preferences.subtitleDisplay.title)
+            model.setSubtitleDisplay(.bilingual); model.seek(cue.start + 0.1); model.chrome.resetFeedback()
+            _ = await wait { model.seekTarget == nil }; await delay(0.2)
             await click(midpoint)
             record("blank_click_reveals_without_playing", model.chrome.visible && model.paused && model.videoView.bounds.size == stage, "visible=\(model.chrome.visible), paused=\(model.paused), holds=\(model.chrome.state.holds)")
             model.chrome.show(); await delay(0.3)
+            await press(.volumeUp)
+            record("visible_toolbar_volume_updates_with_feedback", model.volume == 5 && model.chrome.feedback?.volume == 5 && model.chrome.visible && element(window, id: "volume-control") != nil)
+            screenshot("volume-visible"); model.setVolume(0); model.chrome.resetFeedback()
             let queueClicked = await clickButton("open-queue")
             record("toolbar_queue_opens_shared_sidebar", queueClicked && !model.preferences.sidebarCollapsed && model.sidebarTab == .queue)
             screenshot("queue")
@@ -96,10 +136,37 @@ import PlayerCore
             record("toolbar_settings_opens_popover", settingsClicked && model.showSubtitleControls)
             record("configuration_prevents_auto_hide", model.chrome.visible && model.chrome.state.holds.contains(.presentation))
             screenshot("settings")
+            let oldEnglishOffset = model.englishOffset, oldChineseOffset = model.chineseOffset
+            let steppers = NSApp.windows.filter(\.isVisible).compactMap { element($0, id: "subtitle-offset-english") }
+            let increment = NSSelectorFromString("accessibilityPerformIncrement")
+            if let stepper = steppers.first, stepper.responds(to: increment) {
+                _ = stepper.perform(increment)
+                record("native_subtitle_stepper_changes_draft_by_tenth", abs(model.subtitleOffsetDraft(.english) - oldEnglishOffset - 0.1) < 0.001 && model.englishOffset == oldEnglishOffset)
+            } else { record("native_subtitle_stepper_changes_draft_by_tenth", false, "English stepper increment unavailable") }
+            model.setOffset(0.25, language: .english)
+            record("legacy_precise_offset_is_preserved_until_adjustment", model.englishOffset == 0.25 && model.subtitleOffsetDraft(.english) == 0.3)
+            model.scheduleSubtitleOffset(model.subtitleOffsetDraft(.english) + 0.1, language: .english)
+            record("legacy_offset_steps_from_displayed_tenth", model.subtitleOffsetDraft(.english) == 0.4 && model.englishOffset == 0.25)
+            model.setOffset(oldEnglishOffset, language: .english)
+            model.scheduleSubtitleOffset(-0.1, language: .english)
+            await delay(0.65)
+            model.scheduleSubtitleOffset(-0.2, language: .english)
+            model.scheduleSubtitleOffset(0.3, language: .chinese)
+            await delay(0.65)
+            record("subtitle_offsets_wait_for_last_adjustment", model.englishOffset == oldEnglishOffset && model.chineseOffset == oldChineseOffset && model.subtitleOffsetDraft(.english) == -0.2 && model.subtitleOffsetDraft(.chinese) == 0.3)
             for (index, popup) in NSApp.windows.filter({ $0 !== window && $0.isVisible && $0.frame.width > 200 }).enumerated() {
                 record("screenshot_settings_popup_\(index)", WindowSnapshot.save(popup, to: output.appendingPathComponent("settings-popup-\(index).png")))
             }
             model.showSubtitleControls = false
+            await delay(0.55)
+            record("subtitle_offsets_apply_after_one_second_even_when_closed", model.englishOffset == -0.2 && model.chineseOffset == 0.3 && model.pendingSubtitleOffsets.isEmpty)
+            await model.store?.flush()
+            let savedOffsets = try? await model.store?.load(SavedPlayback.self, key: model.media!.key, table: "playback")
+            record("debounced_subtitle_offsets_persist", savedOffsets?.englishOffset == -0.2 && savedOffsets?.chineseOffset == 0.3)
+            model.setOffset(oldEnglishOffset, language: .english); model.setOffset(oldChineseOffset, language: .chinese)
+            model.scheduleSubtitleOffset(oldEnglishOffset + 0.1, language: .english)
+            model.scheduleSubtitleOffset(oldEnglishOffset, language: .english)
+            record("returning_offset_to_original_cancels_pending_work", model.pendingSubtitleOffsets.isEmpty)
             if model.endGate.wantsPlayback { model.togglePlayback() }
             model.setSidebarCollapsed(true); model.setSubtitleDisplay(.hidden); await delay()
             record("hidden_subtitles_do_not_resize_video", model.videoView.bounds.size == stage)
@@ -124,6 +191,11 @@ import PlayerCore
             // moving to its fullscreen space; wait for the capturable surface.
             record("screenshot_fullscreen", await wait { WindowSnapshot.save(window, to: output.appendingPathComponent("fullscreen.png")) })
             if fullscreen { window.toggleFullScreen(nil); _ = await wait { !window.styleMask.contains(.fullScreen) }; await delay(0.4) }
+            model.scheduleSubtitleOffset(2, language: .english); model.setVolume(25)
+            model.loadMedia(video, restoring: true)
+            record("loading_media_clears_old_feedback_and_offset_drafts", model.chrome.feedback == nil && model.pendingSubtitleOffsets.isEmpty)
+            _ = await wait { model.playbackReady }; await delay(1.2)
+            record("old_offset_draft_does_not_apply_to_loaded_media", model.englishOffset == oldEnglishOffset)
         }
         let result: [String: Any] = ["passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "checks": checks]
         try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]).write(to: output.appendingPathComponent("chrome.json"))
