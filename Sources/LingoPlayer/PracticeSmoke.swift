@@ -98,7 +98,7 @@ enum PracticeSmoke {
                 _ = await wait { !model.transcript.isPreparing }
                 record("english_offset_exits_loop_and_updates_jump", model.sentenceLoop == nil && model.transcript.document.rows.first(where: { $0.english?.id == first.id })?.start == 0.45)
                 model.startSentenceLoop(first)
-                record("loop_uses_english_offset", model.sentenceLoop?.start == 0.45 && model.sentenceLoop?.end == 1.25)
+                record("loop_uses_english_offset_and_independent_tail", model.sentenceLoop?.start == 0.45 && abs((model.sentenceLoop?.end ?? 0) - 2.05) < 0.001)
                 if let audio = model.audioStreams.first { model.selectAudio(audio.id) }
                 record("audio_selection_exits_loop", model.sentenceLoop == nil)
                 model.setOffset(0, language: .english); model.setOffset(0, language: .chinese)
@@ -158,6 +158,7 @@ enum PracticeSmoke {
             // local to this short fixture so the long transcript cannot reach EOF.
             model.playQueueItem(one.path)
             _ = await wait { model.media?.path == one.path && model.playbackReady && !model.english.isEmpty }; await pause()
+            checks.append(contentsOf: await ReplayTailSmoke.run(model))
             model.english = (0..<5000).map { SubtitleCue(id: "large-\($0)", start: Double($0), end: Double($0) + 0.9, text: "Sentence \($0): Practice listening while reading the transcript.") }
             model.chinese = (0..<5000).map { SubtitleCue(id: "zh-\($0)", start: Double($0), end: Double($0) + 0.8, text: "第 \($0) 句中文练习。") }
             let prepareStart = Date(); model.refreshTranscript(reset: true)

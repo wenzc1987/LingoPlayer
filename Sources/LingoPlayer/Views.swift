@@ -351,6 +351,11 @@ struct SubtitleControls: View {
                 }
             }
             Text("正数延后显示，负数提前显示。调整英文时间后会重新准备逐词高亮。").font(.caption).foregroundStyle(.secondary)
+            Divider()
+            Stepper(value: Binding(get: { model.sentenceTailPadding }, set: { model.setSentenceTailPadding($0) }), in: 0...3, step: 0.1) {
+                Text("句尾多播 \(model.sentenceTailPadding, specifier: "%.1f") 秒")
+            }
+            Text("回放本句和单句循环在句尾多播一小段，避免截断尾音。按视频记忆；若带入下句，可调小。不改变字幕偏移。").font(.caption).foregroundStyle(.secondary)
             if !model.audioStreams.isEmpty {
                 Picker("音轨", selection: Binding(get: { model.selectedAudio }, set: { model.selectAudio($0) })) {
                     ForEach(model.audioStreams) { stream in Text(stream.label).tag(stream.id) }

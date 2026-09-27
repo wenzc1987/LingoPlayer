@@ -1,0 +1,735 @@
+{
+  "date": "2026-09-27",
+  "version": "0.3.1",
+  "build": 6,
+  "cue_id": "cue-1227-en",
+  "text": "So I'm backing out the door, right? And I got the TV like this.",
+  "source_bounds": [
+    5076.38,
+    5080.11
+  ],
+  "offset": -1.7,
+  "shifted_bounds": [
+    5074.68,
+    5078.41
+  ],
+  "mfa_estimates": {
+    "original_window": [
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 0,
+        "start": 5075.1699999856955,
+        "end": 5075.409999995232
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 2,
+        "start": 5075.409999995232,
+        "end": 5075.640000014306
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 4,
+        "start": 5075.640000014306,
+        "end": 5075.970000057221
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 6,
+        "start": 5075.970000057221,
+        "end": 5076.1300000238425
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 8,
+        "start": 5076.1300000238425,
+        "end": 5076.209999947549
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 10,
+        "start": 5076.209999947549,
+        "end": 5076.490000038148
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 12,
+        "start": 5076.490000038148,
+        "end": 5076.799999980927
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 14,
+        "start": 5077.1399998950965,
+        "end": 5077.379999904633
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 16,
+        "start": 5077.410000114442,
+        "end": 5077.490000038148
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 18,
+        "start": 5077.490000038148,
+        "end": 5077.670000104905
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 20,
+        "start": 5077.670000104905,
+        "end": 5077.750000028611
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 22,
+        "start": 5077.750000028611,
+        "end": 5078.170000104905
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 24,
+        "start": 5078.170000104905,
+        "end": 5078.270000009537
+      },
+      {
+        "cueID": "offset-minus-1.7",
+        "tokenIndex": 26,
+        "start": 5078.270000009537,
+        "end": 5078.56
+      }
+    ],
+    "wider_window": [
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 0,
+        "start": 5075.1699999856955,
+        "end": 5075.409999995232
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 2,
+        "start": 5075.409999995232,
+        "end": 5075.640000014306
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 4,
+        "start": 5075.640000014306,
+        "end": 5075.970000057221
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 6,
+        "start": 5075.970000057221,
+        "end": 5076.140000014306
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 8,
+        "start": 5076.140000014306,
+        "end": 5076.209999947549
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 10,
+        "start": 5076.209999947549,
+        "end": 5076.490000038148
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 12,
+        "start": 5076.490000038148,
+        "end": 5076.799999980927
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 14,
+        "start": 5077.1399998950965,
+        "end": 5077.359999923707
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 16,
+        "start": 5077.3899998950965,
+        "end": 5077.490000038148
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 18,
+        "start": 5077.490000038148,
+        "end": 5077.670000104905
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 20,
+        "start": 5077.670000104905,
+        "end": 5077.750000028611
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 22,
+        "start": 5077.750000028611,
+        "end": 5078.220000057221
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 24,
+        "start": 5078.3899998950965,
+        "end": 5078.609999923707
+      },
+      {
+        "cueID": "tail-5079.3",
+        "tokenIndex": 26,
+        "start": 5078.609999923707,
+        "end": 5079.010000019074
+      }
+    ]
+  },
+  "limitations": [
+    "Word times are local forced-alignment estimates, not manual phoneme annotations.",
+    "The original final word reaches the extraction boundary; a much wider window also forced the final word into following speech. No reliable automatic sentence-boundary calibration is claimed.",
+    "Tail padding is independently adjustable and can include part of a following sentence."
+  ],
+  "native_replay": [
+    {
+      "cue_end": 5080.11,
+      "cue_start": 5076.38,
+      "first_settled_position": 5074.736,
+      "offset": -1.7,
+      "replay_finished": true,
+      "requested_end": 5078.41,
+      "requested_start": 5074.68,
+      "seek_confirmation_ms": 133.05333099560812,
+      "seek_error_ms": 55.99999999958527,
+      "settled": true,
+      "stopped_position": 5078.447999999999,
+      "tail_padding": 0
+    },
+    {
+      "cue_end": 5080.11,
+      "cue_start": 5076.38,
+      "first_settled_position": 5074.736,
+      "offset": -1.7,
+      "replay_finished": true,
+      "requested_end": 5079.21,
+      "requested_start": 5074.68,
+      "seek_confirmation_ms": 102.58746999897994,
+      "seek_error_ms": 55.99999999958527,
+      "settled": true,
+      "stopped_position": 5079.241,
+      "tail_padding": 0.8
+    }
+  ],
+  "checks": {
+    "swift": {
+      "passed": 59,
+      "total": 59
+    },
+    "python": {
+      "passed": 10,
+      "total": 10
+    },
+    "native_interaction": [
+      {
+        "checks": [
+          {
+            "detail": "974 lime pixels",
+            "name": "finder_icon_resolves_lime_artwork",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "app_version_and_dock_icon_packaged",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "native_about_window_opens",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "multi_file_drop_decodes_all_urls",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "batch_natural_sort_dedup_and_first_play",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "main_window_shortcut_toggles_once",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "add_does_not_interrupt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "reorder_preserves_current",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "remove_noncurrent_keeps_playback",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "remove_current_plays_original_successor",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "clear_stops_and_clears_learning",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "recorder_conflict_preserves_existing_binding",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "recorder_escape_cancels",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "clear_binding",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "recorded_binding_updates_menu_immediately",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "reset_all_defaults",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "settings_sheet_blocks_player_keys",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "marked_text_and_editing_keep_native_keys",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "popover_blocks_navigation_keys",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "detach_selects_queue_tab",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "detached_window_shortcut",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "close_detached_restores_learning_tab",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "sidebar_shortcut",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "sidebar_three_tab_cycle",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "sentence_navigation_offset_gap_preserves_lock_pause",
+            "passed": true
+          },
+          {
+            "detail": "已跳过：Episode4.mp4（文件缺失或无法读取）",
+            "name": "natural_eof_skips_unavailable_and_advances_once",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "natural_finish_remembered",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "queue_tail_stops_without_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "completed_video_reopens_from_start",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "scrub_to_end_does_not_autoplay",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "sentence_replay_at_eof_never_autoplays",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "remove_last_current_stops",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "all_unavailable_stop_with_message",
+            "passed": true
+          },
+          {
+            "detail": "Episode2.en.srt",
+            "name": "rapid_switch_filters_old_media_and_subtitles",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "autoplay_off_stays_on_current",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "resume_position_saved_for_restart",
+            "passed": true
+          }
+        ],
+        "elapsed_seconds": 15.976433038711548,
+        "passed": true,
+        "version": "0.3.1"
+      },
+      {
+        "checks": [
+          {
+            "detail": "position=1.25, paused=true, items=[\"Episode10.mp4\", \"Episode2.mp4\", \"Episode1.mp4\"]",
+            "name": "restart_restores_order_current_and_position_paused",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restart_stays_paused_without_playing",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "shortcuts_and_autoplay_restore_in_new_process",
+            "passed": true
+          }
+        ],
+        "elapsed_seconds": 1.6694309711456299,
+        "passed": true,
+        "version": "0.3.1"
+      }
+    ],
+    "native_practice": [
+      {
+        "checks": [
+          {
+            "detail": "",
+            "name": "v02_custom_bindings_win_new_default_conflicts",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "independent_files_overlap_and_unmatched_chinese",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "literal_case_insensitive_search",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "chinese_search_returns_both_overlaps",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "literal_no_results",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "return_current_clears_search_and_resumes_following",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "timestamp_navigation_preserves_pause_and_locked_card",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "continuous_loop_plays_and_preserves_locked_card",
+            "passed": true
+          },
+          {
+            "detail": "position=0.20833333333333331 → 0.20833333333333331, loops=3 → 3",
+            "name": "pause_preserves_loop_and_position",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "next_sentence_retargets_paused_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "previous_sentence_retargets_paused_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "timestamp_retargets_existing_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "toggle_off_preserves_position_and_pause",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "gap_disables_toolbar_loop_but_row_can_start",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "continue_learning_exits_loop_and_unlocks",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "one_shot_exits_loop_and_pauses_with_card",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "scrub_exits_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "five_second_jump_exits_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "chinese_offset_keeps_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "english_offset_exits_loop_and_updates_jump",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "loop_uses_english_offset_and_independent_tail",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "audio_selection_exits_loop",
+            "passed": true
+          },
+          {
+            "detail": "iterations=20, position=7.6, ",
+            "name": "twenty_tail_loops_at_double_speed_never_autoplay_or_finish",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "old_loop_seek_result_is_ignored",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "main_shortcut_cycles_to_english_once",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "hidden_mode_preserves_learning_and_video_geometry",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "bilingual_restores_without_geometry_change",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "search_field_keeps_player_shortcuts_native",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "settings_blocks_new_actions",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "main_shortcut_starts_loop_once",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "detached_shortcuts_share_loop_and_display_state",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "bilingual_replacement_resets_loop_search_and_browsing",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "rapid_media_switch_clears_loop_and_stale_transcript",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "negative_offset_replay_keeps_start_and_extends_tail",
+            "passed": true
+          },
+          {
+            "detail": "position=2.6666666666666665, word=tail-regression:2",
+            "name": "replay_still_plays_and_highlights_its_own_cue_after_subtitle_end",
+            "passed": true
+          },
+          {
+            "detail": "position=3.125",
+            "name": "replay_pauses_after_full_tail_and_keeps_practiced_subtitle",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "navigation_and_loop_target_stay_on_practiced_sentence_after_tail",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "tail_adjustment_preserves_offsets_and_alignment",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "tail_setting_persists_per_media_with_existing_offset",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "continue_learning_releases_practiced_subtitle",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "zero_tail_restores_subtitle_endpoint",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "direct_seek_clears_replay_subtitle",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "five_thousand_rows_prepare_and_search",
+            "passed": true
+          },
+          {
+            "detail": "following=false, row=4896 → 4896, offset=64.0 → 64.0",
+            "name": "native_manual_scroll_stops_automatic_follow",
+            "passed": true
+          },
+          {
+            "detail": "visible cell views=5",
+            "name": "native_table_virtualizes_large_transcript",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "return_current_scrolls_native_table_back",
+            "passed": true
+          },
+          {
+            "detail": "clock delta=1.958333333333333, maximum main actor gap=0.06405699253082275",
+            "name": "playback_advances_during_search_and_scroll_without_rebuild",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "chinese_only_navigation_and_disabled_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "chinese_only_timestamp_preserves_pause",
+            "passed": true
+          }
+        ],
+        "elapsed_seconds": 24.95612895488739,
+        "metrics": {
+          "main_actor_max_gap_seconds": 0.06405699253082275,
+          "tail_loop_iterations": 20,
+          "transcript_5000_prepare_seconds": 0.1646280288696289,
+          "transcript_5000_search_seconds_including_debounce": 0.21770811080932617
+        },
+        "passed": true,
+        "version": "0.3.1"
+      },
+      {
+        "checks": [
+          {
+            "detail": "",
+            "name": "restart_paused_with_display_preference_and_no_loop",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restart_resets_search_and_following",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "new_action_custom_bindings_restore",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restart_keeps_queue_and_unfinished_progress",
+            "passed": true
+          }
+        ],
+        "elapsed_seconds": 0.9309060573577881,
+        "metrics": {},
+        "passed": true,
+        "version": "0.3.1"
+      }
+    ]
+  },
+  "executable_sha256": "5d41d949fb855cefdc37fd5482641097d22e5cf627847e94caa111d18d54591a"
+}

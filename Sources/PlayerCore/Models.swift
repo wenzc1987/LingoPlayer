@@ -123,8 +123,20 @@ public struct SavedPlayback: Codable, Sendable {
     public var chinesePath: String?
     public var englishOffset: Double = 0
     public var chineseOffset: Double = 0
+    public var sentenceTailPadding: Double = SentenceLoop.defaultTailPadding
     public var audioStream: Int?
     public init() {}
+    enum CodingKeys: String, CodingKey { case position, englishPath, chinesePath, englishOffset, chineseOffset, sentenceTailPadding, audioStream }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        position = try values.decodeIfPresent(Double.self, forKey: .position) ?? 0
+        englishPath = try values.decodeIfPresent(String.self, forKey: .englishPath)
+        chinesePath = try values.decodeIfPresent(String.self, forKey: .chinesePath)
+        englishOffset = try values.decodeIfPresent(Double.self, forKey: .englishOffset) ?? 0
+        chineseOffset = try values.decodeIfPresent(Double.self, forKey: .chineseOffset) ?? 0
+        sentenceTailPadding = SentenceLoop.clampedTailPadding(try values.decodeIfPresent(Double.self, forKey: .sentenceTailPadding) ?? SentenceLoop.defaultTailPadding)
+        audioStream = try values.decodeIfPresent(Int.self, forKey: .audioStream)
+    }
 }
 
 public enum Timeline {

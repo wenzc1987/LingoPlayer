@@ -86,16 +86,24 @@ public struct TranscriptDocument: Sendable {
 }
 
 public struct SentenceLoop: Equatable, Sendable {
+    public static let defaultTailPadding = 0.8
+    public static func clampedTailPadding(_ value: Double) -> Double {
+        value.isFinite ? min(3, max(0, value)) : defaultTailPadding
+    }
     public let cueID: String
     public let start: Double
     public let end: Double
-    public init?(cue: SubtitleCue, offset: Double, duration: Double) {
-        let start = max(0, cue.start + offset), end = min(duration, cue.end + offset)
-        guard start.isFinite, end.isFinite, duration > 0, end > start else { return nil }
-        cueID = cue.id; self.start = start; self.end = end
+    public init?(cue: SubtitleCue, offset: Double, duration: Double, tailPadding: Double = 0) {
+        let shiftedStart = cue.start + offset, shiftedEnd = cue.end + offset
+        let start = max(0, shiftedStart)
+        guard shiftedStart.isFinite, shiftedEnd.isFinite, duration.isFinite, duration > 0,
+              shiftedEnd > shiftedStart, min(duration, shiftedEnd) > start else { return nil }
+        cueID = cue.id; self.start = start
+        // Display boundaries need not contain the entire spoken phrase. Padding
+        // belongs to listening controls and must never change the subtitle offset.
+        end = min(duration, shiftedEnd + Self.clampedTailPadding(tailPadding))
     }
     public func reachedEnd(at position: Double, eof: Bool) -> Bool {
-        // Keep the tolerance smaller than very short cues, preventing an immediate seek loop.
-        eof || position >= end - min(0.025, (end - start) / 4)
+        eof || position >= end
     }
 }

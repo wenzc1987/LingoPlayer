@@ -81,6 +81,28 @@ struct PracticeTests {
         #expect(loop.reachedEnd(at: 1.01, eof: false))
         #expect(loop.reachedEnd(at: 1.005, eof: true))
     }
+    @Test func advancedSubtitleCanReplayTheFullSpokenTailWithoutMovingItsStart() throws {
+        let sentence = cue("reported", 5076.38, 5080.11, "So I'm backing out the door, right? And I got the TV like this.")
+        let range = try #require(SentenceLoop(cue: sentence, offset: -1.7, duration: 8552.659, tailPadding: 0.8))
+        #expect(abs(range.start - 5074.68) < 0.0001)
+        #expect(abs(range.end - 5079.21) < 0.0001)
+        #expect(!range.reachedEnd(at: 5078.41, eof: false))
+        #expect(!range.reachedEnd(at: 5079.01, eof: false))
+        #expect(!range.reachedEnd(at: range.end - 0.01, eof: false))
+        #expect(range.reachedEnd(at: range.end, eof: false))
+        #expect(sentence.end == 5080.11)
+    }
+    @Test func listeningTailIsBoundedAndCannotResurrectInvalidCues() throws {
+        let sentence = cue("a", 1, 2, "One")
+        #expect(SentenceLoop(cue: sentence, offset: 0, duration: 10, tailPadding: -1)?.end == 2)
+        #expect(SentenceLoop(cue: sentence, offset: 0, duration: 10, tailPadding: 100)?.end == 5)
+        #expect(SentenceLoop(cue: sentence, offset: 0, duration: 2.4, tailPadding: 0.8)?.end == 2.4)
+        #expect(SentenceLoop(cue: sentence, offset: -3, duration: 10, tailPadding: 3) == nil)
+        #expect(SentenceLoop(cue: cue("empty", 1, 1, ""), offset: 0, duration: 10, tailPadding: 0.8) == nil)
+        #expect(SentenceLoop(cue: sentence, offset: .nan, duration: 10, tailPadding: 0.8) == nil)
+        #expect(SentenceLoop(cue: sentence, offset: 0, duration: .infinity, tailPadding: 0.8) == nil)
+        #expect(SentenceLoop.clampedTailPadding(.nan) == 0.8)
+    }
     @Test func loopEOFIsConsumedAndCannotLeakIntoNormalPlayback() {
         let id = UUID(); var gate = PlaybackEndGate(); gate.begin(id, purpose: .sentenceLoop, playing: true)
         for _ in 0..<25 {
