@@ -142,6 +142,8 @@ struct QueuePanel: View {
 
 struct SettingsPanel: View {
     @ObservedObject var model: AppModel
+    @State private var page: Int
+    init(model: AppModel) { self.model = model; _page = State(initialValue: model.settingsPage) }
     var body: some View {
         VStack(spacing: 16) {
             HStack {
@@ -149,16 +151,21 @@ struct SettingsPanel: View {
                 Text("设置").font(.title2.bold()); Spacer()
                 Button("关闭") { model.showSettings = false }.keyboardShortcut(.cancelAction)
             }
-            Picker("设置页面", selection: $model.settingsPage) {
+            Picker("设置页面", selection: $page) {
                 Text("字幕与环境").tag(0)
                 Text("快捷键").tag(1)
-            }.pickerStyle(.segmented).labelsHidden().frame(width: 280)
-            Group {
-                if model.settingsPage == 0 { RuntimeSettingsPanel(model: model) }
-                else { ShortcutSettingsPanel(model: model) }
+            }.pickerStyle(.segmented).labelsHidden().frame(width: 280).accessibilityIdentifier("settings-page")
+            ZStack {
+                RuntimeSettingsPanel(model: model)
+                    .opacity(page == 0 ? 1 : 0)
+                    .allowsHitTesting(page == 0).accessibilityHidden(page != 0)
+                ShortcutSettingsPanel(model: model)
+                    .opacity(page == 1 ? 1 : 0)
+                    .allowsHitTesting(page == 1).accessibilityHidden(page != 1)
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }.padding(22).frame(width: 690, height: 670).background(Palette.background)
-            .onDisappear { model.recordingAction = nil }
+            .onChange(of: page) { _, _ in if model.recordingAction != nil { model.recordingAction = nil } }
+            .onDisappear { model.settingsPage = page; model.recordingAction = nil }
     }
 }
 

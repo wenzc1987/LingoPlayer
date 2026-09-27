@@ -57,10 +57,12 @@ private struct SubtitleHeightKey: PreferenceKey {
 struct PlayerStage: View {
     @ObservedObject var model: AppModel
     @ObservedObject var chrome: PlayerChrome
+    @ObservedObject var viewing: ViewingPreferencesStore
     @State private var subtitleHeight: CGFloat = 0
-    init(model: AppModel) { self.model = model; chrome = model.chrome }
+    init(model: AppModel) { self.model = model; chrome = model.chrome; viewing = model.viewing }
     var body: some View {
         GeometryReader { geometry in
+            let bottomInset = min(CGFloat(viewing.subtitles.bottomInset), max(8, geometry.size.height - subtitleHeight - 250))
             ZStack(alignment: .bottom) {
                 VideoSurface(view: model.videoView)
                 Color.clear.contentShape(Rectangle()).onTapGesture { chrome.toggle() }
@@ -69,7 +71,7 @@ struct PlayerStage: View {
                 SubtitleStrip(model: model)
                     .frame(maxWidth: geometry.size.width * 0.92)
                     .background(GeometryReader { proxy in Color.clear.preference(key: SubtitleHeightKey.self, value: proxy.size.height) })
-                    .padding(.bottom, 24)
+                    .padding(.bottom, bottomInset)
                 if chrome.visible {
                     if let title = model.media?.title {
                         Text("《\(title)》")
@@ -86,7 +88,7 @@ struct PlayerStage: View {
                     .frame(width: min(860, max(0, geometry.size.width - 32)))
                     // Keep native hover tracking out of the subtitle area below.
                     .onHover { chrome.hold(.pointer, active: $0) }
-                    .padding(.bottom, model.media == nil ? 24 : max(76, subtitleHeight) + 42)
+                    .padding(.bottom, model.media == nil ? 24 : bottomInset + max(76, subtitleHeight) + 18)
                     .transition(.opacity)
                 }
                 PlaybackFeedbackOverlay(chrome: chrome)
@@ -95,7 +97,7 @@ struct PlayerStage: View {
                 if let notice = chrome.notice {
                     Text(notice).font(.system(size: 12)).foregroundStyle(.white)
                         .padding(12).background(.black.opacity(0.8), in: RoundedRectangle(cornerRadius: 10))
-                        .padding(.bottom, max(76, subtitleHeight) + 172).allowsHitTesting(false)
+                        .padding(.bottom, bottomInset + max(76, subtitleHeight) + 148).allowsHitTesting(false)
                 }
                 Color.clear.frame(height: 28).contentShape(Rectangle())
                     .onHover { chrome.hold(.windowButtons, active: $0) }
@@ -120,7 +122,8 @@ struct PlayerStage: View {
 struct SubtitleStrip: View {
     @ObservedObject var model: AppModel
     @ObservedObject var presentation: SubtitlePresentation
-    init(model: AppModel) { self.model = model; presentation = model.subtitles }
+    @ObservedObject var viewing: ViewingPreferencesStore
+    init(model: AppModel) { self.model = model; presentation = model.subtitles; viewing = model.viewing }
     var body: some View {
         let _ = PerformanceCounters.shared.hit("subtitle_body")
         content.opacity(model.preferences.subtitleDisplay == .hidden ? 0 : 1)
@@ -137,7 +140,7 @@ struct SubtitleStrip: View {
                             let locked = presentation.lockedWordID == "\(cue.id):\(token.id)"
                             if token.isWord {
                                 Button { model.lock(cue: cue, token: token) } label: {
-                                    Text(token.text).font(.system(size: 23, weight: spoken ? .semibold : .medium))
+                                    Text(token.text).font(.system(size: viewing.subtitles.englishSize, weight: spoken ? .semibold : .medium))
                                         .foregroundStyle(spoken ? .black : .white.opacity(0.93))
                                         .padding(.horizontal, 3).padding(.vertical, 3)
                                         .background(spoken ? Palette.accent : .clear, in: RoundedRectangle(cornerRadius: 5))
@@ -145,18 +148,18 @@ struct SubtitleStrip: View {
                                         .contentShape(Rectangle())
                                 }.buttonStyle(.plain).help("暂停并学习 \(token.text)").accessibilityIdentifier("subtitle-word-\(cue.id)-\(token.id)")
                             } else {
-                                Text(token.text.replacingOccurrences(of: "\n", with: " ")).font(.system(size: 21)).foregroundStyle(.white.opacity(0.8)).padding(.vertical, 3)
+                                Text(token.text.replacingOccurrences(of: "\n", with: " ")).font(.system(size: max(14, viewing.subtitles.englishSize - 2))).foregroundStyle(.white.opacity(0.8)).padding(.vertical, 3)
                             }
                         }
                     }
                 }
-                if !model.bilingualText.isEmpty { Text(model.bilingualText).font(.system(size: 15)).foregroundStyle(.white.opacity(0.85)).multilineTextAlignment(.center).opacity(model.preferences.subtitleDisplay == .bilingual ? 1 : 0).accessibilityHidden(model.preferences.subtitleDisplay != .bilingual) }
+                if !model.bilingualText.isEmpty { Text(model.bilingualText).font(.system(size: viewing.subtitles.chineseSize)).foregroundStyle(.white.opacity(0.85)).multilineTextAlignment(.center).opacity(model.preferences.subtitleDisplay == .bilingual ? 1 : 0).accessibilityHidden(model.preferences.subtitleDisplay != .bilingual) }
             }
         }
         .padding(.horizontal, 12).padding(.vertical, 8)
         .background {
             if !model.activeEnglish.isEmpty || !model.activeChinese.isEmpty {
-                RoundedRectangle(cornerRadius: 10).fill(.black.opacity(0.38))
+                RoundedRectangle(cornerRadius: 10).fill(.black.opacity(viewing.subtitles.backgroundOpacity))
             }
         }
     }
@@ -416,44 +419,78 @@ struct LearningPanel: View {
 
 struct SubtitleControls: View {
     @ObservedObject var model: AppModel
+    @ObservedObject var viewing: ViewingPreferencesStore
+    @State private var page = 0
+    init(model: AppModel) { self.model = model; viewing = model.viewing }
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 14) {
             Text("播放设置").font(.headline)
+            Picker("设置页", selection: $page) {
+                Text("时间与播放").tag(0)
+                Text("字幕外观").tag(1)
+            }.pickerStyle(.segmented).accessibilityIdentifier("playback-settings-page")
+            ScrollView {
+                ZStack(alignment: .topLeading) {
+                    timingControls.opacity(page == 0 ? 1 : 0)
+                        .allowsHitTesting(page == 0).accessibilityHidden(page != 0)
+                    SubtitleAppearanceControls(viewing: viewing).opacity(page == 1 ? 1 : 0)
+                        .allowsHitTesting(page == 1).accessibilityHidden(page != 1)
+                }
+            }.frame(height: 440)
+            HStack {
+                Text("设置自动保存").font(.caption).foregroundStyle(.secondary)
+                Spacer()
+                Button("高级设置…") { model.showSettings = true; model.showSubtitleControls = false }
+            }
+        }.padding(20).frame(width: 380)
+    }
+    private var timingControls: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label(model.subtitleOffsetStatus, systemImage: model.pendingSubtitleOffsets.isEmpty ? "checkmark.circle" : "clock")
+                    .foregroundStyle(model.pendingSubtitleOffsets.isEmpty ? Palette.accent : .orange)
+                    .accessibilityIdentifier("subtitle-offset-status")
+                Spacer()
+                Button("全部归零") { model.resetSubtitleOffsets() }
+                    .disabled(model.media == nil || (model.englishOffset == 0 && model.chineseOffset == 0 && model.pendingSubtitleOffsets.isEmpty))
+                    .accessibilityIdentifier("reset-subtitle-offsets")
+            }.font(.system(size: 12))
+            Toggle("联动调整中英文", isOn: Binding(get: { viewing.linkedSubtitleOffsets }, set: { viewing.setLinkedOffsets($0) }))
+                .toggleStyle(.switch).controlSize(.small).accessibilityIdentifier("link-subtitle-offsets")
             ForEach(SubtitleLanguage.allCases, id: \.self) { language in
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 5) {
                     Stepper(value: Binding(get: { model.subtitleOffsetDraft(language) }, set: { model.scheduleSubtitleOffset($0, language: language) }), step: 0.1) {
                         Text("\(language.title)字幕 \(model.subtitleOffsetDraft(language), specifier: "%.1f") 秒").monospacedDigit()
                     }
                     .disabled(model.media == nil).accessibilityIdentifier("subtitle-offset-\(language.rawValue)")
-                    Text(language == .english ? model.englishSource : model.chineseSource).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                    Text(language == .english ? model.englishSource : model.chineseSource).font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 }
             }
-            Text("每次调整 0.1 秒，停止调整 1 秒后生效。正数延后显示，负数提前显示；英文时间生效后会重新准备逐词高亮。").font(.caption).foregroundStyle(.secondary)
+            Text("每次 0.1 秒，停止调整 1 秒后生效。正数延后，负数提前；联动时两种字幕同步增减，保留原有时间差。")
+                .font(.caption).foregroundStyle(.secondary)
             Divider()
             Stepper(value: Binding(get: { model.sentenceTailPadding }, set: { model.setSentenceTailPadding($0) }), in: 0...3, step: 0.1) {
                 Text("句尾多播 \(model.sentenceTailPadding, specifier: "%.1f") 秒")
             }
-            Text("回放本句和单句循环在句尾多播一小段，避免截断尾音。按视频记忆；若带入下句，可调小。不改变字幕偏移。").font(.caption).foregroundStyle(.secondary)
+            Text("回放和单句循环在句尾多播一小段，避免截断尾音；按视频记忆，不改变字幕偏移。")
+                .font(.caption).foregroundStyle(.secondary)
             if !model.audioStreams.isEmpty {
                 Picker("音轨", selection: Binding(get: { model.selectedAudio }, set: { model.selectAudio($0) })) {
                     ForEach(model.audioStreams) { stream in Text(stream.label).tag(stream.id) }
                 }
             }
-            Text(model.subtitleStatus).font(.caption).foregroundStyle(.secondary)
             Button("重新准备逐词高亮") { model.restartAlignment() }
                 .accessibilityIdentifier("reprepare-alignment")
-            Divider()
+            Text(model.subtitleStatus).font(.caption).foregroundStyle(.secondary).lineLimit(1)
             Text(model.practiceMessage.isEmpty ? model.alignmentStatus : model.practiceMessage)
-                .font(.caption).foregroundStyle(.secondary).lineLimit(3)
+                .font(.caption).foregroundStyle(.secondary).lineLimit(2)
             HStack {
                 if model.alignmentTaskStatus.diagnostic != nil {
                     Button("查看详情") { model.showSubtitleControls = false; model.viewAlignmentDetails() }
                 }
                 if model.alignmentTaskStatus.canRetry { Button("重试") { model.retryAlignment() } }
-                Spacer()
-                Button("高级设置…") { model.showSettings = true; model.showSubtitleControls = false }
             }
-        }.padding(22).frame(width: 340)
+        }.padding(.vertical, 2)
     }
 }
 
@@ -493,7 +530,8 @@ struct SubtitleSearchPanel: View {
                 }.padding(.vertical, 7)
             }.listStyle(.inset).frame(minHeight: 260)
             HStack {
-                Button("手动导入…") { model.showSubtitleSearch = false; model.chooseSubtitle(model.searchLanguage) }
+                Button("手动导入…") { model.chooseSubtitle(model.searchLanguage) }
+                    .accessibilityIdentifier("search-manual-import")
                 Spacer()
                 Text("来源：OpenSubtitles").font(.caption).foregroundStyle(.secondary)
             }
@@ -509,6 +547,7 @@ struct RuntimeSettingsPanel: View {
     @State private var password = ""
     @State private var message = ""
     @State private var loggingIn = false
+    @State private var loadingCredentials = true
     init(model: AppModel) { self.model = model; _draft = State(initialValue: model.settings) }
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -516,6 +555,7 @@ struct RuntimeSettingsPanel: View {
             Form {
                 Section("在线字幕") {
                     SecureField("OpenSubtitles API Key", text: $apiKey)
+                        .disabled(loadingCredentials)
                     Toggle("缺少字幕时自动搜索", isOn: $draft.autoSearch)
                     TextField("用户名（下载需要时填写）", text: $username)
                     SecureField("密码（仅用于本次登录）", text: $password)
@@ -540,6 +580,7 @@ struct RuntimeSettingsPanel: View {
                     pathField("MFA", value: $draft.mfa)
                     pathField("ECDICT 词库", value: $draft.dictionary)
                     TextField("英文声学模型", text: $draft.acousticModel)
+                        .accessibilityIdentifier("settings-acoustic-model")
                     TextField("发音词典", text: $draft.pronunciationDictionary)
                     Text("运行 scripts/setup-runtime.sh 可准备依赖。播放库变更需重启；词库与对齐设置立即生效。").font(.caption).foregroundStyle(.secondary)
                     Button("重新检测已安装依赖") { draft = RuntimeSettings.load(); message = "已重新检测，点击保存应用。" }
@@ -552,17 +593,23 @@ struct RuntimeSettingsPanel: View {
                 Button("保存") {
                     do { try model.saveSettings(draft, apiKey: apiKey); model.showSettings = false }
                     catch { message = error.localizedDescription }
-                }.buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction)
+                }.buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction).disabled(loadingCredentials)
             }
-        }.padding(16).onAppear { apiKey = SecretStore.read("api-key") }
+        }.padding(16).task {
+            guard loadingCredentials else { return }
+            let key = await Task.detached(priority: .userInitiated) { SecretStore.read("api-key") }.value
+            guard !Task.isCancelled else { return }
+            apiKey = key; loadingCredentials = false
+        }
     }
     private func pathField(_ name: String, value: Binding<String>) -> some View {
         HStack {
             TextField(name, text: value)
             Button("选择") {
-                let panel = NSOpenPanel(); panel.canChooseDirectories = false; panel.canChooseFiles = true
-                if panel.runModal() == .OK, let url = panel.url { value.wrappedValue = url.path }
-            }
+                model.filePanels.present { $0.message = "选择\(name)" } completion: { urls in
+                    if let url = urls.first { value.wrappedValue = url.path }
+                }
+            }.accessibilityIdentifier("choose-runtime-" + name)
         }
     }
 }

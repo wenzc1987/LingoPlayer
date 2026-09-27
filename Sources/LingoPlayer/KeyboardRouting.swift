@@ -42,7 +42,7 @@ final class KeyboardRouter {
     private func presentationBlocked(in window: NSWindow?) -> Bool {
         guard let model, isPlayerWindow(window) else { return true }
         if model.showSettings || model.showSubtitleSearch || model.showSubtitleControls || model.playerPopover != nil || model.showAlignmentDetails || model.alert != nil || model.recordingAction != nil { return true }
-        return NSApp.modalWindow != nil || window?.attachedSheet != nil
+        return model.filePanels.isPresenting || NSApp.modalWindow != nil || window?.attachedSheet != nil
     }
     private func isTextInput(_ responder: NSResponder?) -> Bool {
         // NSControl also includes buttons, sliders and tables. Their focus must
@@ -72,7 +72,7 @@ final class KeyboardRouter {
         }
         guard event.type == .keyDown else { return event }
         guard let model else { return event }
-        if let action = model.recordingAction, model.showSettings, NSApp.modalWindow == nil {
+        if let action = model.recordingAction, model.showSettings, !model.filePanels.isPresenting, NSApp.modalWindow == nil {
             if event.keyCode == 53 { model.recordingAction = nil; model.shortcutMessage = "已取消录入。"; return nil }
             if !event.isARepeat { model.bind(Shortcut(event: event), to: action) }
             return nil

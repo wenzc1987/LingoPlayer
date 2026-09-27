@@ -7,7 +7,7 @@ info = {
     "CFBundleExecutable": "LingoPlayer", "CFBundleIdentifier": "local.lingoplayer.mac",
     "CFBundleName": "LingoPlayer", "CFBundleDisplayName": "LingoPlayer",
     "CFBundlePackageType": "APPL", "CFBundleShortVersionString": "0.3.1",
-    "CFBundleIconFile": "AppIcon", "CFBundleVersion": "10", "LSMinimumSystemVersion": "14.0", "NSHighResolutionCapable": True,
+    "CFBundleIconFile": "AppIcon.icns", "CFBundleVersion": "12", "LSMinimumSystemVersion": "14.0", "NSHighResolutionCapable": True,
     "NSPrincipalClass": "NSApplication", "LingoPlayerRuntime": runtime,
     "CFBundleDocumentTypes": [{"CFBundleTypeName": "Video and subtitle files", "CFBundleTypeRole": "Viewer", "LSHandlerRank": "Alternate", "CFBundleTypeExtensions": ["mp4", "mkv", "mov", "avi", "webm", "m4v", "srt", "ass", "ssa", "vtt"]}]
 }

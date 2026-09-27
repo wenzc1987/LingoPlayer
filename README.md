@@ -4,7 +4,7 @@
 
 ## 在当前 Mac 上使用
 
-已构建的应用位于 `dist/LingoPlayer.app`，可在 Finder 中双击打开。拖入视频，或使用 `⌘O` 选择文件。
+已构建的应用位于 `dist/LingoPlayer.app`，可在 Finder 中双击打开。应用包内含多尺寸 logo；构建结束会注册并刷新该应用包的图标信息。拖入视频，或使用 `⌘O` 选择文件。
 
 本机构建将播放库放入应用包，MFA 和词库仍使用本项目的 `.runtime`。请保留项目目录；移动目录后需重新构建。此包是本机签名的个人技术原型，尚不是可独立分发的安装包。
 
@@ -26,6 +26,10 @@ open dist/LingoPlayer.app
 - 自动加载同目录同名字幕（例如 `film.en.srt`、`film.zh.srt`）与内嵌文字字幕；“字幕”菜单支持选择其他候选、手动导入及在线搜索。
 - 支持 SRT、ASS/SSA、VTT。双语文件按中英文行拆分；中文和英文分别按自己的时间显示，可在播放设置中用上下箭头独立调整偏移，每次 0.1 秒。停止调整 1 秒后生效并保存，关闭弹层仍会应用；正值表示字幕推迟。
 - 等待生效期间点击“重新准备逐词高亮”会保留调整值和原定生效时间；直接退出应用也会保存最后选定的偏移，供下次打开影片恢复。
+- 播放设置显示“等待生效／已生效”；“联动调整中英文”让两种字幕同步增减并保留原有时间差，“全部归零”同时重置两种偏移，仍在停止调整 1 秒后应用。
+- 音量、倍速和普通窗口大小自动记忆，重启后恢复；全屏不会覆盖普通窗口大小。恢复窗口时会适配当前屏幕的可用空间。
+- 播放设置的“字幕外观”页可分别调整中英文字号、背景不透明度和距底部距离，预览与视频字幕同步更新，自动保存并用于后续视频。“恢复默认”仅重置外观。字幕变大或上移时，操作面板会随之避让。
+- 设置页切换保留未保存的表单内容；关闭设置后放弃尚未保存的运行环境改动。选择视频、字幕和运行环境文件时，窗口异步打开并复用，取消不改变当前播放或设置；文件窗口内的输入不会触发播放快捷键。
 - 打开视频立即播放。MFA 在后台使用本地音频和已有英文字幕生成单词时间戳；未准备或失败的片段显示整句，仍能点词，不使用平均分配的假时间。
 - 默认词卡随发音更新。点击英文单词暂停并锁定；普通播放按钮或 `⌘P` 继续播放时保留词卡。
 - “继续学习”或 `⌘Return` 退出循环、解除锁定并恢复播放；“回放本句”或 `⌘R` 退出循环，播放选中台词一次后暂停，保留词卡。
@@ -121,6 +125,7 @@ bash scripts/build-app.sh
 |---|---|
 | `library.sqlite` | 观看位置、时长、完成状态、单个队列顺序与当前项、音轨、字幕路径、偏移、逐句对齐缓存 |
 | `interaction.json` | 快捷键、自动连播和视频字幕显示偏好；与运行环境设置独立 |
+| `viewing.json` | 音量、倍速、普通窗口大小、字幕外观和中英文偏移联动偏好 |
 | `settings.json` | 本地依赖路径与自动搜索设置；不含密钥 |
 | `MFA/pretrained_models` | 本地声学模型及发音词典 |
 | `Subtitles` | 抽取的内嵌字幕和下载字幕 |
@@ -144,7 +149,9 @@ bash scripts/run-practice-smoke.sh
 bash scripts/run-interaction-smoke.sh
 bash scripts/run-keyboard-smoke.sh
 bash scripts/run-chrome-smoke.sh
+bash scripts/run-viewing-smoke.sh
 bash scripts/run-performance-smoke.sh
+bash scripts/run-ui-performance-smoke.sh
 python3 scripts/prepare-validation.py
 python3 Sources/LingoPlayer/Resources/alignment_worker.py \
   --request verification/local/clear-request.json \
@@ -162,6 +169,8 @@ GUI 自检会打开真实窗口、静音播放，在独立测试数据目录中�
 性能自检使用 5,000 条字幕与明确标记的合成单词时间，分别测量沉浸播放、操作面板、学习栏和字幕全文。报告进程 CPU 时间、界面更新与文字测量次数，并检查单词高亮和视频绘制持续进行。探针只在显式自检时启用；不评估语音对齐精度。隐藏面板停止创建控件，后台全文暂停刷新；重新展开会同步当前字幕，并保留手动阅读位置。
 
 build 8 的同条件性能对比、各场景限制与回归结果见 [性能验证记录](verification/PERFORMANCE-2026-09-27.md)。
+
+build 12 进一步优化播放时窗口缩放、设置页切换和文件选择。应用合成阶段的视图查询不再等待视频绘制锁；文件选择异步完成，设置草稿在页签间保留。对比数据及仍存在的首次文件窗口开销见 [交互响应验证](verification/UI-RESPONSIVENESS-2026-09-28.md)。`scripts/run-ui-performance-smoke.sh` 支持依次指定输出目录、应用包和本地视频路径，默认使用 1080p 合成素材。
 
 逐词精度需要独立的人工标注，不能用模型输出给自己打分。标注 CSV 字段为 `cueID,tokenIndex,start,category`，category 为 `clear` / `fast` / `music`，start 为相对于视频的秒数。评估命令：
 

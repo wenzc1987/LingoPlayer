@@ -19,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     private var terminationPrepared = false
     private var terminationInProgress = false
     private var pendingFiles: [URL] = []
+    private var mainWindowTransition = false
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.setActivationPolicy(.regular)
         NSApp.appearance = NSAppearance(named: .darkAqua)
@@ -27,7 +28,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         model.onDetach = { [weak self] in self?.detachLearning() }
         model.onReattach = { [weak self] in self?.learningWindow?.performClose(nil) }
         model.onShortcutsChanged = { [weak self] in self?.installMenu() }
-        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1260, height: 800), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
+        let remembered = model.viewing.windowSize
+        let available = NSScreen.main?.visibleFrame.size ?? NSSize(width: 1260, height: 828)
+        let size = NSSize(width: min(remembered.width, max(980, available.width)), height: min(remembered.height, max(640, available.height - 28)))
+        let window = NSWindow(contentRect: NSRect(origin: .zero, size: size), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
         window.title = "LingoPlayer"; window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden; window.isOpaque = false; window.backgroundColor = .clear
         window.minSize = NSSize(width: 980, height: 640)
@@ -35,6 +39,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         window.contentView = NSHostingView(rootView: PlayerRootView(model: model).preferredColorScheme(.dark))
         window.center(); window.makeKeyAndOrderFront(nil)
         self.window = window
+        window.delegate = self
         model.chrome.onVisibilityChange = { [weak window] visible in
             for button in [NSWindow.ButtonType.closeButton, .miniaturizeButton, .zoomButton] {
                 window?.standardWindowButton(button)?.isHidden = !visible
@@ -48,6 +53,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(of: "--ui-performance-test"), CommandLine.arguments.count > index + 2 {
+            Task { await UIResponsivenessSmoke.run(model: model, window: window, video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2])) }
+            return
+        }
+        if let index = CommandLine.arguments.firstIndex(where: { ["--viewing-test", "--viewing-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
+            Task { await ViewingSmoke.run(model: model, window: window, video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]), restore: CommandLine.arguments[index] == "--viewing-restore") }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(of: "--performance-test"), CommandLine.arguments.count > index + 2 {
             Task { await PerformanceSmoke.run(model: model, window: window, video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2])) }
             return
@@ -123,6 +136,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         if terminationPrepared { return .terminateNow }
         if !terminationInProgress {
             terminationInProgress = true
+            rememberMainWindowSize()
             Task {
                 await model?.prepareShutdown(); terminationPrepared = true
                 // Re-enter termination outside the active Swift concurrency job;
@@ -146,7 +160,39 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         learningWindow = panel; model.isDetached = true; model.sidebarTab = .queue; panel.makeKeyAndOrderFront(nil)
     }
     func windowWillClose(_ notification: Notification) {
+        if let closing = notification.object as? NSWindow, closing === window { rememberMainWindowSize() }
         if let closing = notification.object as? NSWindow, closing === learningWindow { learningWindow = nil; model?.isDetached = false; model?.sidebarTab = .learning }
+    }
+    private func rememberMainWindowSize() {
+        guard let window, !mainWindowTransition, !window.styleMask.contains(.fullScreen), !window.isZoomed,
+              let size = window.contentView?.bounds.size, size.width > 0, size.height > 0 else { return }
+        model?.viewing.setWindowSize(PlayerWindowSize(width: size.width, height: size.height))
+    }
+    func windowDidResize(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed === window, !changed.inLiveResize { rememberMainWindowSize() }
+    }
+    func windowDidEndLiveResize(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed === window { rememberMainWindowSize() }
+    }
+    func windowWillEnterFullScreen(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed === window {
+            rememberMainWindowSize(); mainWindowTransition = true
+        }
+    }
+    func windowDidEnterFullScreen(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = false }
+    }
+    func windowWillExitFullScreen(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = true }
+    }
+    func windowDidExitFullScreen(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed === window { mainWindowTransition = false }
+    }
+    func windowDidFailToEnterFullScreen(_ window: NSWindow) {
+        if window === self.window { mainWindowTransition = false }
+    }
+    func windowDidFailToExitFullScreen(_ window: NSWindow) {
+        if window === self.window { mainWindowTransition = false }
     }
     @objc private func openVideo() { model?.chooseVideo() }
     @objc private func openSubtitles() { model?.chooseSubtitle() }

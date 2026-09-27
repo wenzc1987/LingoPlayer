@@ -27,6 +27,8 @@ final class AppModel: ObservableObject {
     let subtitles = SubtitlePresentation()
     let learningPresentation = LearningPresentation()
     let chrome = PlayerChrome()
+    let viewing: ViewingPreferencesStore
+    let filePanels = FilePanelPresenter()
     @Published var sentenceLoop: SentenceLoop?
     @Published var practiceMessage = ""
     var loopIterations = 0
@@ -127,6 +129,8 @@ final class AppModel: ObservableObject {
         player = MPVPlayer(library: loaded.libmpv)
         videoView = MPVVideoView(player: player)
         store = StorageWorker(url: RuntimeSettings.supportDirectory.appendingPathComponent("library.sqlite"))
+        viewing = ViewingPreferencesStore(storage: store!)
+        volume = viewing.volume; speed = viewing.speed
         store?.onError = { [weak self] message in Task { @MainActor in self?.queueMessage = "本地数据保存失败：\(message)" } }
         player.onUpdate = { [weak self] snapshot in self?.receive(snapshot) }
         videoView.onRenderError = { [weak self] message in self?.alert = message }
@@ -159,17 +163,21 @@ final class AppModel: ObservableObject {
     var firstAlignedWord: TimedWord? { timings.first }
 
     func chooseVideo(adding: Bool = false) {
-        let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.movie, .video, .audio, .mpeg4Movie, UTType(filenameExtension: "mkv") ?? .movie]
-        panel.allowsMultipleSelection = true
-        panel.message = "打开本地视频，开始字幕学习"
-        if panel.runModal() == .OK { ingest(panel.urls, adding: adding) }
+        filePanels.present { panel in
+            panel.allowedContentTypes = [.movie, .video, .audio, .mpeg4Movie, UTType(filenameExtension: "mkv") ?? .movie]
+            panel.allowsMultipleSelection = true
+            panel.message = "打开本地视频，开始字幕学习"
+        } completion: { [weak self] urls in self?.ingest(urls, adding: adding) }
     }
     func chooseSubtitle(_ language: SubtitleLanguage? = nil) {
-        let panel = NSOpenPanel()
-        panel.allowedContentTypes = ["srt", "ass", "ssa", "vtt"].compactMap { UTType(filenameExtension: $0) }
-        panel.message = language.map { "导入\($0.title)字幕" } ?? "导入双语字幕或单语字幕"
-        if panel.runModal() == .OK, let url = panel.url { importSubtitle(url, language: language) }
+        filePanels.present { panel in
+            panel.allowedContentTypes = ["srt", "ass", "ssa", "vtt"].compactMap { UTType(filenameExtension: $0) }
+            panel.message = language.map { "导入\($0.title)字幕" } ?? "导入双语字幕或单语字幕"
+        } completion: { [weak self] urls in
+            guard let self, let url = urls.first else { return }
+            if self.showSubtitleSearch { self.showSubtitleSearch = false }
+            self.importSubtitle(url, language: language)
+        }
     }
     func acceptDrop(_ url: URL) { acceptFiles([url]) }
     func open(_ url: URL) { ingest([url]) }
@@ -323,9 +331,26 @@ final class AppModel: ObservableObject {
         guard value.isFinite, media != nil else { return }
         let rounded = (value * 10).rounded() / 10
         guard rounded.isFinite else { return }
-        let applied = language == .english ? englishOffset : chineseOffset
-        if rounded == applied { pendingSubtitleOffsets.removeValue(forKey: language) }
-        else { pendingSubtitleOffsets[language] = rounded }
+        if viewing.linkedSubtitleOffsets {
+            let delta = ((rounded - subtitleOffsetDraft(language)) * 10).rounded() / 10
+            func shifted(_ value: Double) -> Double { NSDecimalNumber(decimal: Decimal(value) + Decimal(delta)).doubleValue }
+            // Shift both actual values by the same amount, including legacy
+            // hundredths, so linking never erases an existing language gap.
+            scheduleSubtitleOffsets([
+                .english: shifted(pendingSubtitleOffsets[.english] ?? englishOffset),
+                .chinese: shifted(pendingSubtitleOffsets[.chinese] ?? chineseOffset)
+            ])
+        } else { scheduleSubtitleOffsets([language: rounded]) }
+    }
+    func resetSubtitleOffsets() { scheduleSubtitleOffsets([.english: 0, .chinese: 0]) }
+    var subtitleOffsetStatus: String { media == nil ? "未加载视频" : pendingSubtitleOffsets.isEmpty ? "已生效" : "等待生效" }
+    private func scheduleSubtitleOffsets(_ adjustments: [SubtitleLanguage: Double]) {
+        guard media != nil, adjustments.values.allSatisfy(\.isFinite) else { return }
+        for (language, value) in adjustments {
+            let applied = language == .english ? englishOffset : chineseOffset
+            if abs(value - applied) < 1e-9 { pendingSubtitleOffsets.removeValue(forKey: language) }
+            else { pendingSubtitleOffsets[language] = value }
+        }
         subtitleOffsetTask?.cancel(); subtitleOffsetTask = nil
         guard !pendingSubtitleOffsets.isEmpty else { return }
         let session = sessionID
@@ -462,13 +487,14 @@ final class AppModel: ObservableObject {
     }
     func setSpeed(_ value: Double) {
         guard value.isFinite, value > 0 else { return }
-        speed = value; player.set("speed", String(value))
-        if playbackReady { chrome.showFeedback("\(value.formatted())×", symbol: "speedometer", detail: "播放速度") }
+        viewing.setSpeed(value); speed = viewing.speed; player.set("speed", String(speed))
+        if playbackReady { chrome.showFeedback("\(speed.formatted())×", symbol: "speedometer", detail: "播放速度") }
     }
     func setVolume(_ value: Double) {
         guard value.isFinite else { return }
         let previous = Int(volume.rounded())
         volume = min(100, max(0, value)); player.set("volume", String(volume))
+        viewing.setVolume(volume)
         let current = Int(volume.rounded()), delta = Int(volume.rounded()) - previous
         let detail = delta == 0 ? (current == 0 ? "静音" : current == 100 ? "最大音量" : "音量") : "音量 \(delta > 0 ? "+" : "")\(delta)%"
         if playbackReady { chrome.showFeedback("\(current)%", symbol: "speaker.wave.3.fill", detail: detail, volume: volume) }

@@ -1,0 +1,34 @@
+import Foundation
+import Combine
+import PlayerCore
+
+@MainActor final class ViewingPreferencesStore: ObservableObject {
+    @Published private(set) var subtitles: SubtitleAppearance
+    @Published private(set) var linkedSubtitleOffsets: Bool
+    private var values: ViewingPreferences
+    private let storage: StorageWorker
+    static var url: URL { RuntimeSettings.supportDirectory.appendingPathComponent("viewing.json") }
+    var volume: Double { values.volume }
+    var speed: Double { values.speed }
+    var windowSize: PlayerWindowSize { values.windowSize }
+
+    init(storage: StorageWorker) {
+        self.storage = storage
+        let loaded = (try? Data(contentsOf: Self.url)).flatMap { try? JSONDecoder().decode(ViewingPreferences.self, from: $0) } ?? ViewingPreferences()
+        values = loaded; subtitles = loaded.subtitles; linkedSubtitleOffsets = loaded.linkedSubtitleOffsets
+    }
+    private func update(_ change: (inout ViewingPreferences) -> Void) {
+        var next = values; change(&next); next.normalize()
+        guard next != values else { return }
+        values = next
+        // Audio and window changes do not invalidate subtitle layout.
+        if subtitles != next.subtitles { subtitles = next.subtitles }
+        if linkedSubtitleOffsets != next.linkedSubtitleOffsets { linkedSubtitleOffsets = next.linkedSubtitleOffsets }
+        storage.write(next, to: Self.url)
+    }
+    func setVolume(_ value: Double) { update { $0.volume = value } }
+    func setSpeed(_ value: Double) { update { $0.speed = value } }
+    func setWindowSize(_ value: PlayerWindowSize) { update { $0.windowSize = value } }
+    func setSubtitles(_ value: SubtitleAppearance) { update { $0.subtitles = value } }
+    func setLinkedOffsets(_ value: Bool) { update { $0.linkedSubtitleOffsets = value } }
+}

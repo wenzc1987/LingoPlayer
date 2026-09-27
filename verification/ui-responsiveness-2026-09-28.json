@@ -1,0 +1,1072 @@
+{
+  "version": "0.3.1",
+  "build": 12,
+  "date": "2026-09-28",
+  "passed": true,
+  "swift_tests": 67,
+  "python_tests": 10,
+  "native_checks": 152,
+  "baseline": {
+    "checks": {
+      "loaded": true,
+      "playback-settings-tabs-selected": true,
+      "settings-tabs-selected": true,
+      "subtitle-panels-opened-and-cancelled": true,
+      "video-panels-opened-and-cancelled": true
+    },
+    "passed": true,
+    "scenarios": [
+      {
+        "elapsed": 6.344043138000416,
+        "frames": 107,
+        "main_stall_ms": {
+          "count": 317,
+          "max": 86.9215139921289,
+          "p95": 37.42912598885596
+        },
+        "name": "resize-paused",
+        "operation_ms": {
+          "count": 180,
+          "max": 23.966309003299102,
+          "p95": 18.833527981769294
+        }
+      },
+      {
+        "elapsed": 8.847358258004533,
+        "frames": 191,
+        "main_stall_ms": {
+          "count": 245,
+          "max": 285.2963559946511,
+          "p95": 99.49129000073299
+        },
+        "name": "resize-playing",
+        "operation_ms": {
+          "count": 180,
+          "max": 22.439997002948076,
+          "p95": 19.609720999142155
+        }
+      },
+      {
+        "main_stall_ms": {
+          "count": 204,
+          "max": 975.2201099856757,
+          "p95": 249.26479999907315
+        },
+        "name": "playback-settings-tabs",
+        "operation_ms": {
+          "count": 12,
+          "max": 1003.7178949953523,
+          "p95": 1003.7178949953523
+        }
+      },
+      {
+        "main_stall_ms": {
+          "count": 183,
+          "max": 258.558845971711,
+          "p95": 235.2590489992872
+        },
+        "name": "settings-tabs",
+        "operation_ms": {
+          "count": 12,
+          "max": 294.1623029857874,
+          "p95": 294.1623029857874
+        }
+      },
+      {
+        "call_return_ms": [
+          1800.097335013561,
+          1268.655626976397,
+          1266.8992480030283
+        ],
+        "main_stall_ms": {
+          "count": 226,
+          "max": 1223.793950988911,
+          "p95": 12.125336981844157
+        },
+        "name": "video-file-panel",
+        "playback_clock_progressed": false,
+        "visible_ms": [
+          1233.867825998459,
+          593.5469109972473,
+          396.67245899909176
+        ]
+      },
+      {
+        "call_return_ms": [
+          1265.9771670005284,
+          1277.7631580247544,
+          1271.777794987429
+        ],
+        "main_stall_ms": {
+          "count": 347,
+          "max": 327.36487801070325,
+          "p95": 2.0036189910024405
+        },
+        "name": "subtitle-file-panel",
+        "playback_clock_progressed": false,
+        "visible_ms": [
+          337.4104590038769,
+          328.91239802120253,
+          302.03326197806746
+        ]
+      }
+    ]
+  },
+  "suites": {
+    "ui_synthetic": {
+      "checks": {
+        "cancel-manual-import-returns-to-search": true,
+        "cancel-runtime-panel-keeps-settings-draft": true,
+        "cancelled-panels-release-presentation": true,
+        "duplicate-open-keeps-existing-panel-and-filter": true,
+        "file-panel-blocks-playback-and-shortcut-recording": true,
+        "file-panels-keep-playback-clock-running": true,
+        "loaded": true,
+        "manual-import-keeps-search-sheet-as-owner": true,
+        "playback-settings-tabs-selected": true,
+        "runtime-file-panel-attaches-to-settings": true,
+        "settings-tab-preserves-unsaved-draft": true,
+        "settings-tabs-selected": true,
+        "subtitle-panels-opened-and-cancelled": true,
+        "video-panels-opened-and-cancelled": true
+      },
+      "passed": true,
+      "scenarios": [
+        {
+          "elapsed": 6.781394627003465,
+          "frames": 97,
+          "main_stall_ms": {
+            "count": 290,
+            "max": 102.55299198091961,
+            "p95": 45.215751024661586
+          },
+          "name": "resize-paused",
+          "operation_ms": {
+            "count": 180,
+            "max": 35.137002007104456,
+            "p95": 17.925943015143275
+          }
+        },
+        {
+          "elapsed": 5.850548040005378,
+          "frames": 120,
+          "main_stall_ms": {
+            "count": 308,
+            "max": 77.61290897382423,
+            "p95": 42.70977702457458
+          },
+          "name": "resize-playing",
+          "operation_ms": {
+            "count": 180,
+            "max": 25.678000005427748,
+            "p95": 17.131579981651157
+          }
+        },
+        {
+          "main_stall_ms": {
+            "count": 283,
+            "max": 61.16362499073148,
+            "p95": 23.603928983211514
+          },
+          "name": "playback-settings-tabs",
+          "operation_ms": {
+            "count": 12,
+            "max": 137.98706100555137,
+            "p95": 137.98706100555137
+          }
+        },
+        {
+          "main_stall_ms": {
+            "count": 248,
+            "max": 94.25237700110301,
+            "p95": 45.1906040054746
+          },
+          "name": "settings-tabs",
+          "operation_ms": {
+            "count": 12,
+            "max": 197.80293399002403,
+            "p95": 197.80293399002403
+          }
+        },
+        {
+          "call_return_ms": [
+            1116.9247830112,
+            297.8472899994813,
+            298.37020399281755
+          ],
+          "main_stall_ms": {
+            "count": 257,
+            "max": 1130.3443489980418,
+            "p95": 13.588826996274292
+          },
+          "name": "video-file-panel",
+          "playback_clock_progressed": true,
+          "visible_ms": [
+            1242.2558050020598,
+            319.302914023865,
+            325.1220769889187
+          ]
+        },
+        {
+          "call_return_ms": [
+            302.91160600609146,
+            290.37102198344655,
+            287.7263840055093
+          ],
+          "main_stall_ms": {
+            "count": 342,
+            "max": 315.2070029848255,
+            "p95": 11.794047992443666
+          },
+          "name": "subtitle-file-panel",
+          "playback_clock_progressed": true,
+          "visible_ms": [
+            325.27902600122616,
+            334.1947319859173,
+            315.7466750126332
+          ]
+        }
+      ]
+    },
+    "ui_hevc": {
+      "checks": {
+        "cancel-manual-import-returns-to-search": true,
+        "cancel-runtime-panel-keeps-settings-draft": true,
+        "cancelled-panels-release-presentation": true,
+        "duplicate-open-keeps-existing-panel-and-filter": true,
+        "file-panel-blocks-playback-and-shortcut-recording": true,
+        "file-panels-keep-playback-clock-running": true,
+        "loaded": true,
+        "manual-import-keeps-search-sheet-as-owner": true,
+        "playback-settings-tabs-selected": true,
+        "runtime-file-panel-attaches-to-settings": true,
+        "settings-tab-preserves-unsaved-draft": true,
+        "settings-tabs-selected": true,
+        "subtitle-panels-opened-and-cancelled": true,
+        "video-panels-opened-and-cancelled": true
+      },
+      "passed": true,
+      "scenarios": [
+        {
+          "elapsed": 5.807084756990662,
+          "frames": 100,
+          "main_stall_ms": {
+            "count": 322,
+            "max": 92.3351319890935,
+            "p95": 41.91106101847254
+          },
+          "name": "resize-paused",
+          "operation_ms": {
+            "count": 180,
+            "max": 31.283001007977873,
+            "p95": 13.80681901355274
+          }
+        },
+        {
+          "elapsed": 5.385466883017216,
+          "frames": 117,
+          "main_stall_ms": {
+            "count": 341,
+            "max": 57.55233299918473,
+            "p95": 25.51064900238998
+          },
+          "name": "resize-playing",
+          "operation_ms": {
+            "count": 180,
+            "max": 40.57303798617795,
+            "p95": 13.759890978690237
+          }
+        },
+        {
+          "main_stall_ms": {
+            "count": 275,
+            "max": 61.03687300696038,
+            "p95": 28.25268198852427
+          },
+          "name": "playback-settings-tabs",
+          "operation_ms": {
+            "count": 12,
+            "max": 152.59402502328157,
+            "p95": 152.59402502328157
+          }
+        },
+        {
+          "main_stall_ms": {
+            "count": 250,
+            "max": 80.30466500553302,
+            "p95": 47.67087999265641
+          },
+          "name": "settings-tabs",
+          "operation_ms": {
+            "count": 12,
+            "max": 159.14230198017322,
+            "p95": 159.14230198017322
+          }
+        },
+        {
+          "call_return_ms": [
+            1031.5824320132378,
+            291.6660789924208,
+            283.40890299296007
+          ],
+          "main_stall_ms": {
+            "count": 283,
+            "max": 1040.3680130059365,
+            "p95": 7.716255009872839
+          },
+          "name": "video-file-panel",
+          "playback_clock_progressed": true,
+          "visible_ms": [
+            1061.208908999106,
+            329.32522700866684,
+            308.36028800695203
+          ]
+        },
+        {
+          "call_return_ms": [
+            300.9598260105122,
+            292.3919049790129,
+            290.41234697797336
+          ],
+          "main_stall_ms": {
+            "count": 354,
+            "max": 309.78038902161643,
+            "p95": 9.347730005392805
+          },
+          "name": "subtitle-file-panel",
+          "playback_clock_progressed": true,
+          "visible_ms": [
+            333.43832002719864,
+            318.14040898461826,
+            319.24169400008395
+          ]
+        }
+      ]
+    },
+    "viewing": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_opens",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offset_status_visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_timing-settings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_link_toggle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "linked_step_keeps_legacy_language_gap_and_waits",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "either_language_can_drive_linked_adjustment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_is_debounced",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_clears_both_offsets",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "unlinked_adjustment_leaves_other_language_unchanged",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_tab_has_live_preview",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_font_slider_changes_style",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_appearance-settings",
+          "passed": true
+        },
+        {
+          "detail": "before=(460.0, 115.0, 55.0, 34.0), after=(389.5, 196.0, 71.5, 44.0)",
+          "name": "appearance_changes_live_subtitle_size_and_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_styled",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_reset_restores_only_visual_defaults",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "large_subtitles_stay_below_controls_in_small_window",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_large-subtitles",
+          "passed": true
+        },
+        {
+          "detail": "PlayerWindowSize(width: 1100.0, height: 720.0)",
+          "name": "normal_window_size_is_remembered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen_does_not_overwrite_normal_size",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "zero_volume_is_persisted",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "viewing_restore": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "volume_and_speed_restore_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_and_link_restore_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "(1100.0, 720.0)",
+          "name": "window_size_restores_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "saved_audio_preferences_survive_media_load",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "saved_offsets_restore_independently_of_global_preferences",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_restored",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "chrome": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "screenshot_empty",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "notice_expires_and_repeated_failure_stays_quiet",
+          "passed": true
+        },
+        {
+          "detail": "video=(1260.0, 800.0), content=(1260.0, 800.0)",
+          "name": "video_fills_content_without_reserved_bars",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_paused",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "title_visible_with_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "paused_controls_stay_visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "blank_click_hides_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "title_hides_with_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_immersive",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "volume_shortcut_feedback_without_revealing_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_volume-hidden",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "repeated_shortcut_replaces_feedback_and_restarts_expiry",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "feedback_expires_without_changing_hidden_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "volume_feedback_respects_upper_bound",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "zero_volume_feedback_is_muted",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "speed_shortcut_reports_current_rate",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_speed-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "forward_shortcut_reports_delta_and_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_seek-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "backward_shortcut_reports_negative_delta",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "seek_boundary_reports_actual_change",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "subtitle_shortcut_reports_result",
+          "passed": true
+        },
+        {
+          "detail": "visible=true, paused=true, holds=[]",
+          "name": "blank_click_reveals_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "visible_toolbar_volume_updates_with_feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_volume-visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toolbar_queue_opens_shared_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_queue",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "transcript_uses_same_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "clicked=true, locked=true, collapsed=false, tab=learning",
+          "name": "floating_word_click_pauses_and_opens_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_keeps_sidebar_and_unfolded_tab",
+          "passed": true
+        },
+        {
+          "detail": "paused=false, holds=[]",
+          "name": "playing_controls_auto_hide",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "word_remains_clickable_with_controls_hidden",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toolbar_settings_opens_popover",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "configuration_prevents_auto_hide",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_settings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_subtitle_stepper_changes_draft_by_tenth",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "legacy_precise_offset_is_preserved_until_adjustment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "legacy_offset_steps_from_displayed_tenth",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "subtitle_offsets_wait_for_last_adjustment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_settings_popup_0",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "subtitle_offsets_apply_after_one_second_even_when_closed",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "debounced_subtitle_offsets_persist",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "returning_offset_to_original_cancels_pending_work",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reprepare_button_preserves_pending_offsets_and_delay",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offsets_still_apply_after_reprepare_button",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offsets_after_reprepare_are_persisted",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_subtitles_do_not_resize_video",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_minimum",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "minimum_window_keeps_control_actions_available",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "long_subtitle_wraps_below_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_long-subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_fullscreen",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_fullscreen",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "loading_media_clears_old_feedback_and_offset_drafts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "old_offset_draft_does_not_apply_to_loaded_media",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "shutdown_flushes_draft_without_rounding_untouched_offset",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "shutdown_saves_both_pending_offsets_and_playback_state",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "repeated_shutdown_keeps_flushed_offsets",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "keyboard": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "media_loaded_with_custom_space_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "button_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "slider_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "transcript_table_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "typing_space_edits_text_without_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ime_and_text_editing_keep_shortcuts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clicking_another_input_keeps_text_editing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_click_leaves_text_editing",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSWindow), blocked=false, dispatched=1",
+          "name": "space_after_leaving_editor",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSTextView), blocked=false, dispatched=1",
+          "name": "readonly_text_does_not_block_player",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "subtitle_popover_still_blocks_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_still_blocks_keys",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "shortcut_after_closing_settings",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "command_r_replays_locked_sentence",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "replay_starts_selected_cue",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "command_return_resumes_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_unlocks_and_plays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_button_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "detached_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "detached_command_shortcut",
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  },
+  "steady_playback": {
+    "scenarios": [
+      {
+        "controls_visible": false,
+        "counts": {
+          "subtitle_body": 42,
+          "word_measurements": 756
+        },
+        "cpu_percent_one_core": 24.230711901020676,
+        "cpu_seconds": 1.5289930000000003,
+        "english_count": 5000,
+        "highlighted_words": 39,
+        "main_wakeup_max_ms": 23.456933983834457,
+        "main_wakeup_p95_ms": 4.841109988046807,
+        "name": "immersive",
+        "paused": false,
+        "rendered_frames": 152,
+        "wall_seconds": 6.31014477100689,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 52,
+          "subtitle_body": 45,
+          "word_measurements": 810
+        },
+        "cpu_percent_one_core": 33.748445376365524,
+        "cpu_seconds": 2.1683230000000004,
+        "english_count": 5000,
+        "highlighted_words": 40,
+        "main_wakeup_max_ms": 25.022456003352996,
+        "main_wakeup_p95_ms": 11.629086005268615,
+        "name": "controls",
+        "paused": false,
+        "rendered_frames": 154,
+        "wall_seconds": 6.424956693022978,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 54,
+          "subtitle_body": 45,
+          "word_measurements": 810
+        },
+        "cpu_percent_one_core": 56.471989078129994,
+        "cpu_seconds": 3.8468680000000006,
+        "english_count": 5000,
+        "highlighted_words": 41,
+        "main_wakeup_max_ms": 33.42774398624897,
+        "main_wakeup_p95_ms": 23.97465998656116,
+        "name": "learning",
+        "paused": false,
+        "rendered_frames": 163,
+        "wall_seconds": 6.811993101000553,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 53,
+          "subtitle_body": 45,
+          "transcript_native_updates": 10,
+          "word_measurements": 792
+        },
+        "cpu_percent_one_core": 38.66850254856199,
+        "cpu_seconds": 2.4814159999999994,
+        "english_count": 5000,
+        "highlighted_words": 39,
+        "main_wakeup_max_ms": 24.918132013408464,
+        "main_wakeup_p95_ms": 11.848171026213091,
+        "name": "transcript",
+        "paused": false,
+        "rendered_frames": 154,
+        "wall_seconds": 6.417150488006882,
+        "word_timing_count": 180
+      }
+    ],
+    "subtitle_count": 5000,
+    "synthetic_word_times": true
+  },
+  "release_build": true,
+  "code_signature_verified": true,
+  "executable_sha256": "80e54a5487d8b59252c7e5db0b627cd7f02770d7c1c9d67761e8412894dbd787"
+}

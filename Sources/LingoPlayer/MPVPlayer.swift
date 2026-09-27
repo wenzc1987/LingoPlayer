@@ -121,6 +121,21 @@ final class MPVPlayer {
     }
 }
 
+/// AppKit's backing layer asks for the associated view while committing every
+/// window transaction. NSOpenGLContext's getter takes the rendering CGL lock,
+/// including while mpv waits for a video frame or the GPU compiles a shader.
+/// The association only changes on the main thread, before/after rendering;
+/// keep that read independent of the GL state. Actual drawable updates and GL
+/// operations still use the renderer's existing serialized handshake.
+private final class VideoOpenGLContext: NSOpenGLContext {
+    private weak var associatedView: NSView?
+    override var view: NSView? {
+        get { associatedView }
+        set { super.view = newValue; associatedView = newValue }
+    }
+    override func clearDrawable() { super.clearDrawable(); associatedView = nil }
+}
+
 /// All libmpv render calls and GL context use are serialized independently of
 /// both AppKit and the mpv command queue. Rendering may wait for presentation.
 private final class VideoRenderer: @unchecked Sendable {
@@ -240,7 +255,7 @@ final class MPVVideoView: NSView {
             NSOpenGLPixelFormatAttribute(NSOpenGLPFAAccelerated), NSOpenGLPixelFormatAttribute(NSOpenGLPFADoubleBuffer),
             NSOpenGLPixelFormatAttribute(NSOpenGLPFAColorSize), 24, 0
         ]
-        context = NSOpenGLContext(format: NSOpenGLPixelFormat(attributes: attrs)!, share: nil)!
+        context = VideoOpenGLContext(format: NSOpenGLPixelFormat(attributes: attrs)!, share: nil)!
         // Composite below the transparent window so SwiftUI captions and controls
         // remain above the movie, without copying video frames through the CPU.
         var order: GLint = -1
