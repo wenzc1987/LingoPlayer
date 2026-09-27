@@ -42,6 +42,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(of: "--keyboard-test"), CommandLine.arguments.count > index + 2 {
+            Task { [weak self] in
+                await KeyboardSmoke.run(model: model, window: window, keyboard: keyboard,
+                    video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]),
+                    detach: { self?.detachLearning() }, learningWindow: { self?.learningWindow }, closeDetached: { self?.learningWindow?.performClose(nil) })
+            }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(where: { ["--display-test", "--display-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
             Task { [weak self] in
                 await DisplaySmoke.run(model: model, window: window, folder: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]), restore: CommandLine.arguments[index] == "--display-restore", detach: { self?.detachLearning() }, closeDetached: { self?.learningWindow?.performClose(nil) })

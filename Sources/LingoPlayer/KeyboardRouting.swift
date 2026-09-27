@@ -31,19 +31,43 @@ final class KeyboardRouter {
     private var monitor: Any?
     init(model: AppModel) { self.model = model }
     func install() {
-        monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+        monitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .leftMouseDown]) { [weak self] event in
             guard let self else { return event }; return self.handle(event)
         }
     }
     func uninstall() { if let monitor { NSEvent.removeMonitor(monitor) }; monitor = nil }
     var blocked: Bool {
-        guard let model, isPlayerWindow(NSApp.keyWindow) else { return true }
+        presentationBlocked(in: NSApp.keyWindow) || isTextInput(NSApp.keyWindow?.firstResponder)
+    }
+    private func presentationBlocked(in window: NSWindow?) -> Bool {
+        guard let model, isPlayerWindow(window) else { return true }
         if model.showSettings || model.showSubtitleSearch || model.showSubtitleControls || model.showAlignmentDetails || model.alert != nil || model.recordingAction != nil { return true }
-        if NSApp.modalWindow != nil || NSApp.keyWindow?.attachedSheet != nil { return true }
-        let responder = NSApp.keyWindow?.firstResponder
-        return responder is NSTextView || responder is NSTextField || responder is NSControl
+        return NSApp.modalWindow != nil || window?.attachedSheet != nil
+    }
+    private func isTextInput(_ responder: NSResponder?) -> Bool {
+        // NSControl also includes buttons, sliders and tables. Their focus must
+        // not disable every player command (including menu key equivalents).
+        if let text = responder as? NSTextView { return text.isEditable || text.hasMarkedText() }
+        if let field = responder as? NSTextField { return field.isEditable }
+        return (responder as? NSTextInputClient)?.hasMarkedText() == true
+    }
+    private func leaveTextInputIfNeeded(_ event: NSEvent) {
+        guard let window = event.window, !presentationBlocked(in: window),
+              isTextInput(window.firstResponder), let content = window.contentView else { return }
+        // A video surface or SwiftUI button need not accept first responder.
+        // Clicking it can otherwise leave the search field's editor active.
+        let point = content.superview?.convert(event.locationInWindow, from: nil) ?? event.locationInWindow
+        guard let hit = content.hitTest(point) else { return }
+        var view: NSView? = hit
+        while let current = view {
+            if isTextInput(current) { return }
+            view = current.superview
+        }
+        window.makeFirstResponder(nil)
     }
     func handle(_ event: NSEvent) -> NSEvent? {
+        if event.type == .leftMouseDown { leaveTextInputIfNeeded(event); return event }
+        guard event.type == .keyDown else { return event }
         guard let model else { return event }
         if let action = model.recordingAction, model.showSettings, NSApp.modalWindow == nil {
             if event.keyCode == 53 { model.recordingAction = nil; model.shortcutMessage = "已取消录入。"; return nil }

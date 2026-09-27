@@ -1,0 +1,551 @@
+{
+  "date": "2026-09-27",
+  "baseline_commit": "7e5f80b",
+  "version": "0.3.1",
+  "build": "5",
+  "executable_sha256": "b321b20da2d0aa25e1e77a8f141a77059999cdd2dfa02ef118ac193d20fc8199",
+  "baseline_keyboard": {
+    "checks": [
+      {
+        "detail": "",
+        "name": "media_loaded_with_custom_space_binding",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "button_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=true, dispatched=0",
+        "name": "button_space_once",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=true, dispatched=0",
+        "name": "button_space_again_once",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=true, dispatched=0",
+        "name": "button_right_arrow",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=true, dispatched=0",
+        "name": "button_left_arrow",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=true, dispatched=0",
+        "name": "button_command_shortcut",
+        "passed": false
+      },
+      {
+        "detail": "",
+        "name": "slider_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=true, dispatched=0",
+        "name": "slider_space_once",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=true, dispatched=0",
+        "name": "slider_space_again_once",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=true, dispatched=0",
+        "name": "slider_right_arrow",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=true, dispatched=0",
+        "name": "slider_left_arrow",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=true, dispatched=0",
+        "name": "slider_command_shortcut",
+        "passed": false
+      },
+      {
+        "detail": "",
+        "name": "transcript_table_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=true, dispatched=0",
+        "name": "transcript_table_space_once",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=true, dispatched=0",
+        "name": "transcript_table_space_again_once",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=true, dispatched=0",
+        "name": "transcript_table_right_arrow",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=true, dispatched=0",
+        "name": "transcript_table_left_arrow",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=true, dispatched=0",
+        "name": "transcript_table_command_shortcut",
+        "passed": false
+      },
+      {
+        "detail": "",
+        "name": "typing_space_edits_text_without_playback",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "ime_and_text_editing_keep_shortcuts",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "video_click_leaves_text_editing",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSTextView), blocked=true, dispatched=0",
+        "name": "space_after_leaving_editor",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSTextView), blocked=true, dispatched=0",
+        "name": "readonly_text_does_not_block_player",
+        "passed": false
+      },
+      {
+        "detail": "",
+        "name": "subtitle_popover_still_blocks_keys",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "settings_still_blocks_keys",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "detached_button_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=true, dispatched=0",
+        "name": "detached_space_once",
+        "passed": false
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=true, dispatched=0",
+        "name": "detached_command_shortcut",
+        "passed": false
+      }
+    ],
+    "passed": false
+  },
+  "fixed_keyboard": {
+    "checks": [
+      {
+        "detail": "",
+        "name": "media_loaded_with_custom_space_binding",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "button_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_space_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_space_again_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_right_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_left_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "button_command_shortcut",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "slider_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_space_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_space_again_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_right_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_left_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+        "name": "slider_command_shortcut",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "transcript_table_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_space_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_space_again_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_right_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_left_arrow",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+        "name": "transcript_table_command_shortcut",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "typing_space_edits_text_without_playback",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "ime_and_text_editing_keep_shortcuts",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "clicking_another_input_keeps_text_editing",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "video_click_leaves_text_editing",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSWindow), blocked=false, dispatched=1",
+        "name": "space_after_leaving_editor",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSTextView), blocked=false, dispatched=1",
+        "name": "readonly_text_does_not_block_player",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "subtitle_popover_still_blocks_keys",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "settings_still_blocks_keys",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+        "name": "shortcut_after_closing_settings",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+        "name": "command_r_replays_locked_sentence",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "replay_starts_selected_cue",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+        "name": "command_return_resumes_learning",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "resume_unlocks_and_plays",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "detached_button_receives_focus",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "detached_space_once",
+        "passed": true
+      },
+      {
+        "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+        "name": "detached_command_shortcut",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "interaction_regression": [
+    {
+      "checks": [
+        {
+          "detail": "974 lime pixels",
+          "name": "finder_icon_resolves_lime_artwork",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "app_version_and_dock_icon_packaged",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_about_window_opens",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "multi_file_drop_decodes_all_urls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "batch_natural_sort_dedup_and_first_play",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_window_shortcut_toggles_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "add_does_not_interrupt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reorder_preserves_current",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_noncurrent_keeps_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_current_plays_original_successor",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clear_stops_and_clears_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorder_conflict_preserves_existing_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorder_escape_cancels",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clear_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorded_binding_updates_menu_immediately",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_all_defaults",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_sheet_blocks_player_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "marked_text_and_editing_keep_native_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "popover_blocks_navigation_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detach_selects_queue_tab",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_window_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "close_detached_restores_learning_tab",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sidebar_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sidebar_three_tab_cycle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sentence_navigation_offset_gap_preserves_lock_pause",
+          "passed": true
+        },
+        {
+          "detail": "已跳过：Episode4.mp4（文件缺失或无法读取）",
+          "name": "natural_eof_skips_unavailable_and_advances_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "natural_finish_remembered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "queue_tail_stops_without_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "completed_video_reopens_from_start",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "scrub_to_end_does_not_autoplay",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sentence_replay_at_eof_never_autoplays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_last_current_stops",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "all_unavailable_stop_with_message",
+          "passed": true
+        },
+        {
+          "detail": "Episode2.en.srt",
+          "name": "rapid_switch_filters_old_media_and_subtitles",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "autoplay_off_stays_on_current",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_position_saved_for_restart",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 16.063431978225708,
+      "passed": true,
+      "version": "0.3.1"
+    },
+    {
+      "checks": [
+        {
+          "detail": "position=1.25, paused=true, items=[\"Episode10.mp4\", \"Episode2.mp4\", \"Episode1.mp4\"]",
+          "name": "restart_restores_order_current_and_position_paused",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_stays_paused_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "shortcuts_and_autoplay_restore_in_new_process",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 1.4876309633255005,
+      "passed": true,
+      "version": "0.3.1"
+    }
+  ],
+  "swift_tests_passed": 56,
+  "python_tests_passed": 10,
+  "validation_method": "Isolated muted native app launches. Control focus is preserved between posted key events; mouse events verify leaving text input. These are application event-queue tests, not hardware keyboard input."
+}

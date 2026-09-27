@@ -79,6 +79,8 @@ open dist/LingoPlayer.app
 
 这些是应用内快捷键，播放器和独立学习窗口均可用。文本编辑、中文输入组合态、设置、弹窗和字幕调节期间让位于原生键盘操作。打开文件 `⌘O`、导入字幕 `⌘I`、设置 `⌘,` 和系统编辑快捷键保留。
 
+按钮、进度／音量滑杆及字幕列表获得焦点后，播放器快捷键仍有效，包括自定义的空格播放／暂停。离开搜索等输入框，点击视频或其他非输入区域后，会结束文字输入并恢复快捷键；在输入框内继续保留空格、方向键及中文输入法行为。
+
 从 v0.2 升级时，如果已有自定义绑定占用了两个新动作的默认键，保留原绑定；冲突的新动作暂不绑定，并在快捷键设置页提示。可以清除旧动作的绑定后再分配，或为新动作选择其他按键。
 
 上／下一句使用播放位置与英文字幕偏移定位，保留播放或暂停以及词卡锁定状态。在对白间隙，上一句返回最近的前一句、下一句前往后一句；正在一句内时定位到相邻句。不跨影片，无可到达英文字幕时禁用。
@@ -135,6 +137,7 @@ bash scripts/test.sh
 bash scripts/build-app.sh debug
 bash scripts/run-practice-smoke.sh
 bash scripts/run-interaction-smoke.sh
+bash scripts/run-keyboard-smoke.sh
 python3 scripts/prepare-validation.py
 python3 Sources/LingoPlayer/Resources/alignment_worker.py \
   --request verification/local/clear-request.json \
@@ -146,6 +149,8 @@ bash scripts/run-smoke.sh \
 v0.3 的精听、全文和兼容性结果见 [v0.3 验证记录](verification/V0.3.md)，历史结果保留在 [v0.2 验证记录](verification/V0.2.md)。精听及交互自检生成短视频，分别连续启动两个应用进程验证真实恢复；它们使用独立数据目录。精听自检包含 5,000 条字幕与至少 20 次片尾循环。
 
 GUI 自检会打开真实窗口、静音播放，在独立测试数据目录中保存检查结果、进度和截图。普通启动不运行自检。测试素材、依赖和构建结果不放入源码版本管理。界面快照会补入从真实 OpenGL framebuffer 读取的画面，因为 AppKit 普通视图快照不包含 OpenGL 表面。
+
+快捷键焦点回归保留按钮、滑杆、字幕列表和文本编辑器的真实焦点，投递原生按键与鼠标事件；覆盖自定义空格、方向键、组合键、输入法、离开输入框、设置关闭和独立学习窗口，避免每次按键前重置焦点掩盖问题。
 
 逐词精度需要独立的人工标注，不能用模型输出给自己打分。标注 CSV 字段为 `cueID,tokenIndex,start,category`，category 为 `clear` / `fast` / `music`，start 为相对于视频的秒数。评估命令：
 
