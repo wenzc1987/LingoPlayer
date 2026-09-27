@@ -17,9 +17,13 @@ struct SidebarPanel: View {
     @ObservedObject var model: AppModel
     var body: some View {
         VStack(spacing: 0) {
-            Picker("右侧面板", selection: $model.sidebarTab) {
-                ForEach(SidebarTab.allCases, id: \.self) { Text($0.rawValue).tag($0) }
-            }.pickerStyle(.segmented).labelsHidden().padding(16).help(model.help(.toggleSidebar))
+            HStack(spacing: 8) {
+                Picker("右侧面板", selection: $model.sidebarTab) {
+                    ForEach(SidebarTab.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                }.pickerStyle(.segmented).labelsHidden().help(model.help(.toggleSidebar))
+                Button { model.setSidebarCollapsed(true) } label: { Image(systemName: "xmark") }
+                    .buttonStyle(.plain).help("收起侧栏").accessibilityIdentifier("collapse-sidebar")
+            }.padding(16)
             ZStack {
                 TranscriptPanel(model: model, transcript: model.transcript)
                     .opacity(model.sidebarTab == .transcript ? 1 : 0)

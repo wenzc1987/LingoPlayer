@@ -241,11 +241,15 @@ final class MPVVideoView: NSView {
             NSOpenGLPixelFormatAttribute(NSOpenGLPFAColorSize), 24, 0
         ]
         context = NSOpenGLContext(format: NSOpenGLPixelFormat(attributes: attrs)!, share: nil)!
+        // Composite below the transparent window so SwiftUI captions and controls
+        // remain above the movie, without copying video frames through the CPU.
+        var order: GLint = -1
+        context.setValues(&order, for: .surfaceOrder)
         super.init(frame: .zero)
         wantsBestResolutionOpenGLSurface = true
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-    override var isOpaque: Bool { true }
+    override var isOpaque: Bool { false }
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
         guard window != nil else { return }

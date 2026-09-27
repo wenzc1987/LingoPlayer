@@ -12,14 +12,7 @@ import PlayerCore
             while Date() < deadline { if predicate() { return true }; await delay(0.03) }; return predicate()
         }
         func screenshot(_ name: String) {
-            guard let view = window.contentView, let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return }
-            view.cacheDisplay(in: view.bounds, to: bitmap)
-            if let frame = model.videoView.diagnosticFrame(), let context = NSGraphicsContext(bitmapImageRep: bitmap) {
-                NSGraphicsContext.saveGraphicsState(); NSGraphicsContext.current = context
-                var rect = model.videoView.convert(model.videoView.bounds, to: view)
-                if view.isFlipped { rect.origin.y = view.bounds.height - rect.maxY }; frame.draw(in: rect); NSGraphicsContext.restoreGraphicsState()
-            }
-            try? bitmap.representation(using: .png, properties: [:])?.write(to: output.appendingPathComponent(name))
+            WindowSnapshot.save(window, to: output.appendingPathComponent(name))
         }
         try? FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
         model.settings.autoSearch = false; model.settings.mfa = "/missing/display-test"; model.setVolume(0)

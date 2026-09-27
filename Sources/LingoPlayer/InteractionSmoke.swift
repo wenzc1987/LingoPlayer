@@ -25,15 +25,7 @@ enum InteractionSmoke {
             NSApp.postEvent(event(code, characters, flags, in: target), atStart: false); await delay()
         }
         func screenshot(_ target: NSWindow, _ name: String) {
-            guard let view = target.contentView, let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return }
-            view.cacheDisplay(in: view.bounds, to: bitmap)
-            if target === window, let frame = model.videoView.diagnosticFrame(), let context = NSGraphicsContext(bitmapImageRep: bitmap) {
-                NSGraphicsContext.saveGraphicsState(); NSGraphicsContext.current = context
-                var rect = model.videoView.convert(model.videoView.bounds, to: view)
-                if view.isFlipped { rect.origin.y = view.bounds.height - rect.maxY }
-                frame.draw(in: rect); NSGraphicsContext.restoreGraphicsState()
-            }
-            try? bitmap.representation(using: .png, properties: [:])?.write(to: output.appendingPathComponent(name))
+            WindowSnapshot.save(target, to: output.appendingPathComponent(name))
         }
         let one = folder.appendingPathComponent("Episode1.mp4"), two = folder.appendingPathComponent("Episode2.mp4"), ten = folder.appendingPathComponent("Episode10.mp4")
         model.settings.autoSearch = false; model.settings.mfa = "/missing/mfa-for-interaction-test"

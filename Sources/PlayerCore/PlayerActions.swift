@@ -83,7 +83,7 @@ public struct Shortcut: Codable, Hashable {
 public struct InteractionPreferences: Codable, Equatable {
     public var autoplay = true
     public var subtitleDisplay: SubtitleDisplayMode = .bilingual
-    public var sidebarCollapsed = false
+    public var sidebarCollapsed = true
     public var cardHidden = false
     public private(set) var conflictNotices: [String] = []
     /// Explicit nil bindings are stored as disabled action names, so missing fields retain defaults.
@@ -95,7 +95,7 @@ public struct InteractionPreferences: Codable, Equatable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         autoplay = try c.decodeIfPresent(Bool.self, forKey: .autoplay) ?? true
         subtitleDisplay = try c.decodeIfPresent(SubtitleDisplayMode.self, forKey: .subtitleDisplay) ?? .bilingual
-        sidebarCollapsed = try c.decodeIfPresent(Bool.self, forKey: .sidebarCollapsed) ?? false
+        sidebarCollapsed = try c.decodeIfPresent(Bool.self, forKey: .sidebarCollapsed) ?? true
         cardHidden = try c.decodeIfPresent(Bool.self, forKey: .cardHidden) ?? false
         conflictNotices = try c.decodeIfPresent([String].self, forKey: .conflictNotices) ?? []
         let incoming = try c.decodeIfPresent([String: Shortcut].self, forKey: .bindings) ?? [:]

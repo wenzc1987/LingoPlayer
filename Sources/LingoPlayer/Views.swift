@@ -14,28 +14,15 @@ struct PlayerRootView: View {
     @ObservedObject var model: AppModel
     @State private var dropTargeted = false
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            Rectangle().fill(Palette.border).frame(height: 1)
-            HStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    ZStack {
-                        VideoSurface(view: model.videoView)
-                        if model.media == nil { emptyVideo }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .overlay { if dropTargeted { RoundedRectangle(cornerRadius: 16).stroke(Palette.accent, lineWidth: 3).padding(12) } }
-                    SubtitleStrip(model: model)
-                    PlaybackControls(model: model)
-                }
-                Rectangle().fill(Palette.border).frame(width: model.preferences.sidebarCollapsed ? 0 : 1)
-                SidebarPanel(model: model).frame(width: 332)
-                    .frame(width: model.preferences.sidebarCollapsed ? 0 : 332, alignment: .leading).clipped()
-                    .allowsHitTesting(!model.preferences.sidebarCollapsed).accessibilityHidden(model.preferences.sidebarCollapsed)
-            }
-            footer
+        HStack(spacing: 0) {
+            PlayerStage(model: model)
+            Rectangle().fill(Palette.border).frame(width: model.preferences.sidebarCollapsed ? 0 : 1)
+            SidebarPanel(model: model).frame(width: 332)
+                .frame(width: model.preferences.sidebarCollapsed ? 0 : 332, alignment: .leading).clipped()
+                .allowsHitTesting(!model.preferences.sidebarCollapsed).accessibilityHidden(model.preferences.sidebarCollapsed)
         }
-        .background(Palette.background)
+        .ignoresSafeArea()
+        .overlay { if dropTargeted { RoundedRectangle(cornerRadius: 12).stroke(Palette.accent, lineWidth: 3).padding(8).allowsHitTesting(false) } }
         .tint(Palette.accent)
         .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
         .frame(minWidth: 960, minHeight: 610)
@@ -60,75 +47,58 @@ struct PlayerRootView: View {
             Button("知道了") { model.alert = nil }
         } message: { Text(model.alert ?? "") }
     }
-    private var header: some View {
-        HStack(spacing: 14) {
-            BrandIcon().frame(width: 38, height: 38)
-            VStack(alignment: .leading, spacing: 3) {
-                Text("LingoPlayer").font(.system(size: 16, weight: .semibold, design: .rounded))
-                Text(model.media?.title ?? "视频 · 英语学习").font(.system(size: 11)).foregroundStyle(Palette.muted).lineLimit(1)
-            }
-            Spacer(minLength: 10)
-            Button { model.chooseVideo() } label: { Label("打开视频", systemImage: "folder") }
-            Menu {
-                Button("导入双语字幕…") { model.chooseSubtitle() }
-                Button("导入英文字幕…") { model.chooseSubtitle(.english) }
-                Button("导入中文字幕…") { model.chooseSubtitle(.chinese) }
-                Divider()
-                Button("搜索英文字幕…") { model.searchSubtitles(.english) }
-                Button("搜索中文字幕…") { model.searchSubtitles(.chinese) }
-                if !model.subtitleOptions.isEmpty {
-                    Divider()
-                    ForEach(model.subtitleOptions) { option in
-                        Button(option.title) { model.importSubtitle(option.url) }
-                    }
+}
+
+private struct SubtitleHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+struct PlayerStage: View {
+    @ObservedObject var model: AppModel
+    @ObservedObject var chrome: PlayerChrome
+    @State private var subtitleHeight: CGFloat = 0
+    init(model: AppModel) { self.model = model; chrome = model.chrome }
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .bottom) {
+                VideoSurface(view: model.videoView)
+                Color.clear.contentShape(Rectangle()).onTapGesture { chrome.toggle() }
+                    .accessibilityLabel("视频区域，单击显示或隐藏操作面板")
+                if model.media == nil { emptyVideo }
+                SubtitleStrip(model: model)
+                    .frame(maxWidth: geometry.size.width * 0.92)
+                    .background(GeometryReader { proxy in Color.clear.preference(key: SubtitleHeightKey.self, value: proxy.size.height) })
+                    .padding(.bottom, 24)
+                PlaybackControls(model: model)
+                    .frame(width: min(860, max(0, geometry.size.width - 32)))
+                    // Keep native hover tracking out of the subtitle area below.
+                    .onHover { chrome.hold(.pointer, active: $0) }
+                    .padding(.bottom, model.media == nil ? 24 : max(76, subtitleHeight) + 42)
+                    .opacity(chrome.visible ? 1 : 0)
+                    .allowsHitTesting(chrome.visible).accessibilityHidden(!chrome.visible)
+                    .animation(.easeOut(duration: 0.18), value: chrome.visible)
+                if let notice = chrome.notice {
+                    Text(notice).font(.system(size: 12)).foregroundStyle(.white)
+                        .padding(12).background(.black.opacity(0.8), in: RoundedRectangle(cornerRadius: 10))
+                        .padding(.bottom, max(76, subtitleHeight) + 172).allowsHitTesting(false)
                 }
-            } label: { Label("字幕", systemImage: "captions.bubble") }
-            .disabled(model.media == nil)
-            Button { model.showSubtitleControls.toggle() } label: { Image(systemName: "slider.horizontal.3") }
-                .help("调整字幕时间与音轨")
-                .popover(isPresented: $model.showSubtitleControls) { SubtitleControls(model: model) }
-            if model.isDetached {
-                Button { model.onDetach?() } label: { Label("学习窗口", systemImage: "rectangle.on.rectangle") }
+                Color.clear.frame(height: 28).contentShape(Rectangle())
+                    .onHover { chrome.hold(.windowButtons, active: $0) }
+                    .frame(maxHeight: .infinity, alignment: .top)
             }
-            Button { model.perform(.toggleSidebarVisibility) } label: { Image(systemName: "sidebar.right") }
-                .help(model.help(.toggleSidebarVisibility)).accessibilityIdentifier("toggle-sidebar")
-            Button { model.showSettings = true } label: { Image(systemName: "gearshape") }.help("设置与运行环境")
+            .onPreferenceChange(SubtitleHeightKey.self) { subtitleHeight = $0 }
         }
-        .buttonStyle(.borderless)
-        .padding(.horizontal, 24).padding(.top, 32).padding(.bottom, 18)
     }
     private var emptyVideo: some View {
-        VStack(spacing: 22) {
-            BrandIcon().frame(width: 96, height: 96)
-            VStack(spacing: 10) {
-                Text("让每一段对白，都成为一次学习").font(.system(size: 23, weight: .medium))
-                Text("拖入本地视频，或选择文件开始播放").foregroundStyle(Palette.muted)
-            }
-            Button { model.chooseVideo() } label: { Label("选择视频", systemImage: "plus").padding(.horizontal, 16).padding(.vertical, 7) }
+        VStack(spacing: 20) {
+            BrandIcon().frame(width: 84, height: 84)
+            Text("打开视频，开始学习").font(.system(size: 23, weight: .medium))
+            Text("拖入本地视频 · 点击字幕单词学习").foregroundStyle(Palette.muted)
+            Button { model.chooseVideo() } label: { Label("打开视频", systemImage: "folder").padding(8) }
                 .buttonStyle(.borderedProminent).foregroundStyle(.black)
-            HStack(spacing: 22) {
-                Label("双语字幕", systemImage: "captions.bubble")
-                Label("逐词高亮", systemImage: "text.cursor")
-                Label("点词学习", systemImage: "hand.tap")
-            }.font(.system(size: 11)).foregroundStyle(Palette.muted).padding(.top, 14)
-            if !model.hasRuntime {
-                Button("播放库尚未就绪 · 打开设置") { model.showSettings = true }
-                    .buttonStyle(.plain).font(.footnote).foregroundStyle(.orange)
-            }
+            if !model.hasRuntime { Button("播放库未就绪 · 打开设置") { model.showSettings = true } }
         }.frame(maxWidth: .infinity, maxHeight: .infinity).background(Palette.background)
-    }
-    private var footer: some View {
-        HStack(spacing: 8) {
-            Circle().fill(model.hasRuntime ? Palette.accent : .orange).frame(width: 5, height: 5)
-            Text(model.practiceMessage.isEmpty ? model.alignmentStatus : model.practiceMessage).lineLimit(1).help(model.practiceMessage.isEmpty ? model.alignmentStatus : model.practiceMessage)
-            if model.alignmentTaskStatus.diagnostic != nil { Button("查看详情") { model.viewAlignmentDetails() }.buttonStyle(.borderless) }
-            if model.alignmentTaskStatus.canRetry { Button("重试") { model.retryAlignment() }.buttonStyle(.borderless) }
-            Spacer(minLength: 12)
-            Text("音频仅在本机处理").foregroundStyle(Palette.muted)
-        }
-        .font(.system(size: 10)).foregroundStyle(Palette.muted)
-        .padding(.horizontal, 22).padding(.vertical, 10)
-        .overlay(alignment: .top) { Rectangle().fill(Palette.border).frame(height: 1) }
     }
 }
 
@@ -144,10 +114,7 @@ struct SubtitleStrip: View {
     }
     private var content: some View {
         VStack(spacing: 8) {
-            if model.activeEnglish.isEmpty && model.activeChinese.isEmpty {
-                Text(model.media == nil ? "英文字幕中的单词可以直接点击" : model.english.isEmpty ? "导入英文字幕，开启点词学习" : "等待下一句对白…")
-                    .font(.system(size: 13)).foregroundStyle(Palette.muted)
-            } else {
+            if !model.activeEnglish.isEmpty || !model.activeChinese.isEmpty {
                 ForEach(model.activeEnglish) { cue in
                     WordWrap(spacing: 1, lineSpacing: 4) {
                         ForEach(cue.tokens) { token in
@@ -155,24 +122,28 @@ struct SubtitleStrip: View {
                             let locked = model.learning.locked?.cue.id == cue.id && model.learning.locked?.token.id == token.id
                             if token.isWord {
                                 Button { model.lock(cue: cue, token: token) } label: {
-                                    Text(token.text).font(.system(size: 21, weight: spoken ? .semibold : .medium))
+                                    Text(token.text).font(.system(size: 23, weight: spoken ? .semibold : .medium))
                                         .foregroundStyle(spoken ? .black : .white.opacity(0.93))
                                         .padding(.horizontal, 3).padding(.vertical, 3)
                                         .background(spoken ? Palette.accent : .clear, in: RoundedRectangle(cornerRadius: 5))
                                         .overlay { if locked { RoundedRectangle(cornerRadius: 5).stroke(Palette.accent.opacity(0.75), lineWidth: 1) } }
-                                }.buttonStyle(.plain).help("暂停并学习 \(token.text)")
+                                        .contentShape(Rectangle())
+                                }.buttonStyle(.plain).help("暂停并学习 \(token.text)").accessibilityIdentifier("subtitle-word-\(cue.id)-\(token.id)")
                             } else {
                                 Text(token.text.replacingOccurrences(of: "\n", with: " ")).font(.system(size: 21)).foregroundStyle(.white.opacity(0.8)).padding(.vertical, 3)
                             }
                         }
                     }
                 }
-                if !model.bilingualText.isEmpty { Text(model.bilingualText).font(.system(size: 14)).foregroundStyle(Palette.muted).multilineTextAlignment(.center).opacity(model.preferences.subtitleDisplay == .bilingual ? 1 : 0).accessibilityHidden(model.preferences.subtitleDisplay != .bilingual) }
+                if !model.bilingualText.isEmpty { Text(model.bilingualText).font(.system(size: 15)).foregroundStyle(.white.opacity(0.85)).multilineTextAlignment(.center).opacity(model.preferences.subtitleDisplay == .bilingual ? 1 : 0).accessibilityHidden(model.preferences.subtitleDisplay != .bilingual) }
             }
         }
-        .frame(maxWidth: .infinity, minHeight: 102)
-        .padding(.horizontal, 28).padding(.vertical, 10)
-        .background(Palette.background)
+        .padding(.horizontal, 12).padding(.vertical, 8)
+        .background {
+            if !model.activeEnglish.isEmpty || !model.activeChinese.isEmpty {
+                RoundedRectangle(cornerRadius: 10).fill(.black.opacity(0.38))
+            }
+        }
     }
 }
 
@@ -210,43 +181,111 @@ struct PlaybackControls: View {
     @State private var seeking = false
     @State private var draft = 0.0
     var body: some View {
-        VStack(spacing: 14) {
-            HStack(spacing: 12) {
-                Text(clock(seeking ? draft : playback.position)).monospacedDigit().frame(width: 52, alignment: .leading)
+        VStack(spacing: 12) {
+            HStack(spacing: 10) {
+                Text(clock(seeking ? draft : playback.position)).monospacedDigit().frame(minWidth: 45, alignment: .leading)
                 Slider(value: Binding(get: { seeking ? draft : playback.position }, set: { draft = $0 }), in: 0...max(1, model.duration), onEditingChanged: { active in
+                    model.chrome.hold(.scrubbing, active: active)
                     if active { model.cancelSentenceLoop(); draft = playback.position; seeking = true }
                     else { seeking = false; model.seek(draft) }
-                }).disabled(!model.canPlay)
-                Text(clock(model.duration)).monospacedDigit().frame(width: 52, alignment: .trailing)
-            }.font(.system(size: 11)).foregroundStyle(Palette.muted)
-            HStack(spacing: 16) {
-                Button { model.perform(.previousSentence) } label: { Image(systemName: "backward.end") }
-                    .disabled(!model.canPerform(.previousSentence)).help(model.help(.previousSentence))
-                Button { model.perform(.backward) } label: { Image(systemName: "gobackward.5").font(.system(size: 20)) }.help(model.help(.backward)).accessibilityIdentifier("action-backward")
+                }).disabled(!model.canPlay).accessibilityLabel("播放进度")
+                Text(clock(model.duration)).monospacedDigit().frame(minWidth: 45, alignment: .trailing)
+            }.font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
+            HStack(spacing: 8) {
+                Button { model.chooseVideo() } label: { icon("folder") }.help(model.media?.title ?? "打开视频")
+                Spacer(minLength: 0)
+                action(.previousSentence, "backward.end")
+                action(.backward, "gobackward.5")
                 Button { model.perform(.playPause) } label: {
-                    Image(systemName: model.paused ? "play.fill" : "pause.fill").font(.system(size: 18)).foregroundStyle(.black)
-                        .frame(width: 44, height: 38).background(Palette.accent, in: RoundedRectangle(cornerRadius: 12))
-                }.help(model.help(.playPause)).accessibilityIdentifier("action-playPause")
-                Button { model.perform(.forward) } label: { Image(systemName: "goforward.5").font(.system(size: 20)) }.help(model.help(.forward)).accessibilityIdentifier("action-forward")
-                Button { model.perform(.nextSentence) } label: { Image(systemName: "forward.end") }
-                    .disabled(!model.canPerform(.nextSentence)).help(model.help(.nextSentence))
-                Button { model.perform(.toggleSentenceLoop) } label: {
-                    Image(systemName: "repeat.1").font(.system(size: 18))
-                        .foregroundStyle(model.sentenceLoop != nil ? Palette.accent : .secondary)
-                }.disabled(!model.canPerform(.toggleSentenceLoop)).help(model.help(.toggleSentenceLoop))
-                Spacer(minLength: 4)
-                Menu {
-                    ForEach(SubtitleDisplayMode.allCases, id: \.self) { mode in Button(mode.title) { model.setSubtitleDisplay(mode) } }
-                } label: { Text(model.preferences.subtitleDisplay.title).font(.system(size: 11)) }
-                    .help(model.help(.cycleSubtitleDisplay))
-                Menu {
-                    ForEach(AppModel.speedSteps, id: \.self) { value in Button("\(value.formatted())×") { model.setSpeed(value) } }
-                } label: { Text("\(model.speed.formatted())×").monospacedDigit().frame(width: 36) }.help(model.help(.slower) + " / " + model.help(.faster))
-                Image(systemName: "speaker.wave.2").foregroundStyle(Palette.muted)
-                Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...100).frame(minWidth: 40, idealWidth: 65, maxWidth: 80)
-            }.buttonStyle(.plain).disabled(!model.canPlay)
-        }.padding(.horizontal, 28).padding(.bottom, 22).padding(.top, 8)
-            .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
+                    Image(systemName: model.paused ? "play.fill" : "pause.fill").font(.system(size: 18))
+                        .foregroundStyle(.black).frame(width: 44, height: 36)
+                        .background(Palette.accent, in: RoundedRectangle(cornerRadius: 10))
+                }.disabled(!model.canPlay).help(model.help(.playPause)).accessibilityIdentifier("action-playPause")
+                action(.forward, "goforward.5")
+                action(.nextSentence, "forward.end")
+                action(.toggleSentenceLoop, "repeat.1", active: model.sentenceLoop != nil)
+                Spacer(minLength: 0)
+                Button { model.playerPopover = .subtitles } label: { icon("captions.bubble") }
+                    .help("字幕显示、导入、搜索与全文").accessibilityIdentifier("subtitle-menu")
+                    .popover(isPresented: popover(.subtitles)) { SubtitleMenuPanel(model: model) }
+                Button { model.playerPopover = .speed } label: { Text("\(model.speed.formatted())×").font(.system(size: 12)).frame(width: 32, height: 32) }
+                    .help("播放速度").popover(isPresented: popover(.speed)) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("播放速度").font(.headline).padding(.bottom, 6)
+                            ForEach(AppModel.speedSteps, id: \.self) { value in
+                                Button { model.setSpeed(value); model.playerPopover = nil } label: {
+                                    HStack { Text("\(value.formatted())×"); Spacer(); if model.speed == value { Image(systemName: "checkmark") } }.frame(width: 120)
+                                }.buttonStyle(.borderless).padding(5)
+                            }
+                        }.padding(16)
+                    }
+                Button { model.playerPopover = .volume } label: { icon(model.volume == 0 ? "speaker.slash" : "speaker.wave.2") }
+                    .help("音量").popover(isPresented: popover(.volume)) {
+                        VStack(spacing: 12) {
+                            Text("音量 \(Int(model.volume))%").font(.headline)
+                            Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...100).frame(width: 180)
+                        }.padding(20)
+                    }
+                Button { model.openSidebar(.queue) } label: { icon("list.bullet", active: !model.preferences.sidebarCollapsed && model.sidebarTab == .queue) }
+                    .help("展开播放列表").accessibilityIdentifier("open-queue")
+                Button { model.perform(.toggleSidebarVisibility) } label: { icon("sidebar.right", active: !model.preferences.sidebarCollapsed) }
+                    .help(model.help(.toggleSidebarVisibility)).accessibilityIdentifier("toggle-sidebar")
+                Button { model.showSubtitleControls = true } label: {
+                    icon("slider.horizontal.3").overlay(alignment: .topTrailing) {
+                        if model.alignmentTaskStatus.canRetry { Circle().fill(.orange).frame(width: 5, height: 5) }
+                    }
+                }.help("播放设置").accessibilityIdentifier("quick-settings")
+                    .popover(isPresented: $model.showSubtitleControls) { SubtitleControls(model: model) }
+            }.buttonStyle(.plain).foregroundStyle(.white.opacity(0.9))
+        }
+        .padding(.horizontal, 16).padding(.vertical, 14)
+        .background(Palette.panel.opacity(0.94), in: RoundedRectangle(cornerRadius: 15))
+        .overlay { RoundedRectangle(cornerRadius: 15).stroke(.white.opacity(0.12), lineWidth: 1).allowsHitTesting(false) }
+        .shadow(color: .black.opacity(0.25), radius: 16, y: 6)
+        .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
+    }
+    private func icon(_ name: String, active: Bool = false) -> some View {
+        Image(systemName: name).font(.system(size: 16)).foregroundStyle(active ? Palette.accent : .white.opacity(0.9)).frame(width: 28, height: 32)
+    }
+    private func action(_ action: PlayerAction, _ symbol: String, active: Bool = false) -> some View {
+        Button { model.perform(action) } label: { icon(symbol, active: active) }
+            .disabled(!model.canPerform(action)).help(model.help(action)).accessibilityIdentifier("action-" + action.rawValue)
+    }
+    private func popover(_ value: PlayerPopover) -> Binding<Bool> {
+        Binding(get: { model.playerPopover == value }, set: { if !$0 && model.playerPopover == value { model.playerPopover = nil } })
+    }
+}
+
+struct SubtitleMenuPanel: View {
+    @ObservedObject var model: AppModel
+    private func close(_ action: () -> Void) { model.playerPopover = nil; action() }
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("字幕").font(.headline)
+            Picker("显示", selection: Binding(get: { model.preferences.subtitleDisplay }, set: { model.setSubtitleDisplay($0) })) {
+                ForEach(SubtitleDisplayMode.allCases, id: \.self) { Text($0.title).tag($0) }
+            }.pickerStyle(.segmented)
+            Button("字幕全文…") { close { model.openSidebar(.transcript) } }.accessibilityIdentifier("open-transcript")
+            Button("学习侧栏…") { close { model.openSidebar(.learning) } }.accessibilityIdentifier("open-learning")
+            Divider()
+            Group {
+                Button("导入双语字幕…") { close { model.chooseSubtitle() } }
+                Button("导入英文字幕…") { close { model.chooseSubtitle(.english) } }
+                Button("导入中文字幕…") { close { model.chooseSubtitle(.chinese) } }
+                Button("搜索英文字幕…") { close { model.searchSubtitles(.english) } }
+                Button("搜索中文字幕…") { close { model.searchSubtitles(.chinese) } }
+            }.disabled(model.media == nil)
+            if !model.subtitleOptions.isEmpty {
+                Divider(); Text("同目录字幕").font(.caption).foregroundStyle(.secondary)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(model.subtitleOptions) { option in
+                            Button(option.title) { close { model.importSubtitle(option.url) } }.lineLimit(2)
+                        }
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                }.frame(maxHeight: 130)
+            }
+        }.buttonStyle(.borderless).padding(20).frame(width: 300)
     }
 }
 
@@ -337,7 +376,7 @@ struct SubtitleControls: View {
     @ObservedObject var model: AppModel
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("字幕与音轨").font(.headline)
+            Text("播放设置").font(.headline)
             ForEach(SubtitleLanguage.allCases, id: \.self) { language in
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
@@ -363,6 +402,17 @@ struct SubtitleControls: View {
             }
             Text(model.subtitleStatus).font(.caption).foregroundStyle(.secondary)
             Button("重新准备逐词高亮") { model.setOffset(model.englishOffset, language: .english) }
+            Divider()
+            Text(model.practiceMessage.isEmpty ? model.alignmentStatus : model.practiceMessage)
+                .font(.caption).foregroundStyle(.secondary).lineLimit(3)
+            HStack {
+                if model.alignmentTaskStatus.diagnostic != nil {
+                    Button("查看详情") { model.showSubtitleControls = false; model.viewAlignmentDetails() }
+                }
+                if model.alignmentTaskStatus.canRetry { Button("重试") { model.retryAlignment() } }
+                Spacer()
+                Button("高级设置…") { model.showSettings = true; model.showSubtitleControls = false }
+            }
         }.padding(22).frame(width: 340)
     }
 }

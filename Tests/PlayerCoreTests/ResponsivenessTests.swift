@@ -20,7 +20,7 @@ struct ResponsivenessTests {
     @Test func displayPreferenceUpgradeAndBindingConflict() throws {
         let legacy = Data(#"{"bindings":{"playPause":{"keyCode":37,"key":"l","modifiers":3}},"disabled":[],"autoplay":true}"#.utf8)
         var upgraded = try JSONDecoder().decode(InteractionPreferences.self, from: legacy)
-        #expect(!upgraded.cardHidden && !upgraded.sidebarCollapsed)
+        #expect(!upgraded.cardHidden && upgraded.sidebarCollapsed)
         #expect(upgraded.shortcut(for: .toggleSidebarVisibility) == nil)
         #expect(upgraded.conflictNotices.contains(PlayerAction.toggleSidebarVisibility.rawValue))
         upgraded.cardHidden = true; upgraded.sidebarCollapsed = true

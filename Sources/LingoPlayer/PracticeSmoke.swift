@@ -30,15 +30,7 @@ enum PracticeSmoke {
             await delay(0.15)
         }
         func screenshot(_ name: String) {
-            guard let view = window.contentView, let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return }
-            view.cacheDisplay(in: view.bounds, to: bitmap)
-            if let frame = model.videoView.diagnosticFrame(), let context = NSGraphicsContext(bitmapImageRep: bitmap) {
-                NSGraphicsContext.saveGraphicsState(); NSGraphicsContext.current = context
-                var rect = model.videoView.convert(model.videoView.bounds, to: view)
-                if view.isFlipped { rect.origin.y = view.bounds.height - rect.maxY }
-                frame.draw(in: rect); NSGraphicsContext.restoreGraphicsState()
-            }
-            try? bitmap.representation(using: .png, properties: [:])?.write(to: output.appendingPathComponent(name))
+            WindowSnapshot.save(window, to: output.appendingPathComponent(name))
         }
         let one = folder.appendingPathComponent("Practice1.mp4"), two = folder.appendingPathComponent("Practice2.mp4")
         model.settings.autoSearch = false; model.settings.mfa = "/missing/mfa-for-practice-test"; model.setVolume(0)
@@ -55,7 +47,7 @@ enum PracticeSmoke {
             record("v02_custom_bindings_win_new_default_conflicts", model.preferences.shortcut(for: .toggleSentenceLoop) == nil && model.preferences.shortcut(for: .cycleSubtitleDisplay) == nil && model.preferences.conflictNotices.count == 2 && model.shortcutMessage.contains("冲突"))
             model.resetShortcuts(); model.ingest([one, two])
             let loaded = await wait { model.playbackReady && model.english.count == 3 && model.chinese.count == 3 && !model.transcript.isPreparing && model.transcript.document.rows.count == 4 }
-            await pause(); model.sidebarTab = .transcript; await delay(0.4)
+            await pause(); model.setSidebarCollapsed(false); model.sidebarTab = .transcript; await delay(0.4)
             record("independent_files_overlap_and_unmatched_chinese", loaded && model.transcript.document.rows.filter { $0.chineseText.contains("跨两句") }.count == 2 && model.transcript.document.rows.filter { $0.english == nil }.count == 1)
             if let first = model.english.first, let second = model.english.dropFirst().first, let tail = model.english.last {
                 model.transcript.query = "FIRST [SENTENCE]"
@@ -139,7 +131,7 @@ enum PracticeSmoke {
                     await press(11, "b", .command, target)
                     record("detached_shortcuts_share_loop_and_display_state", model.sentenceLoop == nil && model.preferences.subtitleDisplay == .english && model.sidebarTab == .transcript)
                 } else { record("detached_shortcuts_share_loop_and_display_state", false) }
-                closeDetached(); await pause(); model.sidebarTab = .transcript; model.setSubtitleDisplay(.bilingual)
+                closeDetached(); await pause(); model.setSidebarCollapsed(false); model.sidebarTab = .transcript; model.setSubtitleDisplay(.bilingual)
                 model.seek(0.4); _ = await wait { model.seekTarget == nil }; await delay(0.3); screenshot("transcript.png")
                 window.setContentSize(NSSize(width: 980, height: 640)); await delay(0.3); screenshot("minimum-window.png")
                 window.setContentSize(NSSize(width: 1260, height: 800)); await delay(0.2)

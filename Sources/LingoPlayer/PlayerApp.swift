@@ -29,11 +29,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         model.onShortcutsChanged = { [weak self] in self?.installMenu() }
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1260, height: 800), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
         window.title = "LingoPlayer"; window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden; window.isOpaque = false; window.backgroundColor = .clear
         window.minSize = NSSize(width: 980, height: 640)
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: PlayerRootView(model: model).preferredColorScheme(.dark))
         window.center(); window.makeKeyAndOrderFront(nil)
         self.window = window
+        model.chrome.onVisibilityChange = { [weak window] visible in
+            for button in [NSWindow.ButtonType.closeButton, .miniaturizeButton, .zoomButton] {
+                window?.standardWindowButton(button)?.isHidden = !visible
+            }
+        }
         NSApplication.shared.activate(ignoringOtherApps: true)
         let keyboard = KeyboardRouter(model: model)
         keyboard.isPlayerWindow = { [weak self] candidate in
@@ -42,6 +48,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(of: "--chrome-test"), CommandLine.arguments.count > index + 2 {
+            Task { await ChromeSmoke.run(model: model, window: window, video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2])) }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(of: "--keyboard-test"), CommandLine.arguments.count > index + 2 {
             Task { [weak self] in
                 await KeyboardSmoke.run(model: model, window: window, keyboard: keyboard,

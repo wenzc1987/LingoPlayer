@@ -8,6 +8,16 @@ enum SidebarTab: String, CaseIterable {
 
 @MainActor
 extension AppModel {
+    func updateChromePresentation() {
+        chrome.hold(.presentation, active: showSettings || showSubtitleSearch || showSubtitleControls || playerPopover != nil || showAlignmentDetails || alert != nil)
+    }
+    func openSidebar(_ tab: SidebarTab) {
+        sidebarTab = tab
+        if tab == .learning {
+            var updated = preferences; updated.cardHidden = false; updatePreferences(updated)
+        }
+        setSidebarCollapsed(false)
+    }
     static let speedSteps = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
     static var preferenceURL: URL { RuntimeSettings.supportDirectory.appendingPathComponent("interaction.json") }
     func loadInteractionState() {

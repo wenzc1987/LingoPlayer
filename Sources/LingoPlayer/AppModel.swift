@@ -26,6 +26,7 @@ final class AppModel: ObservableObject {
     let mediaPresentation = MediaPresentation()
     let subtitles = SubtitlePresentation()
     let learningPresentation = LearningPresentation()
+    let chrome = PlayerChrome()
     @Published var sentenceLoop: SentenceLoop?
     @Published var practiceMessage = ""
     var loopIterations = 0
@@ -40,7 +41,7 @@ final class AppModel: ObservableObject {
     @Published var media: MediaIdentity?
     var position = 0.0 { didSet { playback.updatePosition(position) } }
     var duration: Double { get { playback.duration } set { if newValue != playback.duration { playback.duration = newValue; mediaPresentation.duration = newValue } } }
-    var paused: Bool { get { playback.paused } set { if newValue != playback.paused { playback.paused = newValue }; if newValue { playback.updatePosition(position, immediate: true) } } }
+    var paused: Bool { get { playback.paused } set { if newValue != playback.paused { playback.paused = newValue }; chrome.playback(paused: newValue, ready: playbackReady); if newValue { playback.updatePosition(position, immediate: true) } } }
     var speed: Double { get { playback.speed } set { if newValue != playback.speed { playback.speed = newValue } } }
     var volume: Double { get { playback.volume } set { if newValue != playback.volume { playback.volume = newValue } } }
     @Published var english: [SubtitleCue] = [] { didSet { englishIndex = TimelineIndex(starts: english.map(\.start), ends: english.map(\.end)) } }
@@ -58,7 +59,7 @@ final class AppModel: ObservableObject {
     @Published var subtitleOptions: [SubtitleOption] = []
     @Published var subtitleStatus = "打开视频后自动发现字幕"
     @Published var alignmentTaskStatus = AlignmentTaskStatus(.idle, "")
-    @Published var showAlignmentDetails = false
+    @Published var showAlignmentDetails = false { didSet { updateChromePresentation() } }
     @Published var alignmentDetails = ""
     @Published var alignmentStatus = "导入英文字幕后可准备逐词高亮"
     var learningState = LearningState()
@@ -67,11 +68,12 @@ final class AppModel: ObservableObject {
     var dictionaryStatus: String { get { learningPresentation.status } set { if newValue != learningPresentation.status { learningPresentation.status = newValue } } }
     var currentWordID: String? { get { subtitles.wordID } set { if newValue != subtitles.wordID { subtitles.wordID = newValue } } }
     @Published var isDetached = false { didSet { if oldValue != isDetached { refreshDictionary() } } }
-    @Published var showSettings = false
+    @Published var showSettings = false { didSet { updateChromePresentation() } }
     @Published var settingsPage = 0
-    @Published var showSubtitleSearch = false
-    @Published var showSubtitleControls = false
-    @Published var alert: String?
+    @Published var showSubtitleSearch = false { didSet { updateChromePresentation() } }
+    @Published var showSubtitleControls = false { didSet { updateChromePresentation() } }
+    @Published var playerPopover: PlayerPopover? { didSet { updateChromePresentation() } }
+    @Published var alert: String? { didSet { updateChromePresentation() } }
     @Published var isSearching = false
     @Published var searchLanguage: SubtitleLanguage = .english
     @Published var searchText = ""
@@ -103,7 +105,7 @@ final class AppModel: ObservableObject {
     var searchID = UUID()
     var lastDictionaryKey = ""
     var lastSavedAt = Date.distantPast
-    var awaitingLoad = false { didSet { let value = media != nil && !awaitingLoad; if playback.ready != value { playback.ready = value; mediaPresentation.ready = value } } }
+    var awaitingLoad = false { didSet { let value = media != nil && !awaitingLoad; if playback.ready != value { playback.ready = value; mediaPresentation.ready = value }; chrome.playback(paused: paused, ready: value) } }
     var replayRange: ClosedRange<Double>?
     var replayArmed = false
     // Keep the practiced subtitle visible through its tail and the final pause.
@@ -124,7 +126,13 @@ final class AppModel: ObservableObject {
             if self.alignmentStatus != status { self.alignmentStatus = status }
             self.refreshLearning()
         }
-        aligner.onStatus = { [weak self] status in if self?.alignmentTaskStatus != status { self?.alignmentTaskStatus = status } }
+        aligner.onStatus = { [weak self] status in
+            guard let self else { return }
+            if self.alignmentTaskStatus != status { self.alignmentTaskStatus = status }
+            if status.phase == .environmentFailure || status.phase == .partialFailure {
+                self.chrome.showNotice("逐词准备遇到问题，可在播放设置中查看或重试。", key: status.message)
+            }
+        }
         loadInteractionState()
         configureDictionary()
         if let error = player.startupError { subtitleStatus = error }
@@ -156,6 +164,7 @@ final class AppModel: ObservableObject {
     func acceptDrop(_ url: URL) { acceptFiles([url]) }
     func open(_ url: URL) { ingest([url]) }
     func loadMedia(_ url: URL, restoring: Bool = false) {
+        chrome.resetNotice()
         savePlayback()
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
         sessionID = UUID(); searchID = UUID(); lookupID = UUID()

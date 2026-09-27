@@ -1,0 +1,945 @@
+{
+  "version": "0.3.1",
+  "build": 7,
+  "macOS": "15.8",
+  "sha256": "a5c76c2bcf8877df9761de54de0b61e108fa7006eadfd44057c5f5df7a49a3e1",
+  "unit_tests": {
+    "swift": 64,
+    "python": 10,
+    "passed": true
+  },
+  "runs": {
+    "chrome": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "screenshot_empty",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "notice_expires_and_repeated_failure_stays_quiet",
+          "passed": true
+        },
+        {
+          "detail": "video=(1260.0, 800.0), content=(1260.0, 800.0)",
+          "name": "video_fills_content_without_reserved_bars",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_paused",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "paused_controls_stay_visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "blank_click_hides_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_immersive",
+          "passed": true
+        },
+        {
+          "detail": "visible=true, paused=true, holds=[]",
+          "name": "blank_click_reveals_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toolbar_queue_opens_shared_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_queue",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "transcript_uses_same_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "clicked=true, locked=true, collapsed=false, tab=learning",
+          "name": "floating_word_click_pauses_and_opens_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_keeps_sidebar_and_unfolded_tab",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "playing_controls_auto_hide",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "word_remains_clickable_with_controls_hidden",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toolbar_settings_opens_popover",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "configuration_prevents_auto_hide",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_settings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_settings_popup_0",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_subtitles_do_not_resize_video",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_minimum",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "minimum_window_keeps_control_actions_available",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "long_subtitle_wraps_below_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_long-subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_fullscreen",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_fullscreen",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "keyboard": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "media_loaded_with_custom_space_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "button_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "slider_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "transcript_table_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "typing_space_edits_text_without_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ime_and_text_editing_keep_shortcuts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clicking_another_input_keeps_text_editing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_click_leaves_text_editing",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSWindow), blocked=false, dispatched=1",
+          "name": "space_after_leaving_editor",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSTextView), blocked=false, dispatched=1",
+          "name": "readonly_text_does_not_block_player",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "subtitle_popover_still_blocks_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_still_blocks_keys",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "shortcut_after_closing_settings",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "command_r_replays_locked_sentence",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "replay_starts_selected_cue",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "command_return_resumes_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_unlocks_and_plays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_button_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "detached_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "detached_command_shortcut",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "practice": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "v02_custom_bindings_win_new_default_conflicts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "independent_files_overlap_and_unmatched_chinese",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "literal_case_insensitive_search",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_search_returns_both_overlaps",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "literal_no_results",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "return_current_clears_search_and_resumes_following",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timestamp_navigation_preserves_pause_and_locked_card",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continuous_loop_plays_and_preserves_locked_card",
+          "passed": true
+        },
+        {
+          "detail": "position=0.20833333333333331 → 0.20833333333333331, loops=3 → 3",
+          "name": "pause_preserves_loop_and_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "next_sentence_retargets_paused_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "previous_sentence_retargets_paused_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timestamp_retargets_existing_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toggle_off_preserves_position_and_pause",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "gap_disables_toolbar_loop_but_row_can_start",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_learning_exits_loop_and_unlocks",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "one_shot_exits_loop_and_pauses_with_card",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "scrub_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "five_second_jump_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_offset_keeps_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "english_offset_exits_loop_and_updates_jump",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "loop_uses_english_offset_and_independent_tail",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "audio_selection_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "iterations=20, position=7.6, ",
+          "name": "twenty_tail_loops_at_double_speed_never_autoplay_or_finish",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "old_loop_seek_result_is_ignored",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_shortcut_cycles_to_english_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_mode_preserves_learning_and_video_geometry",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "bilingual_restores_without_geometry_change",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "search_field_keeps_player_shortcuts_native",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_blocks_new_actions",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_shortcut_starts_loop_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_shortcuts_share_loop_and_display_state",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "bilingual_replacement_resets_loop_search_and_browsing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "rapid_media_switch_clears_loop_and_stale_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "negative_offset_replay_keeps_start_and_extends_tail",
+          "passed": true
+        },
+        {
+          "detail": "position=2.6666666666666665, word=tail-regression:2",
+          "name": "replay_still_plays_and_highlights_its_own_cue_after_subtitle_end",
+          "passed": true
+        },
+        {
+          "detail": "position=3.125",
+          "name": "replay_pauses_after_full_tail_and_keeps_practiced_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "navigation_and_loop_target_stay_on_practiced_sentence_after_tail",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "tail_adjustment_preserves_offsets_and_alignment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "tail_setting_persists_per_media_with_existing_offset",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_learning_releases_practiced_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "zero_tail_restores_subtitle_endpoint",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "direct_seek_clears_replay_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "five_thousand_rows_prepare_and_search",
+          "passed": true
+        },
+        {
+          "detail": "following=false, row=4895 → 4895, offset=20.0 → 20.0",
+          "name": "native_manual_scroll_stops_automatic_follow",
+          "passed": true
+        },
+        {
+          "detail": "visible cell views=6",
+          "name": "native_table_virtualizes_large_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "return_current_scrolls_native_table_back",
+          "passed": true
+        },
+        {
+          "detail": "clock delta=1.875, maximum main actor gap=0.07166492938995361",
+          "name": "playback_advances_during_search_and_scroll_without_rebuild",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_only_navigation_and_disabled_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_only_timestamp_preserves_pause",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 23.845566987991333,
+      "metrics": {
+        "main_actor_max_gap_seconds": 0.07166492938995361,
+        "tail_loop_iterations": 20,
+        "transcript_5000_prepare_seconds": 0.16048097610473633,
+        "transcript_5000_search_seconds_including_debounce": 0.1958369016647339
+      },
+      "passed": true,
+      "version": "0.3.1"
+    },
+    "practice_restore": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "restart_paused_with_display_preference_and_no_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_resets_search_and_following",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new_action_custom_bindings_restore",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_keeps_queue_and_unfinished_progress",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 0.8976360559463501,
+      "metrics": {},
+      "passed": true,
+      "version": "0.3.1"
+    },
+    "interaction": {
+      "checks": [
+        {
+          "detail": "974 lime pixels",
+          "name": "finder_icon_resolves_lime_artwork",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "app_version_and_dock_icon_packaged",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_about_window_opens",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "multi_file_drop_decodes_all_urls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "batch_natural_sort_dedup_and_first_play",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_window_shortcut_toggles_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "add_does_not_interrupt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reorder_preserves_current",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_noncurrent_keeps_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_current_plays_original_successor",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clear_stops_and_clears_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorder_conflict_preserves_existing_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorder_escape_cancels",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clear_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "recorded_binding_updates_menu_immediately",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_all_defaults",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_sheet_blocks_player_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "marked_text_and_editing_keep_native_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "popover_blocks_navigation_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detach_selects_queue_tab",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_window_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "close_detached_restores_learning_tab",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sidebar_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sidebar_three_tab_cycle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sentence_navigation_offset_gap_preserves_lock_pause",
+          "passed": true
+        },
+        {
+          "detail": "已跳过：Episode4.mp4（文件缺失或无法读取）",
+          "name": "natural_eof_skips_unavailable_and_advances_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "natural_finish_remembered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "queue_tail_stops_without_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "completed_video_reopens_from_start",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "scrub_to_end_does_not_autoplay",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sentence_replay_at_eof_never_autoplays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "remove_last_current_stops",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "all_unavailable_stop_with_message",
+          "passed": true
+        },
+        {
+          "detail": "Episode2.en.srt",
+          "name": "rapid_switch_filters_old_media_and_subtitles",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "autoplay_off_stays_on_current",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_position_saved_for_restart",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 15.174347043037415,
+      "passed": true,
+      "version": "0.3.1"
+    },
+    "interaction_restore": {
+      "checks": [
+        {
+          "detail": "position=1.25, paused=true, items=[\"Episode10.mp4\", \"Episode2.mp4\", \"Episode1.mp4\"]",
+          "name": "restart_restores_order_current_and_position_paused",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_stays_paused_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "shortcuts_and_autoplay_restore_in_new_process",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 1.676598072052002,
+      "passed": true,
+      "version": "0.3.1"
+    },
+    "display": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "video_and_subtitles_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "closing_card_preserves_pause_position_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "closed_card_stays_hidden_but_highlight_updates",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "word_click_reopens_sidebar_card_and_locks",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "collapsed_video_gains_sidebar_width",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "collapse_preserves_tab_search_and_browsing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "cycle_tabs_unfolds_and_keeps_order",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_word_click_does_not_unfold_main",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reattach_respects_collapsed_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_keeps_drawing_during_resize",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "missing_python_has_structured_status_and_log",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "details_retain_task_configuration",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "missing_model_is_not_reported_as_python_failure",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "retry_rechecks_environment_and_continues_content_failures",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "failed_alignment_does_not_block_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "cancel_waits_for_job_audio_cleanup",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "version": "0.3.1"
+    },
+    "display_restore": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "hidden_card_and_collapsed_sidebar_survive_restart",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restored_video_paused_without_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "loading_video_does_not_reopen_card",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "version": "0.3.1"
+    }
+  }
+}
