@@ -14,8 +14,8 @@ struct SubtitleOption: Identifiable {
 final class AppModel: ObservableObject {
     @Published var queueState = PlaybackQueue()
     @Published var progress: [String: PlaybackProgress] = [:]
-    @Published var preferences = InteractionPreferences()
-    @Published var sidebarTab: SidebarTab = .learning { didSet { if sidebarTab != oldValue { refreshDictionary() } } }
+    @Published var preferences = InteractionPreferences() { didSet { updateTranscriptVisibility() } }
+    @Published var sidebarTab: SidebarTab = .learning { didSet { if sidebarTab != oldValue { refreshDictionary(); updateTranscriptVisibility() } } }
     @Published var recordingAction: PlayerAction?
     @Published var shortcutMessage = ""
     @Published var queueMessage = ""
@@ -63,7 +63,15 @@ final class AppModel: ObservableObject {
     @Published var alignmentDetails = ""
     @Published var alignmentStatus = "导入英文字幕后可准备逐词高亮"
     var learningState = LearningState()
-    var learning: LearningState { get { learningState } set { learningState = newValue; if learningVisible && newValue != learningPresentation.state { learningPresentation.state = newValue } } }
+    var learning: LearningState {
+        get { learningState }
+        set {
+            learningState = newValue
+            let locked = newValue.locked.map { "\($0.cue.id):\($0.token.id)" }
+            if subtitles.lockedWordID != locked { subtitles.lockedWordID = locked }
+            if learningVisible && newValue != learningPresentation.state { learningPresentation.state = newValue }
+        }
+    }
     var dictionaryEntry: DictionaryEntry? { get { learningPresentation.entry } set { if newValue != learningPresentation.entry { learningPresentation.entry = newValue } } }
     var dictionaryStatus: String { get { learningPresentation.status } set { if newValue != learningPresentation.status { learningPresentation.status = newValue } } }
     var currentWordID: String? { get { subtitles.wordID } set { if newValue != subtitles.wordID { subtitles.wordID = newValue } } }

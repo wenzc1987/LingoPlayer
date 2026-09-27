@@ -4,6 +4,9 @@ import PlayerCore
 /// Runs only inside the isolated native practice regression, using the real mpv clock.
 @MainActor enum ReplayTailSmoke {
     static func run(_ model: AppModel) async -> [[String: Any]] {
+        // Audio-track discovery can restart alignment after the first subtitle
+        // appears. Finish loading before installing synthetic timing fixtures.
+        await model.openTask?.value
         var checks: [[String: Any]] = []
         func record(_ name: String, _ passed: Bool, _ detail: String = "") {
             checks.append(["name": name, "passed": passed, "detail": detail])
@@ -36,7 +39,7 @@ import PlayerCore
         record("replay_pauses_after_full_tail_and_keeps_practiced_subtitle", finished && model.position >= 3.1 && model.position < 3.4 && model.activeEnglish == [cue] && model.selected?.cue == cue, "position=\(model.position)")
         record("navigation_and_loop_target_stay_on_practiced_sentence_after_tail", model.adjacentSentence(1) == next && model.adjacentSentence(-1) == nil && model.currentLoopCandidate == cue)
         model.setSentenceTailPadding(1.2)
-        record("tail_adjustment_preserves_offsets_and_alignment", model.englishOffset == -1.7 && model.timings == knownTimings && abs((model.loopRange(for: cue)?.end ?? 0) - 3.5) < 0.001)
+        record("tail_adjustment_preserves_offsets_and_alignment", model.englishOffset == -1.7 && model.timings == knownTimings && abs((model.loopRange(for: cue)?.end ?? 0) - 3.5) < 0.001, "timings=\(model.timings.count), offset=\(model.englishOffset)")
         await model.store?.flush()
         if let key = model.media?.key, let restored = try? await model.store?.load(SavedPlayback.self, key: key, table: "playback") {
             record("tail_setting_persists_per_media_with_existing_offset", restored.sentenceTailPadding == 1.2 && restored.englishOffset == -1.7)

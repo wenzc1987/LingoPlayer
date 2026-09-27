@@ -22,6 +22,7 @@ final class TranscriptController: ObservableObject {
     private var position = 0.0
     private var lastAnchor: String?
     private var resetting = false
+    private var isVisible = false
 
     func reset() {
         revision = UUID(); searchRevision = UUID(); preparation?.cancel(); searchTask?.cancel()
@@ -66,9 +67,15 @@ final class TranscriptController: ObservableObject {
         query = ""; following = true
         updatePosition(position, forceScroll: true)
     }
-    func becameVisible() { updatePosition(position, forceScroll: true) }
+    func setVisible(_ visible: Bool) {
+        guard isVisible != visible else { return }
+        isVisible = visible
+        if visible { updatePosition(position, forceScroll: true) }
+    }
     func updatePosition(_ time: Double, forceScroll: Bool = false) {
         position = time
+        // Preserve the clock and reading position without notifying an offscreen table.
+        guard isVisible || forceScroll else { return }
         let active = document.activeIDs(at: time)
         if activeIDs != active { activeIDs = active }
         let anchor = document.anchorID(at: time)

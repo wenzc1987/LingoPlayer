@@ -3,6 +3,7 @@ import PlayerCore
 
 @MainActor enum ChromeSmoke {
     static func run(model: AppModel, window: NSWindow, video: URL, output: URL) async {
+        window.ignoresMouseEvents = true // Explicitly posted test events still target this window.
         var checks: [[String: Any]] = []
         func record(_ name: String, _ passed: Bool, _ detail: String = "") {
             checks.append(["name": name, "passed": passed, "detail": detail]); print(name, passed, detail); fflush(stdout)
@@ -81,8 +82,12 @@ import PlayerCore
             await delay(0.5); screenshot("learning")
             model.resumeLearning(); await delay()
             record("continue_keeps_sidebar_and_unfolded_tab", !model.paused && !model.preferences.sidebarCollapsed && model.sidebarTab == .learning && !model.learning.isLocked)
+            // Posted button clicks do not move the physical pointer. Explicitly
+            // model leaving the controls for this idle-timer assertion.
+            model.chrome.hold(.pointer, active: false)
+            model.chrome.hold(.windowButtons, active: false)
             _ = await wait { !model.chrome.visible }
-            record("playing_controls_auto_hide", !model.chrome.visible)
+            record("playing_controls_auto_hide", !model.chrome.visible, "paused=\(model.paused), holds=\(model.chrome.state.holds)")
             let hiddenWordClicked = await clickButton("subtitle-word-\(cue.id)-\(word.id)")
             record("word_remains_clickable_with_controls_hidden", hiddenWordClicked && model.learning.isLocked && model.paused && model.chrome.visible)
             model.resumeLearning(); await delay()
@@ -112,9 +117,13 @@ import PlayerCore
             record("long_subtitle_wraps_below_controls", wordRects.count == longCue.tokens.filter(\.isWord).count && (wordRects.first?.minY ?? 0) > (wordRects.last?.minY ?? 0) && wordRects.allSatisfy { $0.maxY < playRect.minY && window.frame.contains($0) })
             screenshot("long-subtitle")
             model.english = originalEnglish; model.refreshLearning()
-            model.setSidebarCollapsed(true); window.toggleFullScreen(nil); await delay(1.5)
-            record("native_fullscreen", window.styleMask.contains(.fullScreen)); screenshot("fullscreen")
-            window.toggleFullScreen(nil); await delay(1.2)
+            model.setSidebarCollapsed(true); window.toggleFullScreen(nil)
+            let fullscreen = await wait { window.styleMask.contains(.fullScreen) }; await delay(0.4)
+            record("native_fullscreen", fullscreen)
+            // The style flag changes before the window-server surface finishes
+            // moving to its fullscreen space; wait for the capturable surface.
+            record("screenshot_fullscreen", await wait { WindowSnapshot.save(window, to: output.appendingPathComponent("fullscreen.png")) })
+            if fullscreen { window.toggleFullScreen(nil); _ = await wait { !window.styleMask.contains(.fullScreen) }; await delay(0.4) }
         }
         let result: [String: Any] = ["passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "checks": checks]
         try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]).write(to: output.appendingPathComponent("chrome.json"))

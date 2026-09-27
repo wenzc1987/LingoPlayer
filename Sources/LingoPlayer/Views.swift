@@ -70,14 +70,14 @@ struct PlayerStage: View {
                     .frame(maxWidth: geometry.size.width * 0.92)
                     .background(GeometryReader { proxy in Color.clear.preference(key: SubtitleHeightKey.self, value: proxy.size.height) })
                     .padding(.bottom, 24)
-                PlaybackControls(model: model)
+                if chrome.visible {
+                    PlaybackControls(model: model)
                     .frame(width: min(860, max(0, geometry.size.width - 32)))
                     // Keep native hover tracking out of the subtitle area below.
                     .onHover { chrome.hold(.pointer, active: $0) }
                     .padding(.bottom, model.media == nil ? 24 : max(76, subtitleHeight) + 42)
-                    .opacity(chrome.visible ? 1 : 0)
-                    .allowsHitTesting(chrome.visible).accessibilityHidden(!chrome.visible)
-                    .animation(.easeOut(duration: 0.18), value: chrome.visible)
+                    .transition(.opacity)
+                }
                 if let notice = chrome.notice {
                     Text(notice).font(.system(size: 12)).foregroundStyle(.white)
                         .padding(12).background(.black.opacity(0.8), in: RoundedRectangle(cornerRadius: 10))
@@ -87,6 +87,7 @@ struct PlayerStage: View {
                     .onHover { chrome.hold(.windowButtons, active: $0) }
                     .frame(maxHeight: .infinity, alignment: .top)
             }
+            .animation(.easeOut(duration: 0.18), value: chrome.visible)
             .onPreferenceChange(SubtitleHeightKey.self) { subtitleHeight = $0 }
         }
     }
@@ -105,9 +106,9 @@ struct PlayerStage: View {
 struct SubtitleStrip: View {
     @ObservedObject var model: AppModel
     @ObservedObject var presentation: SubtitlePresentation
-    @ObservedObject var learning: LearningPresentation
-    init(model: AppModel) { self.model = model; presentation = model.subtitles; learning = model.learningPresentation }
+    init(model: AppModel) { self.model = model; presentation = model.subtitles }
     var body: some View {
+        let _ = PerformanceCounters.shared.hit("subtitle_body")
         content.opacity(model.preferences.subtitleDisplay == .hidden ? 0 : 1)
             .allowsHitTesting(model.preferences.subtitleDisplay != .hidden)
             .accessibilityHidden(model.preferences.subtitleDisplay == .hidden)
@@ -119,7 +120,7 @@ struct SubtitleStrip: View {
                     WordWrap(spacing: 1, lineSpacing: 4) {
                         ForEach(cue.tokens) { token in
                             let spoken = model.currentWordID == "\(cue.id):\(token.id)"
-                            let locked = model.learning.locked?.cue.id == cue.id && model.learning.locked?.token.id == token.id
+                            let locked = presentation.lockedWordID == "\(cue.id):\(token.id)"
                             if token.isWord {
                                 Button { model.lock(cue: cue, token: token) } label: {
                                     Text(token.text).font(.system(size: 23, weight: spoken ? .semibold : .medium))
@@ -150,14 +151,30 @@ struct SubtitleStrip: View {
 struct WordWrap: Layout {
     var spacing: CGFloat = 3
     var lineSpacing: CGFloat = 5
-    private func layout(_ subviews: Subviews, width: CGFloat) -> (CGSize, [CGPoint]) {
+    struct Cache {
+        var sizes: [CGSize]
+        var width: CGFloat?
+        var spacing: CGFloat?
+        var lineSpacing: CGFloat?
+        var result: (CGSize, [CGPoint])?
+    }
+    func makeCache(subviews: Subviews) -> Cache { Cache(sizes: measure(subviews)) }
+    func updateCache(_ cache: inout Cache, subviews: Subviews) {
+        let sizes = measure(subviews)
+        if cache.sizes != sizes { cache = Cache(sizes: sizes) }
+    }
+    private func measure(_ subviews: Subviews) -> [CGSize] {
+        PerformanceCounters.shared.hit("word_measurements", count: subviews.count)
+        return subviews.map { $0.sizeThatFits(.unspecified) }
+    }
+    private func layout(width: CGFloat, cache: inout Cache) -> (CGSize, [CGPoint]) {
+        if cache.width == width, cache.spacing == spacing, cache.lineSpacing == lineSpacing, let result = cache.result { return result }
         var rows: [[(Int, CGSize)]] = [[]], rowWidth: CGFloat = 0
-        for (index, view) in subviews.enumerated() {
-            let size = view.sizeThatFits(.unspecified)
+        for (index, size) in cache.sizes.enumerated() {
             if rowWidth + size.width > width && !rows[rows.count - 1].isEmpty { rows.append([]); rowWidth = 0 }
             rows[rows.count - 1].append((index, size)); rowWidth += size.width + spacing
         }
-        var points = [CGPoint](repeating: .zero, count: subviews.count), y: CGFloat = 0
+        var points = [CGPoint](repeating: .zero, count: cache.sizes.count), y: CGFloat = 0
         for row in rows {
             let total = row.reduce(CGFloat(0)) { $0 + $1.1.width } + CGFloat(max(0, row.count - 1)) * spacing
             var x = max(0, (width - total) / 2)
@@ -165,11 +182,13 @@ struct WordWrap: Layout {
             for (index, size) in row { points[index] = CGPoint(x: x, y: y); x += size.width + spacing }
             y += height + lineSpacing
         }
-        return (CGSize(width: width, height: max(0, y - lineSpacing)), points)
+        let result = (CGSize(width: width, height: max(0, y - lineSpacing)), points)
+        cache.width = width; cache.spacing = spacing; cache.lineSpacing = lineSpacing; cache.result = result
+        return result
     }
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize { layout(subviews, width: proposal.width ?? 600).0 }
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = layout(subviews, width: bounds.width)
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Cache) -> CGSize { layout(width: proposal.width ?? 600, cache: &cache).0 }
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout Cache) {
+        let result = layout(width: bounds.width, cache: &cache)
         for (index, view) in subviews.enumerated() { view.place(at: CGPoint(x: bounds.minX + result.1[index].x, y: bounds.minY + result.1[index].y), proposal: .unspecified) }
     }
 }
@@ -181,6 +200,7 @@ struct PlaybackControls: View {
     @State private var seeking = false
     @State private var draft = 0.0
     var body: some View {
+        let _ = PerformanceCounters.shared.hit("controls_body")
         VStack(spacing: 12) {
             HStack(spacing: 10) {
                 Text(clock(seeking ? draft : playback.position)).monospacedDigit().frame(minWidth: 45, alignment: .leading)

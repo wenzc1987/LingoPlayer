@@ -23,6 +23,7 @@ import PlayerCore
     @Published var english: [SubtitleCue] = []
     @Published var chinese: [SubtitleCue] = []
     @Published var wordID: String?
+    @Published var lockedWordID: String?
 }
 @MainActor final class LearningPresentation: ObservableObject {
     @Published var state = LearningState()

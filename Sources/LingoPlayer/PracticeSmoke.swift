@@ -21,7 +21,12 @@ enum PracticeSmoke {
                 windowNumber: (target ?? window).windowNumber, context: nil, characters: key, charactersIgnoringModifiers: key, isARepeat: false, keyCode: code)!
         }
         func press(_ code: UInt16, _ key: String, _ flags: NSEvent.ModifierFlags = [], _ target: NSWindow? = nil) async {
-            let target = target ?? window; target.makeKeyAndOrderFront(nil); target.makeFirstResponder(target.contentView); target.becomeKey()
+            let target = target ?? window
+            NSApp.activate(ignoringOtherApps: true); target.makeKeyAndOrderFront(nil); target.becomeKey()
+            _ = await wait { NSApp.keyWindow === target && target.attachedSheet == nil }
+            // These are command-behavior checks. The separate KeyboardSmoke keeps
+            // real text/control focus and verifies routing without resetting it.
+            target.makeFirstResponder(nil); target.makeFirstResponder(target)
             NSApp.postEvent(event(code, key, flags, target), atStart: false); await delay()
         }
         func pause() async {
@@ -184,6 +189,15 @@ enum PracticeSmoke {
                 let after = readingAnchor()
                 record("native_manual_scroll_stops_automatic_follow", !model.transcript.following && anchor.0 == after.0 && abs(anchor.1 - after.1) < 2 && bounds.y > 1000, "following=\(model.transcript.following), row=\(anchor.0) → \(after.0), offset=\(anchor.1) → \(after.1)")
                 record("native_table_virtualizes_large_transcript", table.numberOfRows == 5000 && views(table).filter { $0 is TranscriptCell }.count < 100, "visible cell views=\(views(table).filter { $0 is TranscriptCell }.count)")
+                let beforeHiding = readingAnchor()
+                model.setSidebarCollapsed(true); await delay(0.25)
+                let hiddenActive = model.transcript.activeIDs
+                model.seek(5.1); _ = await wait { model.seekTarget == nil }
+                record("hidden_transcript_defers_active_row_updates", model.transcript.activeIDs == hiddenActive)
+                model.setSidebarCollapsed(false); await delay(0.25)
+                let afterShowing = readingAnchor()
+                record("reopening_transcript_preserves_manual_reading_position", !model.transcript.following && beforeHiding.0 == afterShowing.0 && abs(beforeHiding.1 - afterShowing.1) < 2)
+                record("reopening_transcript_refreshes_current_highlight", model.transcript.activeIDs == model.transcript.document.activeIDs(at: model.position))
                 model.transcript.returnToCurrent(); await delay(0.2)
                 record("return_current_scrolls_native_table_back", model.transcript.following && scroll.contentView.bounds.origin.y < 1000)
             } else { record("native_transcript_table_exists", false) }

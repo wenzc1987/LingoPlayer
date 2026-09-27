@@ -81,7 +81,10 @@ import PlayerCore
                     NSApp.activate(ignoringOtherApps: true); window.makeKeyAndOrderFront(nil); window.makeFirstResponder(nil); window.becomeKey()
                     await delay(0.03)
                     window.becomeKey(); window.makeFirstResponder(window)
-                    if buttonInput && buttonPoints[action] == nil {
+                    // Floating controls move when the sidebar or subtitle height
+                    // changes. Resolve each target before starting its timing.
+                    if buttonInput {
+                        model.chrome.show(); await delay(0.05)
                         if let button = findButton(window, id: action == .toggleSidebarVisibility ? "toggle-sidebar" : "action-" + action.rawValue),
                            button.responds(to: NSSelectorFromString("accessibilityFrame")),
                            let rect = (button.value(forKey: "accessibilityFrame") as? NSValue)?.rectValue, !rect.isEmpty {

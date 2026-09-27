@@ -1,0 +1,3646 @@
+{
+  "date": "2026-09-27",
+  "baseline_commit": "537ff6b",
+  "version": "0.3.1",
+  "build": 8,
+  "sha256": "b3a665b52dcc8b5ac8c2965c6b295628bb2e0a5b33962502ef39db2dc1c6758f",
+  "baseline": {
+    "scenarios": [
+      {
+        "controls_visible": false,
+        "counts": {
+          "controls_body": 53,
+          "subtitle_body": 43,
+          "transcript_native_updates": 9,
+          "word_measurements": 5418
+        },
+        "cpu_percent_one_core": 41.190951455019885,
+        "cpu_seconds": 2.6501239999999995,
+        "english_count": 5000,
+        "highlighted_words": 40,
+        "main_wakeup_max_ms": 19.956620005541478,
+        "main_wakeup_p95_ms": 12.772855992079709,
+        "name": "immersive",
+        "paused": false,
+        "rendered_frames": 153,
+        "wall_seconds": 6.433752818003995,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 53,
+          "subtitle_body": 45,
+          "transcript_native_updates": 10,
+          "word_measurements": 5670
+        },
+        "cpu_percent_one_core": 34.95434000550801,
+        "cpu_seconds": 2.2580870000000006,
+        "english_count": 5000,
+        "highlighted_words": 39,
+        "main_wakeup_max_ms": 40.564916987204924,
+        "main_wakeup_p95_ms": 12.064194004051384,
+        "name": "controls",
+        "paused": false,
+        "rendered_frames": 154,
+        "wall_seconds": 6.460104810001212,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 60,
+          "subtitle_body": 92,
+          "transcript_native_updates": 11,
+          "word_measurements": 11592
+        },
+        "cpu_percent_one_core": 64.60919915659069,
+        "cpu_seconds": 4.657403,
+        "english_count": 5000,
+        "highlighted_words": 44,
+        "main_wakeup_max_ms": 64.25759100529831,
+        "main_wakeup_p95_ms": 31.875678006326776,
+        "name": "learning",
+        "paused": false,
+        "rendered_frames": 171,
+        "wall_seconds": 7.208575652999571,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 53,
+          "subtitle_body": 45,
+          "transcript_native_updates": 9,
+          "word_measurements": 5670
+        },
+        "cpu_percent_one_core": 34.11229071826941,
+        "cpu_seconds": 2.2410239999999995,
+        "english_count": 5000,
+        "highlighted_words": 40,
+        "main_wakeup_max_ms": 33.720069989794865,
+        "main_wakeup_p95_ms": 14.538038990576748,
+        "name": "transcript",
+        "paused": false,
+        "rendered_frames": 156,
+        "wall_seconds": 6.569550015003188,
+        "word_timing_count": 180
+      }
+    ],
+    "subtitle_count": 5000,
+    "synthetic_word_times": true
+  },
+  "optimized": {
+    "scenarios": [
+      {
+        "controls_visible": false,
+        "counts": {
+          "subtitle_body": 43,
+          "word_measurements": 774
+        },
+        "cpu_percent_one_core": 22.88302643993391,
+        "cpu_seconds": 1.4411079999999998,
+        "english_count": 5000,
+        "highlighted_words": 39,
+        "main_wakeup_max_ms": 27.67184299882501,
+        "main_wakeup_p95_ms": 7.0117119932547185,
+        "name": "immersive",
+        "paused": false,
+        "rendered_frames": 150,
+        "wall_seconds": 6.297715923996293,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 52,
+          "subtitle_body": 45,
+          "word_measurements": 810
+        },
+        "cpu_percent_one_core": 34.26590424070536,
+        "cpu_seconds": 2.2170600000000005,
+        "english_count": 5000,
+        "highlighted_words": 40,
+        "main_wakeup_max_ms": 32.036160994903184,
+        "main_wakeup_p95_ms": 13.753773996722881,
+        "name": "controls",
+        "paused": false,
+        "rendered_frames": 154,
+        "wall_seconds": 6.470163414996932,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 58,
+          "subtitle_body": 48,
+          "word_measurements": 864
+        },
+        "cpu_percent_one_core": 61.86611395626588,
+        "cpu_seconds": 4.428288,
+        "english_count": 5000,
+        "highlighted_words": 43,
+        "main_wakeup_max_ms": 46.10063099535182,
+        "main_wakeup_p95_ms": 29.243889995268542,
+        "name": "learning",
+        "paused": false,
+        "rendered_frames": 171,
+        "wall_seconds": 7.157857051002793,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 53,
+          "subtitle_body": 45,
+          "transcript_native_updates": 10,
+          "word_measurements": 810
+        },
+        "cpu_percent_one_core": 38.65022417614773,
+        "cpu_seconds": 2.500192,
+        "english_count": 5000,
+        "highlighted_words": 39,
+        "main_wakeup_max_ms": 23.948224991909225,
+        "main_wakeup_p95_ms": 16.08903300366364,
+        "name": "transcript",
+        "paused": false,
+        "rendered_frames": 154,
+        "wall_seconds": 6.468764549994376,
+        "word_timing_count": 180
+      }
+    ],
+    "subtitle_count": 5000,
+    "synthetic_word_times": true
+  },
+  "tests": {
+    "chrome": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "screenshot_empty",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "notice_expires_and_repeated_failure_stays_quiet",
+          "passed": true
+        },
+        {
+          "detail": "video=(1260.0, 800.0), content=(1260.0, 800.0)",
+          "name": "video_fills_content_without_reserved_bars",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_paused",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "paused_controls_stay_visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "blank_click_hides_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_immersive",
+          "passed": true
+        },
+        {
+          "detail": "visible=true, paused=true, holds=[]",
+          "name": "blank_click_reveals_without_playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toolbar_queue_opens_shared_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_queue",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "transcript_uses_same_sidebar",
+          "passed": true
+        },
+        {
+          "detail": "clicked=true, locked=true, collapsed=false, tab=learning",
+          "name": "floating_word_click_pauses_and_opens_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_keeps_sidebar_and_unfolded_tab",
+          "passed": true
+        },
+        {
+          "detail": "paused=false, holds=[]",
+          "name": "playing_controls_auto_hide",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "word_remains_clickable_with_controls_hidden",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toolbar_settings_opens_popover",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "configuration_prevents_auto_hide",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_settings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_settings_popup_0",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_subtitles_do_not_resize_video",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_minimum",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "minimum_window_keeps_control_actions_available",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "long_subtitle_wraps_below_controls",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_long-subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_fullscreen",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_fullscreen",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "practice": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "v02_custom_bindings_win_new_default_conflicts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "independent_files_overlap_and_unmatched_chinese",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "literal_case_insensitive_search",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_search_returns_both_overlaps",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "literal_no_results",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "return_current_clears_search_and_resumes_following",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timestamp_navigation_preserves_pause_and_locked_card",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continuous_loop_plays_and_preserves_locked_card",
+          "passed": true
+        },
+        {
+          "detail": "position=0.20833333333333331 → 0.20833333333333331, loops=3 → 3",
+          "name": "pause_preserves_loop_and_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "next_sentence_retargets_paused_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "previous_sentence_retargets_paused_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timestamp_retargets_existing_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toggle_off_preserves_position_and_pause",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "gap_disables_toolbar_loop_but_row_can_start",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_learning_exits_loop_and_unlocks",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "one_shot_exits_loop_and_pauses_with_card",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "scrub_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "five_second_jump_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_offset_keeps_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "english_offset_exits_loop_and_updates_jump",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "loop_uses_english_offset_and_independent_tail",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "audio_selection_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "iterations=20, position=7.6, ",
+          "name": "twenty_tail_loops_at_double_speed_never_autoplay_or_finish",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "old_loop_seek_result_is_ignored",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_shortcut_cycles_to_english_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_mode_preserves_learning_and_video_geometry",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "bilingual_restores_without_geometry_change",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "search_field_keeps_player_shortcuts_native",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_blocks_new_actions",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_shortcut_starts_loop_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_shortcuts_share_loop_and_display_state",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "bilingual_replacement_resets_loop_search_and_browsing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "rapid_media_switch_clears_loop_and_stale_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "negative_offset_replay_keeps_start_and_extends_tail",
+          "passed": true
+        },
+        {
+          "detail": "position=2.6666666666666665, word=tail-regression:2",
+          "name": "replay_still_plays_and_highlights_its_own_cue_after_subtitle_end",
+          "passed": true
+        },
+        {
+          "detail": "position=3.125",
+          "name": "replay_pauses_after_full_tail_and_keeps_practiced_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "navigation_and_loop_target_stay_on_practiced_sentence_after_tail",
+          "passed": true
+        },
+        {
+          "detail": "timings=2, offset=-1.7",
+          "name": "tail_adjustment_preserves_offsets_and_alignment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "tail_setting_persists_per_media_with_existing_offset",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_learning_releases_practiced_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "zero_tail_restores_subtitle_endpoint",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "direct_seek_clears_replay_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "five_thousand_rows_prepare_and_search",
+          "passed": true
+        },
+        {
+          "detail": "following=false, row=4895 → 4895, offset=20.0 → 20.0",
+          "name": "native_manual_scroll_stops_automatic_follow",
+          "passed": true
+        },
+        {
+          "detail": "visible cell views=6",
+          "name": "native_table_virtualizes_large_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_transcript_defers_active_row_updates",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reopening_transcript_preserves_manual_reading_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reopening_transcript_refreshes_current_highlight",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "return_current_scrolls_native_table_back",
+          "passed": true
+        },
+        {
+          "detail": "clock delta=5.458333333333333, maximum main actor gap=0.08646702766418457",
+          "name": "playback_advances_during_search_and_scroll_without_rebuild",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_only_navigation_and_disabled_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_only_timestamp_preserves_pause",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 24.94775700569153,
+      "metrics": {
+        "main_actor_max_gap_seconds": 0.08646702766418457,
+        "tail_loop_iterations": 20,
+        "transcript_5000_prepare_seconds": 0.13653099536895752,
+        "transcript_5000_search_seconds_including_debounce": 0.19695794582366943
+      },
+      "passed": true,
+      "version": "0.3.1"
+    },
+    "restore": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "restart_paused_with_display_preference_and_no_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_resets_search_and_following",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new_action_custom_bindings_restore",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_keeps_queue_and_unfinished_progress",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 0.8664660453796387,
+      "metrics": {},
+      "passed": true,
+      "version": "0.3.1"
+    },
+    "keyboard": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "media_loaded_with_custom_space_binding",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "button_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "button_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "slider_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSSlider), blocked=false, dispatched=1",
+          "name": "slider_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "transcript_table_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_space_again_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_right_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_left_arrow",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(LingoPlayer.TranscriptTableView), blocked=false, dispatched=1",
+          "name": "transcript_table_command_shortcut",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "typing_space_edits_text_without_playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ime_and_text_editing_keep_shortcuts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clicking_another_input_keeps_text_editing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_click_leaves_text_editing",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSWindow), blocked=false, dispatched=1",
+          "name": "space_after_leaving_editor",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSTextView), blocked=false, dispatched=1",
+          "name": "readonly_text_does_not_block_player",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "subtitle_popover_still_blocks_keys",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_still_blocks_keys",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "shortcut_after_closing_settings",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "command_r_replays_locked_sentence",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "replay_starts_selected_cue",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(SwiftUI.NSHostingView<SwiftUI.ModifiedContent<LingoPlayer.PlayerRootView, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>>), blocked=false, dispatched=1",
+          "name": "command_return_resumes_learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "resume_unlocks_and_plays",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_button_receives_focus",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "detached_space_once",
+          "passed": true
+        },
+        {
+          "detail": "focus=Optional(NSButton), blocked=false, dispatched=1",
+          "name": "detached_command_shortcut",
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  },
+  "response": {
+    "input": "native-mouse-button",
+    "maximum_observed_avsync_seconds": 0.043966311572603445,
+    "scenarios": [
+      {
+        "alignment_status": "逐词任务已取消",
+        "dispatch_ms": {
+          "count": 60,
+          "max": 9.995517000788823,
+          "p95": 9.880615994916297
+        },
+        "execution_ms": {
+          "count": 60,
+          "max": 0.6559969915542752,
+          "p95": 0.5021639954065904
+        },
+        "feedback_ms": {
+          "count": 60,
+          "max": 55.45960601011757,
+          "p95": 38.01756299799308
+        },
+        "operations": [
+          {
+            "action": "forward",
+            "dispatch_ms": 9.370629995828494,
+            "execution_ms": 0.1297330018132925,
+            "feedback_ms": 52.27641300007235,
+            "native_confirmation_ms": 330.01947599404957
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.932447002734989,
+            "execution_ms": 0.09991499246098101,
+            "feedback_ms": 24.835021991748363,
+            "native_confirmation_ms": 49.857695994433016
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.46973699319642,
+            "execution_ms": 0.4724239988718182,
+            "feedback_ms": 14.940387991373427,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.670964001794346,
+            "execution_ms": 0.4511419974733144,
+            "feedback_ms": 15.525597002124414,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.33345100202132,
+            "execution_ms": 0.12230499123688787,
+            "feedback_ms": 36.024318003910594,
+            "native_confirmation_ms": 320.7624109927565
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.315215007518418,
+            "execution_ms": 0.10614999337121844,
+            "feedback_ms": 27.786211998318322,
+            "native_confirmation_ms": 68.83624200418126
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.783276003669016,
+            "execution_ms": 0.4223830037517473,
+            "feedback_ms": 14.581524999812245,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.824808003031649,
+            "execution_ms": 0.48596398846711963,
+            "feedback_ms": 18.876014000852592,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.974405998946168,
+            "execution_ms": 0.21997399744577706,
+            "feedback_ms": 37.545601997408085,
+            "native_confirmation_ms": 325.1754289958626
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.583916995325126,
+            "execution_ms": 0.07899700722191483,
+            "feedback_ms": 30.48690198920667,
+            "native_confirmation_ms": 59.98704799276311
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.014889001264237,
+            "execution_ms": 0.4545620031422004,
+            "feedback_ms": 15.199854999082163,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.129385987762362,
+            "execution_ms": 0.3902950120391324,
+            "feedback_ms": 15.744218995678239,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.373203007271513,
+            "execution_ms": 0.10698199912440032,
+            "feedback_ms": 36.13983000104781,
+            "native_confirmation_ms": 330.25025100505445
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.821131006698124,
+            "execution_ms": 0.1040539937093854,
+            "feedback_ms": 27.659195999149233,
+            "native_confirmation_ms": 65.90031599625945
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.874923998722807,
+            "execution_ms": 0.5011189932702109,
+            "feedback_ms": 16.313632993842475,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.652413995354436,
+            "execution_ms": 0.37283499841578305,
+            "feedback_ms": 16.291085004922934,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.81391299481038,
+            "execution_ms": 0.09730900637805462,
+            "feedback_ms": 35.37946600408759,
+            "native_confirmation_ms": 311.13419200119097
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.03361800010316,
+            "execution_ms": 0.13350699737202376,
+            "feedback_ms": 28.34473899565637,
+            "native_confirmation_ms": 69.43506299285218
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.03295299212914,
+            "execution_ms": 0.3934410051442683,
+            "feedback_ms": 14.860112001770176,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.994393007014878,
+            "execution_ms": 0.3571959969121963,
+            "feedback_ms": 15.34936300595291,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.706152995931916,
+            "execution_ms": 0.1082740054698661,
+            "feedback_ms": 35.74867000861559,
+            "native_confirmation_ms": 321.86957000521943
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.860457008471712,
+            "execution_ms": 0.08872499165590852,
+            "feedback_ms": 29.19702600047458,
+            "native_confirmation_ms": 69.51241100614425
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.142002993030474,
+            "execution_ms": 0.4374429991003126,
+            "feedback_ms": 14.66174099186901,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.46097400446888,
+            "execution_ms": 0.35883499367628247,
+            "feedback_ms": 16.42117700248491,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.80527799401898,
+            "execution_ms": 0.10235300578642637,
+            "feedback_ms": 35.31248999934178,
+            "native_confirmation_ms": 319.66049899347126
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.783033005078323,
+            "execution_ms": 0.1532829919597134,
+            "feedback_ms": 28.556054006912746,
+            "native_confirmation_ms": 66.53425500553567
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.833403004449792,
+            "execution_ms": 0.5101139977341518,
+            "feedback_ms": 16.347866010619327,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.71404999634251,
+            "execution_ms": 0.3436519909882918,
+            "feedback_ms": 16.094110993435606,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.853149007540196,
+            "execution_ms": 0.12355299259070307,
+            "feedback_ms": 38.01756299799308,
+            "native_confirmation_ms": 323.49095899553504
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.907857001759112,
+            "execution_ms": 0.12474400864448398,
+            "feedback_ms": 28.057063012965955,
+            "native_confirmation_ms": 57.74785700486973
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.696088003693148,
+            "execution_ms": 0.4142200050409883,
+            "feedback_ms": 15.150414008530788,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.26450100087095,
+            "execution_ms": 0.4314929974498227,
+            "feedback_ms": 16.389896991313435,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.871841000858694,
+            "execution_ms": 0.13713599764741957,
+            "feedback_ms": 36.456796995480545,
+            "native_confirmation_ms": 328.09148500382435
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.85964699066244,
+            "execution_ms": 0.12294600310269743,
+            "feedback_ms": 29.460398000082932,
+            "native_confirmation_ms": 68.27971400343813
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.847232009633444,
+            "execution_ms": 0.505830001202412,
+            "feedback_ms": 16.542110010050237,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.842493003816344,
+            "execution_ms": 0.49083300109487027,
+            "feedback_ms": 17.81740499427542,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.847989000263624,
+            "execution_ms": 0.09926599159371108,
+            "feedback_ms": 34.97300400340464,
+            "native_confirmation_ms": 310.3708309936337
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.856172997388057,
+            "execution_ms": 0.12343900743871927,
+            "feedback_ms": 29.049061005935073,
+            "native_confirmation_ms": 69.07497299835086
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.880615994916297,
+            "execution_ms": 0.5009070009691641,
+            "feedback_ms": 16.839008996612392,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.835663004196249,
+            "execution_ms": 0.48876200162339956,
+            "feedback_ms": 17.72026800608728,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.70056199003011,
+            "execution_ms": 0.10449900582898408,
+            "feedback_ms": 39.26047499408014,
+            "native_confirmation_ms": 307.8784370009089
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.825468001305126,
+            "execution_ms": 0.12625500676222146,
+            "feedback_ms": 27.482746008899994,
+            "native_confirmation_ms": 66.27397800912149
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.854484000243247,
+            "execution_ms": 0.4938849888276309,
+            "feedback_ms": 16.7683589970693,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.703142000944354,
+            "execution_ms": 0.35640499845612794,
+            "feedback_ms": 16.154805998667143,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.81075399229303,
+            "execution_ms": 0.1085960102500394,
+            "feedback_ms": 36.25202499097213,
+            "native_confirmation_ms": 339.1783839906566
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.856329998001456,
+            "execution_ms": 0.1250770001206547,
+            "feedback_ms": 29.52272399852518,
+            "native_confirmation_ms": 66.35277900204528
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.837994002737105,
+            "execution_ms": 0.5021639954065904,
+            "feedback_ms": 16.509038003277965,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.892069003195502,
+            "execution_ms": 0.43119399924762547,
+            "feedback_ms": 16.194951997022144,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.870585996191949,
+            "execution_ms": 0.12819499534089118,
+            "feedback_ms": 34.63872100110166,
+            "native_confirmation_ms": 301.7585950001376
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.995517000788823,
+            "execution_ms": 0.14689499221276492,
+            "feedback_ms": 30.431460996624082,
+            "native_confirmation_ms": 54.553145993850194
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.36370700947009,
+            "execution_ms": 0.46239799121394753,
+            "feedback_ms": 14.99435500591062,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.858019005856477,
+            "execution_ms": 0.3361659910297021,
+            "feedback_ms": 16.042224000557326,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.69894100469537,
+            "execution_ms": 0.08808499842416495,
+            "feedback_ms": 33.80127799755428,
+            "native_confirmation_ms": 317.4585740052862
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.628846994019113,
+            "execution_ms": 0.09823900472838432,
+            "feedback_ms": 28.380863994243555,
+            "native_confirmation_ms": 66.20381098764483
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.857286000624299,
+            "execution_ms": 0.498510999022983,
+            "feedback_ms": 16.483422004966997,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.992394014261663,
+            "execution_ms": 0.6559969915542752,
+            "feedback_ms": 18.236144009279087,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.690614995430224,
+            "execution_ms": 0.10727100016083568,
+            "feedback_ms": 32.97341300640255,
+            "native_confirmation_ms": 325.22305399470497
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.0102480025962,
+            "execution_ms": 0.11071699555031955,
+            "feedback_ms": 55.45960601011757,
+            "native_confirmation_ms": 118.40364900126588
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.469928001635708,
+            "execution_ms": 0.5009729939047247,
+            "feedback_ms": 17.41174999915529,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.5967330125859,
+            "execution_ms": 0.36172199179418385,
+            "feedback_ms": 16.868852006155066,
+            "native_confirmation_ms": -1
+          }
+        ],
+        "pause_confirmation_ms": {},
+        "seek_confirmation_ms": [
+          330.01947599404957,
+          49.857695994433016,
+          320.7624109927565,
+          68.83624200418126,
+          325.1754289958626,
+          59.98704799276311,
+          330.25025100505445,
+          65.90031599625945,
+          311.13419200119097,
+          69.43506299285218,
+          321.86957000521943,
+          69.51241100614425,
+          319.66049899347126,
+          66.53425500553567,
+          323.49095899553504,
+          57.74785700486973,
+          328.09148500382435,
+          68.27971400343813,
+          310.3708309936337,
+          69.07497299835086,
+          307.8784370009089,
+          66.27397800912149,
+          339.1783839906566,
+          66.35277900204528,
+          301.7585950001376,
+          54.553145993850194,
+          317.4585740052862,
+          66.20381098764483,
+          325.22305399470497,
+          118.40364900126588
+        ],
+        "state": "paused",
+        "subtitles": "user-film"
+      },
+      {
+        "alignment_status": "逐词任务已取消",
+        "dispatch_ms": {
+          "count": 60,
+          "max": 19.85040800354909,
+          "p95": 15.835498998058029
+        },
+        "execution_ms": {
+          "count": 60,
+          "max": 1.1676290014293045,
+          "p95": 0.6129250105004758
+        },
+        "feedback_ms": {
+          "count": 60,
+          "max": 59.43245600792579,
+          "p95": 48.52309401030652
+        },
+        "operations": [
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.906689996365458,
+            "execution_ms": 0.13718800619244576,
+            "feedback_ms": 16.50539100228343,
+            "native_confirmation_ms": 32.11371799989138
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.75939300749451,
+            "execution_ms": 0.0854989921208471,
+            "feedback_ms": 13.865298009477556,
+            "native_confirmation_ms": 33.908830999280326
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.947987007559277,
+            "execution_ms": 0.08428299042861909,
+            "feedback_ms": 44.52657500223722,
+            "native_confirmation_ms": 227.54853499645833
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.624451995478012,
+            "execution_ms": 0.08921600237954408,
+            "feedback_ms": 28.517607002868317,
+            "native_confirmation_ms": 73.0752599920379
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.835822009132244,
+            "execution_ms": 0.3757239901460707,
+            "feedback_ms": 14.256745009333827,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.681497987709008,
+            "execution_ms": 0.3540270117809996,
+            "feedback_ms": 15.749043988762423,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 11.237995990086347,
+            "execution_ms": 0.12072200479451567,
+            "feedback_ms": 16.169783993973397,
+            "native_confirmation_ms": 34.75230900221504
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 10.026791991549544,
+            "execution_ms": 0.15563701163046062,
+            "feedback_ms": 17.573367003933527,
+            "native_confirmation_ms": 23.801667004590854
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.80200499179773,
+            "execution_ms": 0.08963899745140225,
+            "feedback_ms": 16.717412989237346,
+            "native_confirmation_ms": 382.08777699037455
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.79590900533367,
+            "execution_ms": 0.0984250073088333,
+            "feedback_ms": 24.57933900586795,
+            "native_confirmation_ms": 142.7752190065803
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.885310995741747,
+            "execution_ms": 0.55250599689316,
+            "feedback_ms": 16.733231997932307,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.369954990688711,
+            "execution_ms": 0.7806840003468096,
+            "feedback_ms": 17.3360749904532,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.846747005009092,
+            "execution_ms": 0.12725699343718588,
+            "feedback_ms": 15.566538000712171,
+            "native_confirmation_ms": 45.446578005794436
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 10.373764991527423,
+            "execution_ms": 0.21385100262705237,
+            "feedback_ms": 17.423539989977144,
+            "native_confirmation_ms": 38.5019909881521
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.381083000334911,
+            "execution_ms": 0.09547600348014385,
+            "feedback_ms": 24.89404901280068,
+            "native_confirmation_ms": 442.7952380065108
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.872647988027893,
+            "execution_ms": 0.08559600973967463,
+            "feedback_ms": 24.608457999420352,
+            "native_confirmation_ms": 200.59679399128072
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.487458999501541,
+            "execution_ms": 0.6129250105004758,
+            "feedback_ms": 16.330754006048664,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 15.971936998539604,
+            "execution_ms": 0.40487399382982403,
+            "feedback_ms": 23.352445001364686,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.768392992555164,
+            "execution_ms": 0.11622300371527672,
+            "feedback_ms": 15.905649997876026,
+            "native_confirmation_ms": 23.347890004515648
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.845944994594902,
+            "execution_ms": 0.14362401270773262,
+            "feedback_ms": 15.963849000399932,
+            "native_confirmation_ms": 36.14223000477068
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.694890002720058,
+            "execution_ms": 0.09629600390326232,
+            "feedback_ms": 48.52309401030652,
+            "native_confirmation_ms": 411.20270200190134
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 10.011938007664867,
+            "execution_ms": 0.12294699263293296,
+            "feedback_ms": 45.192378005594946,
+            "native_confirmation_ms": 232.74064100405667
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.932560002198443,
+            "execution_ms": 0.41958800284191966,
+            "feedback_ms": 16.398449006373994,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.69976099440828,
+            "execution_ms": 0.34333700023125857,
+            "feedback_ms": 18.450842995662242,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.036208997713402,
+            "execution_ms": 0.10837700392585248,
+            "feedback_ms": 15.350200003013015,
+            "native_confirmation_ms": 20.971960009774193
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.847978988545947,
+            "execution_ms": 0.14321300841402262,
+            "feedback_ms": 15.677853996749036,
+            "native_confirmation_ms": 31.873337997240014
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 19.85040800354909,
+            "execution_ms": 0.07888399704825133,
+            "feedback_ms": 56.47018400486559,
+            "native_confirmation_ms": 486.64748900046106
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.451334000914358,
+            "execution_ms": 0.08771799912210554,
+            "feedback_ms": 39.08506799780298,
+            "native_confirmation_ms": 264.4707879953785
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 10.049485994386487,
+            "execution_ms": 1.1676290014293045,
+            "feedback_ms": 18.317380992812105,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.173929996904917,
+            "execution_ms": 0.35373900027479976,
+            "feedback_ms": 17.22032399266027,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 11.167479999130592,
+            "execution_ms": 0.13297000259626657,
+            "feedback_ms": 16.854529996635392,
+            "native_confirmation_ms": 17.67121300508734
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.877436008537188,
+            "execution_ms": 0.15191599959507585,
+            "feedback_ms": 15.67061900277622,
+            "native_confirmation_ms": 36.64801899867598
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.258090998628177,
+            "execution_ms": 0.09194300218950957,
+            "feedback_ms": 59.43245600792579,
+            "native_confirmation_ms": 95.74268900905736
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.938739993027411,
+            "execution_ms": 0.20101100380998105,
+            "feedback_ms": 41.48001999419648,
+            "native_confirmation_ms": 320.78237799578346
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.506684000371024,
+            "execution_ms": 0.4015279992017895,
+            "feedback_ms": 16.588514001341537,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 10.298092005541548,
+            "execution_ms": 0.7261309947352856,
+            "feedback_ms": 19.41482700931374,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.079374998691492,
+            "execution_ms": 0.10978800128214061,
+            "feedback_ms": 15.85746300406754,
+            "native_confirmation_ms": 23.349276001681574
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.639161998871714,
+            "execution_ms": 0.1076379994628951,
+            "feedback_ms": 14.369604003150016,
+            "native_confirmation_ms": 27.048456991906278
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 10.484957005246542,
+            "execution_ms": 0.07365299097727984,
+            "feedback_ms": 42.939175007632,
+            "native_confirmation_ms": 102.64471899427008
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.828542995615862,
+            "execution_ms": 0.07632300548721105,
+            "feedback_ms": 15.937147007207386,
+            "native_confirmation_ms": 359.0571340027964
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.697011002572253,
+            "execution_ms": 0.40744700527284294,
+            "feedback_ms": 15.432291009346955,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 14.942521011107601,
+            "execution_ms": 0.4365339991636574,
+            "feedback_ms": 22.18040199659299,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.753556005307473,
+            "execution_ms": 0.11584299500100315,
+            "feedback_ms": 15.621476995875128,
+            "native_confirmation_ms": 27.433177005150355
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 10.118956997757778,
+            "execution_ms": 0.17722700431477278,
+            "feedback_ms": 17.28235800692346,
+            "native_confirmation_ms": 23.302971007069573
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.421732989721932,
+            "execution_ms": 0.10174000635743141,
+            "feedback_ms": 47.011479997308925,
+            "native_confirmation_ms": 133.43579399224836
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.769798998604529,
+            "execution_ms": 0.09887100895866752,
+            "feedback_ms": 24.01364799879957,
+            "native_confirmation_ms": 431.88188000931405
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.94391699694097,
+            "execution_ms": 0.43125200318172574,
+            "feedback_ms": 15.48227301100269,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.852705989032984,
+            "execution_ms": 0.48892600170802325,
+            "feedback_ms": 18.44554700073786,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.317301999544725,
+            "execution_ms": 0.10678899707272649,
+            "feedback_ms": 15.26267098961398,
+            "native_confirmation_ms": 34.57074299512897
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.567734989104792,
+            "execution_ms": 0.14371800352819264,
+            "feedback_ms": 15.596817000187002,
+            "native_confirmation_ms": 41.02355398936197
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.289954003179446,
+            "execution_ms": 0.08384099055547267,
+            "feedback_ms": 49.368555992259644,
+            "native_confirmation_ms": 184.95676800375804
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.90684500336647,
+            "execution_ms": 0.08244499622378498,
+            "feedback_ms": 46.08622299565468,
+            "native_confirmation_ms": 420.750905002933
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.92360499710776,
+            "execution_ms": 0.4752469976665452,
+            "feedback_ms": 17.176029999973252,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 15.835498998058029,
+            "execution_ms": 0.34755699743982404,
+            "feedback_ms": 23.504071999923326,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.147261007456109,
+            "execution_ms": 0.12819099356420338,
+            "feedback_ms": 15.753594008856453,
+            "native_confirmation_ms": 16.531439003301784
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.73802299995441,
+            "execution_ms": 0.127287014038302,
+            "feedback_ms": 14.697298000101,
+            "native_confirmation_ms": 21.771078012534417
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.887002990581095,
+            "execution_ms": 0.1479050115449354,
+            "feedback_ms": 17.92760699754581,
+            "native_confirmation_ms": 222.86513299332
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.978266007034108,
+            "execution_ms": 0.1474049931857735,
+            "feedback_ms": 46.815411013085395,
+            "native_confirmation_ms": 451.92081200366374
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.803482007351704,
+            "execution_ms": 0.44772900582756847,
+            "feedback_ms": 14.802762001636438,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 17.194742991705425,
+            "execution_ms": 0.3292290057288483,
+            "feedback_ms": 24.283495993586257,
+            "native_confirmation_ms": -1
+          }
+        ],
+        "pause_confirmation_ms": {
+          "count": 20,
+          "max": 45.446578005794436,
+          "p95": 41.02355398936197
+        },
+        "seek_confirmation_ms": [
+          227.54853499645833,
+          73.0752599920379,
+          382.08777699037455,
+          142.7752190065803,
+          442.7952380065108,
+          200.59679399128072,
+          411.20270200190134,
+          232.74064100405667,
+          486.64748900046106,
+          264.4707879953785,
+          95.74268900905736,
+          320.78237799578346,
+          102.64471899427008,
+          359.0571340027964,
+          133.43579399224836,
+          431.88188000931405,
+          184.95676800375804,
+          420.750905002933,
+          222.86513299332,
+          451.92081200366374
+        ],
+        "state": "playing",
+        "subtitles": "user-film"
+      },
+      {
+        "alignment_status": "后台准备逐词高亮 · 0/1760 句",
+        "dispatch_ms": {
+          "count": 60,
+          "max": 21.993137008394115,
+          "p95": 11.203821006347425
+        },
+        "execution_ms": {
+          "count": 60,
+          "max": 3.135980005026795,
+          "p95": 2.8449070086935535
+        },
+        "feedback_ms": {
+          "count": 60,
+          "max": 50.02509200130589,
+          "p95": 41.71598900575191
+        },
+        "operations": [
+          {
+            "action": "playPause",
+            "dispatch_ms": 14.756714997929521,
+            "execution_ms": 0.09619799675419927,
+            "feedback_ms": 18.879076989833266,
+            "native_confirmation_ms": 32.954750990029424
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.638624000013806,
+            "execution_ms": 0.09590800618752837,
+            "feedback_ms": 13.449421006953344,
+            "native_confirmation_ms": 23.80867900501471
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.847875011269934,
+            "execution_ms": 2.409704989986494,
+            "feedback_ms": 41.71598900575191,
+            "native_confirmation_ms": 277.17357900110073
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.303825994720683,
+            "execution_ms": 2.342687002965249,
+            "feedback_ms": 30.07112599152606,
+            "native_confirmation_ms": 89.99953699822072
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.59970300027635,
+            "execution_ms": 0.34093599242623895,
+            "feedback_ms": 15.04347899754066,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.756681010709144,
+            "execution_ms": 0.30714599415659904,
+            "feedback_ms": 14.527551000355743,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 11.203821006347425,
+            "execution_ms": 0.08742799400351942,
+            "feedback_ms": 15.815316000953317,
+            "native_confirmation_ms": 17.823746005888097
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.515536988852546,
+            "execution_ms": 0.07256600656546652,
+            "feedback_ms": 12.650307995500043,
+            "native_confirmation_ms": 23.970190988620743
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.496839000144973,
+            "execution_ms": 2.038268998148851,
+            "feedback_ms": 15.790183999342844,
+            "native_confirmation_ms": 290.58950100443326
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.288368994020857,
+            "execution_ms": 2.2503950021928176,
+            "feedback_ms": 22.417133004637435,
+            "native_confirmation_ms": 118.8730400026543
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.316222000052221,
+            "execution_ms": 0.34639600198715925,
+            "feedback_ms": 15.376901006675325,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.774622008786537,
+            "execution_ms": 0.3548809909261763,
+            "feedback_ms": 15.616144009982236,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.610844994313084,
+            "execution_ms": 0.09644600504543632,
+            "feedback_ms": 14.705858993693255,
+            "native_confirmation_ms": 31.609173995093442
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.844366995617747,
+            "execution_ms": 0.08653099939692765,
+            "feedback_ms": 13.33142899966333,
+            "native_confirmation_ms": 27.158992990734987
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.50834499578923,
+            "execution_ms": 2.1250360005069524,
+            "feedback_ms": 20.873759989626706,
+            "native_confirmation_ms": 288.7602109985892
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.5359400002053,
+            "execution_ms": 2.4505839974153787,
+            "feedback_ms": 23.72257200477179,
+            "native_confirmation_ms": 161.0355580050964
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.46977999410592,
+            "execution_ms": 0.3130270051769912,
+            "feedback_ms": 14.134024997474626,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.239270992111415,
+            "execution_ms": 0.3362010029377416,
+            "feedback_ms": 15.098743999260478,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.706182998139411,
+            "execution_ms": 0.09345301077701151,
+            "feedback_ms": 13.592089002486318,
+            "native_confirmation_ms": 32.188203011173755
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.011162997921929,
+            "execution_ms": 0.0998150062514469,
+            "feedback_ms": 14.193566006724723,
+            "native_confirmation_ms": 24.12077299959492
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.217840008204803,
+            "execution_ms": 2.0630789949791506,
+            "feedback_ms": 39.61084700131323,
+            "native_confirmation_ms": 326.00518899562303
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.535573000903241,
+            "execution_ms": 2.102134996675886,
+            "feedback_ms": 35.42348099290393,
+            "native_confirmation_ms": 173.86563199397642
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.629207008401863,
+            "execution_ms": 0.41114998748525977,
+            "feedback_ms": 16.218589997151867,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.570776000851765,
+            "execution_ms": 0.3190120041836053,
+            "feedback_ms": 14.870585000608116,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.604218004620634,
+            "execution_ms": 0.09029998909682035,
+            "feedback_ms": 13.216039005783387,
+            "native_confirmation_ms": 31.33771500142757
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.701712999027222,
+            "execution_ms": 0.08111099305097014,
+            "feedback_ms": 13.012769995839335,
+            "native_confirmation_ms": 15.239914006087929
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.747202999074943,
+            "execution_ms": 2.272996003739536,
+            "feedback_ms": 37.125582006410696,
+            "native_confirmation_ms": 317.5123590044677
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.50272699992638,
+            "execution_ms": 2.269427990540862,
+            "feedback_ms": 35.953542988863774,
+            "native_confirmation_ms": 189.8319449974224
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.49249100429006,
+            "execution_ms": 0.32257899874821305,
+            "feedback_ms": 13.02662400121335,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.784589997958392,
+            "execution_ms": 0.3344809956615791,
+            "feedback_ms": 14.725882007041946,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.503820998361334,
+            "execution_ms": 0.11638700379990041,
+            "feedback_ms": 13.599526006146334,
+            "native_confirmation_ms": 14.112935998127796
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.113667998462915,
+            "execution_ms": 0.1344519987469539,
+            "feedback_ms": 14.143356995191425,
+            "native_confirmation_ms": 19.690398999955505
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 10.67991899617482,
+            "execution_ms": 2.840444998582825,
+            "feedback_ms": 45.50006700446829,
+            "native_confirmation_ms": 444.3679130054079
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.280412996304221,
+            "execution_ms": 2.554681006586179,
+            "feedback_ms": 40.96732799371239,
+            "native_confirmation_ms": 296.1446629924467
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.756522995303385,
+            "execution_ms": 0.44511299347504973,
+            "feedback_ms": 15.924259991152212,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.104854994802736,
+            "execution_ms": 0.3232890012441203,
+            "feedback_ms": 16.721930005587637,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.540797997033224,
+            "execution_ms": 0.08818000787869096,
+            "feedback_ms": 13.858759994036518,
+            "native_confirmation_ms": 14.422845997614786
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.439254994504154,
+            "execution_ms": 0.11112300853710622,
+            "feedback_ms": 14.360991001012735,
+            "native_confirmation_ms": 14.980345993535593
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.723719001864083,
+            "execution_ms": 2.119669006788172,
+            "feedback_ms": 44.8541890073102,
+            "native_confirmation_ms": 112.950800001272
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.708274006494321,
+            "execution_ms": 2.14317899371963,
+            "feedback_ms": 35.03177499806043,
+            "native_confirmation_ms": 307.5645920034731
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.35567899432499,
+            "execution_ms": 0.4367520014056936,
+            "feedback_ms": 14.833025008556433,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.560128000681289,
+            "execution_ms": 0.33806099963840097,
+            "feedback_ms": 14.75162299175281,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 13.522084991564043,
+            "execution_ms": 0.06533099804073572,
+            "feedback_ms": 17.75405499211047,
+            "native_confirmation_ms": 37.155758996959776
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.59538399183657,
+            "execution_ms": 0.09265300468541682,
+            "feedback_ms": 14.564231998519972,
+            "native_confirmation_ms": 29.83690499968361
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.877828004187904,
+            "execution_ms": 2.271667995955795,
+            "feedback_ms": 36.41522100951988,
+            "native_confirmation_ms": 108.76119699969422
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.125865006353706,
+            "execution_ms": 2.214766005636193,
+            "feedback_ms": 21.059555001556873,
+            "native_confirmation_ms": 267.1758159995079
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.760956989135593,
+            "execution_ms": 0.32082200050354004,
+            "feedback_ms": 13.617779986816458,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.386117002577521,
+            "execution_ms": 0.26760398759506643,
+            "feedback_ms": 15.100185992196202,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.610136999981478,
+            "execution_ms": 0.12246699770912528,
+            "feedback_ms": 15.477795008337125,
+            "native_confirmation_ms": 30.16140600084327
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.78305699734483,
+            "execution_ms": 0.11672799882944673,
+            "feedback_ms": 14.440493992879055,
+            "native_confirmation_ms": 20.271991001209244
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.456612009671517,
+            "execution_ms": 2.930048998678103,
+            "feedback_ms": 41.21468400990125,
+            "native_confirmation_ms": 172.64074699778575
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.777123996173032,
+            "execution_ms": 2.855594997527078,
+            "feedback_ms": 19.652128990856,
+            "native_confirmation_ms": 436.1373009887757
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.03162000759039,
+            "execution_ms": 0.42781399679370224,
+            "feedback_ms": 15.846570997382514,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.780089007108472,
+            "execution_ms": 0.6263329996727407,
+            "feedback_ms": 17.35529200232122,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.856751010171138,
+            "execution_ms": 0.1026760000968352,
+            "feedback_ms": 14.770882000448182,
+            "native_confirmation_ms": 26.261924009304494
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.942434011260048,
+            "execution_ms": 0.093655995442532,
+            "feedback_ms": 14.0644670027541,
+            "native_confirmation_ms": 42.103225001483224
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.346103994175792,
+            "execution_ms": 2.8449070086935535,
+            "feedback_ms": 19.31571699969936,
+            "native_confirmation_ms": 229.44372899655718
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.738831999129616,
+            "execution_ms": 3.135980005026795,
+            "feedback_ms": 50.02509200130589,
+            "native_confirmation_ms": 413.7677060061833
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.555407013976946,
+            "execution_ms": 0.3572719870135188,
+            "feedback_ms": 14.496243005851284,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 21.993137008394115,
+            "execution_ms": 0.5354899913072586,
+            "feedback_ms": 29.12829200795386,
+            "native_confirmation_ms": -1
+          }
+        ],
+        "pause_confirmation_ms": {
+          "count": 20,
+          "max": 42.103225001483224,
+          "p95": 37.155758996959776
+        },
+        "seek_confirmation_ms": [
+          277.17357900110073,
+          89.99953699822072,
+          290.58950100443326,
+          118.8730400026543,
+          288.7602109985892,
+          161.0355580050964,
+          326.00518899562303,
+          173.86563199397642,
+          317.5123590044677,
+          189.8319449974224,
+          444.3679130054079,
+          296.1446629924467,
+          112.950800001272,
+          307.5645920034731,
+          108.76119699969422,
+          267.1758159995079,
+          172.64074699778575,
+          436.1373009887757,
+          229.44372899655718,
+          413.7677060061833
+        ],
+        "state": "aligning",
+        "subtitles": "user-film"
+      },
+      {
+        "alignment_status": "逐词任务已取消",
+        "dispatch_ms": {
+          "count": 60,
+          "max": 10.143022998818196,
+          "p95": 9.972090992960148
+        },
+        "execution_ms": {
+          "count": 60,
+          "max": 0.6218710041139275,
+          "p95": 0.503031988046132
+        },
+        "feedback_ms": {
+          "count": 60,
+          "max": 34.74920599546749,
+          "p95": 33.56610600894783
+        },
+        "operations": [
+          {
+            "action": "forward",
+            "dispatch_ms": 9.777524013770744,
+            "execution_ms": 0.10920899512711912,
+            "feedback_ms": 31.78417301387526,
+            "native_confirmation_ms": 344.61187401029747
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.893756996258162,
+            "execution_ms": 0.1104300026781857,
+            "feedback_ms": 28.453455000999384,
+            "native_confirmation_ms": 50.14957299863454
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.374497007229365,
+            "execution_ms": 0.4256979882484302,
+            "feedback_ms": 15.400135001982562,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.857202006969601,
+            "execution_ms": 0.49789999320637435,
+            "feedback_ms": 18.058193003525957,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.701703991391696,
+            "execution_ms": 0.0876179983606562,
+            "feedback_ms": 30.13838699553162,
+            "native_confirmation_ms": 338.4646310005337
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.994396998081356,
+            "execution_ms": 0.13337000564206392,
+            "feedback_ms": 33.33214099984616,
+            "native_confirmation_ms": 69.64916600554716
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.629421998397447,
+            "execution_ms": 0.4151780012762174,
+            "feedback_ms": 15.129378996789455,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.181178989820182,
+            "execution_ms": 0.4386970103951171,
+            "feedback_ms": 15.7676189992344,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.663357996032573,
+            "execution_ms": 0.12107299698982388,
+            "feedback_ms": 31.96532599395141,
+            "native_confirmation_ms": 311.15896499250084
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.82651300728321,
+            "execution_ms": 0.12471899390220642,
+            "feedback_ms": 32.65109899803065,
+            "native_confirmation_ms": 57.285096001578495
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.720671994728036,
+            "execution_ms": 0.38988700543995947,
+            "feedback_ms": 15.323865998652764,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.50421899324283,
+            "execution_ms": 0.477770998259075,
+            "feedback_ms": 17.725737998262048,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.529272996587679,
+            "execution_ms": 0.1258950069313869,
+            "feedback_ms": 32.6570890028961,
+            "native_confirmation_ms": 310.3996499994537
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.533695003483444,
+            "execution_ms": 0.10528699203860015,
+            "feedback_ms": 33.3554910030216,
+            "native_confirmation_ms": 63.477856005192734
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.962609998183325,
+            "execution_ms": 0.4760469892062247,
+            "feedback_ms": 16.15480799227953,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.150127007160336,
+            "execution_ms": 0.49370600027032197,
+            "feedback_ms": 17.319072998361662,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.8833739903057,
+            "execution_ms": 0.12303399853408337,
+            "feedback_ms": 32.61377899616491,
+            "native_confirmation_ms": 308.0912199948216
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.942210002918728,
+            "execution_ms": 0.12879300629720092,
+            "feedback_ms": 33.06166600668803,
+            "native_confirmation_ms": 68.77436400100123
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.84568300191313,
+            "execution_ms": 0.505667005199939,
+            "feedback_ms": 16.76277299702633,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.887908003292978,
+            "execution_ms": 0.4871339915553108,
+            "feedback_ms": 18.188478003139608,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.966085995780304,
+            "execution_ms": 0.12496999988798052,
+            "feedback_ms": 32.16863700072281,
+            "native_confirmation_ms": 307.54220999369863
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 10.143022998818196,
+            "execution_ms": 0.1800699974410236,
+            "feedback_ms": 34.74920599546749,
+            "native_confirmation_ms": 59.79514399950858
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.679179987870157,
+            "execution_ms": 0.4738470015581697,
+            "feedback_ms": 16.24611699662637,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.15185100166127,
+            "execution_ms": 0.4873550060437992,
+            "feedback_ms": 16.949430006206967,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.056731010787189,
+            "execution_ms": 0.1368550001643598,
+            "feedback_ms": 29.45909601112362,
+            "native_confirmation_ms": 309.2104850074975
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.152997998171486,
+            "execution_ms": 0.09860299178399146,
+            "feedback_ms": 30.429411999648437,
+            "native_confirmation_ms": 66.8394999956945
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.06868498714175,
+            "execution_ms": 0.3530160029185936,
+            "feedback_ms": 15.254599988111295,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.378950009704567,
+            "execution_ms": 0.4959719954058528,
+            "feedback_ms": 17.38451700657606,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.808752001845278,
+            "execution_ms": 0.11061799887102097,
+            "feedback_ms": 31.932604004396126,
+            "native_confirmation_ms": 327.90649600792676
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.877901000436395,
+            "execution_ms": 0.12322099064476788,
+            "feedback_ms": 32.478690991410986,
+            "native_confirmation_ms": 57.47474898817018
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.191470991936512,
+            "execution_ms": 0.4079610080225393,
+            "feedback_ms": 14.608350989874452,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.787545001017861,
+            "execution_ms": 0.5009009910281748,
+            "feedback_ms": 17.590265997569077,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.321411998826079,
+            "execution_ms": 0.1524399995105341,
+            "feedback_ms": 28.7665450014174,
+            "native_confirmation_ms": 338.7712840049062
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.878539000055753,
+            "execution_ms": 0.12249599967617542,
+            "feedback_ms": 33.56610600894783,
+            "native_confirmation_ms": 72.45823400444351
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.672351992572658,
+            "execution_ms": 0.3009630017913878,
+            "feedback_ms": 13.602687991806306,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.662969004944898,
+            "execution_ms": 0.4370009992271662,
+            "feedback_ms": 15.648205007892102,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.867351007414982,
+            "execution_ms": 0.12639300257433206,
+            "feedback_ms": 33.21338401292451,
+            "native_confirmation_ms": 312.44588100526016
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.981639010016806,
+            "execution_ms": 0.08988600166048855,
+            "feedback_ms": 33.9901160041336,
+            "native_confirmation_ms": 71.77537999814376
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.806115001789294,
+            "execution_ms": 0.5355920002330095,
+            "feedback_ms": 15.461818999028765,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.328340995125473,
+            "execution_ms": 0.3406530013307929,
+            "feedback_ms": 15.909264999208972,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.591177000198513,
+            "execution_ms": 0.07065999670885503,
+            "feedback_ms": 29.46669000084512,
+            "native_confirmation_ms": 270.9646270086523
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.842686991556548,
+            "execution_ms": 0.11433500912971795,
+            "feedback_ms": 28.625728999031708,
+            "native_confirmation_ms": 50.97837100038305
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.676800003740937,
+            "execution_ms": 0.4460339987417683,
+            "feedback_ms": 13.39849500800483,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.26922500366345,
+            "execution_ms": 0.3656710032373667,
+            "feedback_ms": 14.793888010899536,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.556787001201883,
+            "execution_ms": 0.1002469944069162,
+            "feedback_ms": 30.4899269976886,
+            "native_confirmation_ms": 289.3989279982634
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.096292007598095,
+            "execution_ms": 0.17309900431428105,
+            "feedback_ms": 27.0491240080446,
+            "native_confirmation_ms": 49.39291400660295
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.530572991934605,
+            "execution_ms": 0.37088600220158696,
+            "feedback_ms": 15.21031699667219,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.846704997471534,
+            "execution_ms": 0.4922900116071105,
+            "feedback_ms": 17.903836007462814,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.685709999757819,
+            "execution_ms": 0.12283198884688318,
+            "feedback_ms": 32.391333996201865,
+            "native_confirmation_ms": 306.99930699483957
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.469277007156052,
+            "execution_ms": 0.1265929895453155,
+            "feedback_ms": 31.71321800618898,
+            "native_confirmation_ms": 58.43876700964756
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.343152996734716,
+            "execution_ms": 0.39614300476387143,
+            "feedback_ms": 14.996236001024954,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.836846002144739,
+            "execution_ms": 0.503031988046132,
+            "feedback_ms": 17.95586899970658,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.066222992260009,
+            "execution_ms": 0.12449600035324693,
+            "feedback_ms": 32.41595400322694,
+            "native_confirmation_ms": 308.37135900219437
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.07177000772208,
+            "execution_ms": 0.12032600352540612,
+            "feedback_ms": 34.54712900565937,
+            "native_confirmation_ms": 75.46845100296196
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.993977000704035,
+            "execution_ms": 0.6218710041139275,
+            "feedback_ms": 17.400762997567654,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.503499008133076,
+            "execution_ms": 0.4531239974312484,
+            "feedback_ms": 17.52080900769215,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.992995004518889,
+            "execution_ms": 0.09781400149222463,
+            "feedback_ms": 31.01959000923671,
+            "native_confirmation_ms": 292.0971650019055
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.972090992960148,
+            "execution_ms": 0.13884500367566943,
+            "feedback_ms": 33.37466198718175,
+            "native_confirmation_ms": 59.47533198923338
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.428428995306604,
+            "execution_ms": 0.38315000711008906,
+            "feedback_ms": 16.727223992347717,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.690045000752434,
+            "execution_ms": 0.42923200817313045,
+            "feedback_ms": 18.217946999357082,
+            "native_confirmation_ms": -1
+          }
+        ],
+        "pause_confirmation_ms": {},
+        "seek_confirmation_ms": [
+          344.61187401029747,
+          50.14957299863454,
+          338.4646310005337,
+          69.64916600554716,
+          311.15896499250084,
+          57.285096001578495,
+          310.3996499994537,
+          63.477856005192734,
+          308.0912199948216,
+          68.77436400100123,
+          307.54220999369863,
+          59.79514399950858,
+          309.2104850074975,
+          66.8394999956945,
+          327.90649600792676,
+          57.47474898817018,
+          338.7712840049062,
+          72.45823400444351,
+          312.44588100526016,
+          71.77537999814376,
+          270.9646270086523,
+          50.97837100038305,
+          289.3989279982634,
+          49.39291400660295,
+          306.99930699483957,
+          58.43876700964756,
+          308.37135900219437,
+          75.46845100296196,
+          292.0971650019055,
+          59.47533198923338
+        ],
+        "state": "paused",
+        "subtitles": "5000"
+      },
+      {
+        "alignment_status": "逐词任务已取消",
+        "dispatch_ms": {
+          "count": 60,
+          "max": 33.47444799146615,
+          "p95": 15.324335006880574
+        },
+        "execution_ms": {
+          "count": 60,
+          "max": 0.7910729909781367,
+          "p95": 0.6411770009435713
+        },
+        "feedback_ms": {
+          "count": 60,
+          "max": 70.9867780096829,
+          "p95": 41.53528100869153
+        },
+        "operations": [
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.680809987708926,
+            "execution_ms": 0.1284260069951415,
+            "feedback_ms": 19.32996598770842,
+            "native_confirmation_ms": 30.56179099075962
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.96542498958297,
+            "execution_ms": 0.08794100722298026,
+            "feedback_ms": 14.167671994073316,
+            "native_confirmation_ms": 40.07479599385988
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.604216989828274,
+            "execution_ms": 0.08334600715897977,
+            "feedback_ms": 40.232366998679936,
+            "native_confirmation_ms": 241.82603499502875
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.959585989941843,
+            "execution_ms": 0.08558901026844978,
+            "feedback_ms": 30.04827800032217,
+            "native_confirmation_ms": 78.15719999780413
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.675633987877518,
+            "execution_ms": 0.42582800961099565,
+            "feedback_ms": 15.062940001371317,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.459805994993076,
+            "execution_ms": 0.391515000956133,
+            "feedback_ms": 17.05997200042475,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.562664999975823,
+            "execution_ms": 0.116020004497841,
+            "feedback_ms": 15.569620998576283,
+            "native_confirmation_ms": 25.32580199476797
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.576995998737402,
+            "execution_ms": 0.10648400348145515,
+            "feedback_ms": 14.874396001687273,
+            "native_confirmation_ms": 20.89435700327158
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.594616989488713,
+            "execution_ms": 0.08375300967600197,
+            "feedback_ms": 34.019374987110496,
+            "native_confirmation_ms": 433.9275729871588
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 26.409544996568002,
+            "execution_ms": 0.08303399954456836,
+            "feedback_ms": 64.00128800305538,
+            "native_confirmation_ms": 161.7828529997496
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.810706000076607,
+            "execution_ms": 0.6452910020016134,
+            "feedback_ms": 15.143536002142355,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.439569999813102,
+            "execution_ms": 0.3056429995922372,
+            "feedback_ms": 16.508200991665944,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.563145995140076,
+            "execution_ms": 0.09905900515150279,
+            "feedback_ms": 15.381846998934634,
+            "native_confirmation_ms": 32.2493610001402
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.577585005899891,
+            "execution_ms": 0.12120300380047411,
+            "feedback_ms": 17.060985002899542,
+            "native_confirmation_ms": 24.10053000494372
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.285442007239908,
+            "execution_ms": 0.12748700100928545,
+            "feedback_ms": 39.48131400102284,
+            "native_confirmation_ms": 289.4204340118449
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 10.793448003823869,
+            "execution_ms": 0.12786399747710675,
+            "feedback_ms": 70.9867780096829,
+            "native_confirmation_ms": 208.65383700584061
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.014045994263142,
+            "execution_ms": 0.6411770009435713,
+            "feedback_ms": 15.748743986478075,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.170113989966922,
+            "execution_ms": 0.47706400800962,
+            "feedback_ms": 19.366886001080275,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 20.036431989865378,
+            "execution_ms": 0.07983500836417079,
+            "feedback_ms": 24.596892995759845,
+            "native_confirmation_ms": 31.013184998300858
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.762241996009834,
+            "execution_ms": 0.10463599755894393,
+            "feedback_ms": 14.309731996036135,
+            "native_confirmation_ms": 42.42015798809007
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.668054000940174,
+            "execution_ms": 0.09268001304008067,
+            "feedback_ms": 35.4307510133367,
+            "native_confirmation_ms": 494.19150200264994
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.758908996242099,
+            "execution_ms": 0.09077100548893213,
+            "feedback_ms": 32.90065600594971,
+            "native_confirmation_ms": 266.87274299911223
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.268030989915133,
+            "execution_ms": 0.4292650119168684,
+            "feedback_ms": 18.564372992841527,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 15.324335006880574,
+            "execution_ms": 0.36636399454437196,
+            "feedback_ms": 22.75957200617995,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.621336994110607,
+            "execution_ms": 0.10472799476701766,
+            "feedback_ms": 14.80499398894608,
+            "native_confirmation_ms": 26.80511400103569
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.034885006258264,
+            "execution_ms": 0.13122499512974173,
+            "feedback_ms": 14.645483999629505,
+            "native_confirmation_ms": 16.121188004035503
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.695720000308938,
+            "execution_ms": 0.09590700210537761,
+            "feedback_ms": 36.731300002429634,
+            "native_confirmation_ms": 468.30516299814917
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 10.249038998153992,
+            "execution_ms": 0.10991300223395228,
+            "feedback_ms": 32.99769200384617,
+            "native_confirmation_ms": 291.7823519965168
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.603797996533103,
+            "execution_ms": 0.537087005795911,
+            "feedback_ms": 17.977955998503603,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.70637499995064,
+            "execution_ms": 0.37348199111875147,
+            "feedback_ms": 17.010227995342575,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.73204501112923,
+            "execution_ms": 0.10626099538058043,
+            "feedback_ms": 15.522296002018265,
+            "native_confirmation_ms": 23.108387002139352
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.542204003082588,
+            "execution_ms": 0.10370400559622794,
+            "feedback_ms": 15.36083199607674,
+            "native_confirmation_ms": 30.36193001025822
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.030415996676311,
+            "execution_ms": 0.08998501289170235,
+            "feedback_ms": 34.14488800626714,
+            "native_confirmation_ms": 85.30629200686235
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.863993007456884,
+            "execution_ms": 0.13066199608147144,
+            "feedback_ms": 36.38626499741804,
+            "native_confirmation_ms": 336.80425900092814
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.632601999328472,
+            "execution_ms": 0.6156769959488884,
+            "feedback_ms": 16.324828000506386,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.638309013098478,
+            "execution_ms": 0.39603898767381907,
+            "feedback_ms": 16.227126005105674,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 13.399965988355689,
+            "execution_ms": 0.09971001418307424,
+            "feedback_ms": 18.906871002400294,
+            "native_confirmation_ms": 25.417790995561518
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.603211001376621,
+            "execution_ms": 0.10013599239755422,
+            "feedback_ms": 15.738268994027749,
+            "native_confirmation_ms": 16.394973994465545
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.019185992656276,
+            "execution_ms": 0.10670100164134055,
+            "feedback_ms": 36.632634000852704,
+            "native_confirmation_ms": 106.99501899944153
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.24713400308974,
+            "execution_ms": 0.2639949962031096,
+            "feedback_ms": 32.88711200002581,
+            "native_confirmation_ms": 373.9939119986957
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.853338003973477,
+            "execution_ms": 0.5124059971421957,
+            "feedback_ms": 16.79833300295286,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.19084600172937,
+            "execution_ms": 0.38104300620034337,
+            "feedback_ms": 17.08939801028464,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.001098995213397,
+            "execution_ms": 0.11977099347859621,
+            "feedback_ms": 15.317370998673141,
+            "native_confirmation_ms": 38.27473698765971
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.962724998127669,
+            "execution_ms": 0.11252801050432026,
+            "feedback_ms": 14.521704011713155,
+            "native_confirmation_ms": 21.702960002585314
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 10.244541001156904,
+            "execution_ms": 0.07748400093987584,
+            "feedback_ms": 20.951786005753092,
+            "native_confirmation_ms": 148.6157150065992
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.794405002845451,
+            "execution_ms": 0.10705299791879952,
+            "feedback_ms": 38.80286701314617,
+            "native_confirmation_ms": 425.46477301220875
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.769497002707794,
+            "execution_ms": 0.4140710079809651,
+            "feedback_ms": 15.663342011976056,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.887924010399729,
+            "execution_ms": 0.4306880000513047,
+            "feedback_ms": 16.94070000667125,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.206531991367228,
+            "execution_ms": 0.13127100828569382,
+            "feedback_ms": 16.135903002577834,
+            "native_confirmation_ms": 37.58930799085647
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.886331987218,
+            "execution_ms": 0.139896001201123,
+            "feedback_ms": 16.202040991629474,
+            "native_confirmation_ms": 43.34173499955796
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.837974997935817,
+            "execution_ms": 0.1266170002054423,
+            "feedback_ms": 32.86195300461259,
+            "native_confirmation_ms": 216.25582300475799
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.191717996145599,
+            "execution_ms": 0.11171400547027588,
+            "feedback_ms": 41.53528100869153,
+            "native_confirmation_ms": 441.7782399978023
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.662223004852422,
+            "execution_ms": 0.5310859996825457,
+            "feedback_ms": 18.26636600890197,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.638568997615948,
+            "execution_ms": 0.7113520114216954,
+            "feedback_ms": 17.447179998271167,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.395033004693687,
+            "execution_ms": 0.10418800229672343,
+            "feedback_ms": 15.54374399711378,
+            "native_confirmation_ms": 16.24572700529825
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.669338003732264,
+            "execution_ms": 0.1044429955072701,
+            "feedback_ms": 15.242010995279998,
+            "native_confirmation_ms": 32.73985600390006
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.073745997739024,
+            "execution_ms": 0.08938199607655406,
+            "feedback_ms": 35.72703599638771,
+            "native_confirmation_ms": 275.55687799758743
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 33.47444799146615,
+            "execution_ms": 0.08736600284464657,
+            "feedback_ms": 57.88310799107421,
+            "native_confirmation_ms": 523.5421469988069
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.765188002143987,
+            "execution_ms": 0.41928399878088385,
+            "feedback_ms": 15.151161991525441,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.354758003610186,
+            "execution_ms": 0.7910729909781367,
+            "feedback_ms": 18.32232800370548,
+            "native_confirmation_ms": -1
+          }
+        ],
+        "pause_confirmation_ms": {
+          "count": 20,
+          "max": 43.34173499955796,
+          "p95": 42.42015798809007
+        },
+        "seek_confirmation_ms": [
+          241.82603499502875,
+          78.15719999780413,
+          433.9275729871588,
+          161.7828529997496,
+          289.4204340118449,
+          208.65383700584061,
+          494.19150200264994,
+          266.87274299911223,
+          468.30516299814917,
+          291.7823519965168,
+          85.30629200686235,
+          336.80425900092814,
+          106.99501899944153,
+          373.9939119986957,
+          148.6157150065992,
+          425.46477301220875,
+          216.25582300475799,
+          441.7782399978023,
+          275.55687799758743,
+          523.5421469988069
+        ],
+        "state": "playing",
+        "subtitles": "5000"
+      },
+      {
+        "alignment_status": "后台准备逐词高亮 · 0/5000 句",
+        "dispatch_ms": {
+          "count": 60,
+          "max": 35.92538299562875,
+          "p95": 10.055883001768962
+        },
+        "execution_ms": {
+          "count": 60,
+          "max": 9.798371989745647,
+          "p95": 9.527770002023317
+        },
+        "feedback_ms": {
+          "count": 60,
+          "max": 70.73757798934821,
+          "p95": 43.505784997250885
+        },
+        "operations": [
+          {
+            "action": "playPause",
+            "dispatch_ms": 29.51431999099441,
+            "execution_ms": 0.14316700980998576,
+            "feedback_ms": 35.23025299364235,
+            "native_confirmation_ms": 52.425483998376876
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.703472994966432,
+            "execution_ms": 0.10712500079534948,
+            "feedback_ms": 13.55959200009238,
+            "native_confirmation_ms": 23.47925199137535
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.191949997330084,
+            "execution_ms": 9.664942001109011,
+            "feedback_ms": 38.70833599648904,
+            "native_confirmation_ms": 238.29940099676605
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.34910999785643,
+            "execution_ms": 6.325269001536071,
+            "feedback_ms": 21.57473900297191,
+            "native_confirmation_ms": 101.99452700908296
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.317333999206312,
+            "execution_ms": 0.3727349976543337,
+            "feedback_ms": 14.843448996543884,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.71759100118652,
+            "execution_ms": 0.35201499122194946,
+            "feedback_ms": 15.10199900076259,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.910247997846454,
+            "execution_ms": 0.1229839981533587,
+            "feedback_ms": 13.752362996456213,
+            "native_confirmation_ms": 38.766265992308035
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.00634701247327,
+            "execution_ms": 0.09517699072603136,
+            "feedback_ms": 13.995750006870367,
+            "native_confirmation_ms": 25.98079200834036
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.940477011492476,
+            "execution_ms": 5.459066989715211,
+            "feedback_ms": 31.675969003117643,
+            "native_confirmation_ms": 282.5878990115598
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.901424007490277,
+            "execution_ms": 6.677156998193823,
+            "feedback_ms": 36.27874700760003,
+            "native_confirmation_ms": 115.27179200493265
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.866832009516656,
+            "execution_ms": 0.35104999551549554,
+            "feedback_ms": 13.998046997585334,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.57759800076019,
+            "execution_ms": 0.33230899134650826,
+            "feedback_ms": 15.835597994737327,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.646951002650894,
+            "execution_ms": 0.10347699571866542,
+            "feedback_ms": 15.546302005532198,
+            "native_confirmation_ms": 21.992875001160428
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.60812000266742,
+            "execution_ms": 0.09791400225367397,
+            "feedback_ms": 14.80087400705088,
+            "native_confirmation_ms": 20.347270998172462
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.549424998112954,
+            "execution_ms": 6.08008100243751,
+            "feedback_ms": 35.63900099834427,
+            "native_confirmation_ms": 288.67982400697656
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.715008007129654,
+            "execution_ms": 6.632570992223918,
+            "feedback_ms": 35.41819400561508,
+            "native_confirmation_ms": 155.68508001160808
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.550308997859247,
+            "execution_ms": 0.3219070058548823,
+            "feedback_ms": 14.395286998478696,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.436528998776339,
+            "execution_ms": 0.28527199174277484,
+            "feedback_ms": 14.839529991149902,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.59671700547915,
+            "execution_ms": 0.09509098890703171,
+            "feedback_ms": 14.23905900446698,
+            "native_confirmation_ms": 32.63269399758428
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.740921999560669,
+            "execution_ms": 0.08389299910049886,
+            "feedback_ms": 13.19107499148231,
+            "native_confirmation_ms": 28.723839990561828
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.665469998959452,
+            "execution_ms": 6.119461002526805,
+            "feedback_ms": 32.91223199630622,
+            "native_confirmation_ms": 348.33382100623567
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.492300989222713,
+            "execution_ms": 6.184947997098789,
+            "feedback_ms": 34.882035994087346,
+            "native_confirmation_ms": 184.48960800014902
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.510760006378405,
+            "execution_ms": 0.31254900386556983,
+            "feedback_ms": 14.36125701002311,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.599578988854773,
+            "execution_ms": 0.3092580009251833,
+            "feedback_ms": 15.760051988763735,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.56213500467129,
+            "execution_ms": 0.12132000119891018,
+            "feedback_ms": 15.032613999210298,
+            "native_confirmation_ms": 15.611055001500063
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.974342999863438,
+            "execution_ms": 0.07577599899377674,
+            "feedback_ms": 12.86509599594865,
+            "native_confirmation_ms": 42.18011199554894
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.706501004984602,
+            "execution_ms": 7.278459990629926,
+            "feedback_ms": 37.606953002978116,
+            "native_confirmation_ms": 340.1437060092576
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.630818003439344,
+            "execution_ms": 6.600950000574812,
+            "feedback_ms": 33.30216200265568,
+            "native_confirmation_ms": 230.59685000043828
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.504001005552709,
+            "execution_ms": 0.42159199074376374,
+            "feedback_ms": 16.53635200636927,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.277363991714083,
+            "execution_ms": 0.2885770081775263,
+            "feedback_ms": 15.42265000171028,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.937015998526476,
+            "execution_ms": 0.10232700151391327,
+            "feedback_ms": 12.637141000595875,
+            "native_confirmation_ms": 35.50277500471566
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.56833700183779,
+            "execution_ms": 0.0951429974520579,
+            "feedback_ms": 14.06370299810078,
+            "native_confirmation_ms": 20.02910600276664
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.745686998940073,
+            "execution_ms": 6.830378988524899,
+            "feedback_ms": 35.02558098989539,
+            "native_confirmation_ms": 525.9392809966812
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.869472007267177,
+            "execution_ms": 9.735247993376106,
+            "feedback_ms": 43.367278994992375,
+            "native_confirmation_ms": 320.7844220014522
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.8484469888499,
+            "execution_ms": 0.3456130070844665,
+            "feedback_ms": 14.285789991845377,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.254017000785097,
+            "execution_ms": 0.4065160028403625,
+            "feedback_ms": 16.279786999803036,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.41256400255952,
+            "execution_ms": 0.08731900015845895,
+            "feedback_ms": 14.622457005316392,
+            "native_confirmation_ms": 30.194111008313484
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 9.324742990429513,
+            "execution_ms": 0.21840700355824083,
+            "feedback_ms": 16.39407899347134,
+            "native_confirmation_ms": 42.04842398758046
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 8.727369990083389,
+            "execution_ms": 7.232857009512372,
+            "feedback_ms": 43.505784997250885,
+            "native_confirmation_ms": 84.33795599557925
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 35.92538299562875,
+            "execution_ms": 7.352642991463654,
+            "feedback_ms": 70.73757798934821,
+            "native_confirmation_ms": 335.74001099623274
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.502446002443321,
+            "execution_ms": 0.3252720052842051,
+            "feedback_ms": 14.26268499926664,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.804433004115708,
+            "execution_ms": 0.28595500043593347,
+            "feedback_ms": 14.981701009673998,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.762433993979357,
+            "execution_ms": 0.10399200255051255,
+            "feedback_ms": 13.654729991685599,
+            "native_confirmation_ms": 14.275672001531348
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.76697400235571,
+            "execution_ms": 0.09778399544302374,
+            "feedback_ms": 13.617925011203624,
+            "native_confirmation_ms": 17.73098501143977
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.141602989984676,
+            "execution_ms": 7.155163999414071,
+            "feedback_ms": 33.911286998772994,
+            "native_confirmation_ms": 112.8750989882974
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.130792997893877,
+            "execution_ms": 6.17796799633652,
+            "feedback_ms": 32.95234100369271,
+            "native_confirmation_ms": 285.67132700118236
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 8.768435000092722,
+            "execution_ms": 0.3255119954701513,
+            "feedback_ms": 13.74208899505902,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 13.392230001045391,
+            "execution_ms": 0.31072800629772246,
+            "feedback_ms": 19.747814003494568,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 10.00508999277372,
+            "execution_ms": 0.16908500401768833,
+            "feedback_ms": 18.042708994471468,
+            "native_confirmation_ms": 25.482244993327186
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 10.055883001768962,
+            "execution_ms": 0.1773609983501956,
+            "feedback_ms": 16.903944007935934,
+            "native_confirmation_ms": 35.61409800022375
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.621097997296602,
+            "execution_ms": 9.527770002023317,
+            "feedback_ms": 44.13156599912327,
+            "native_confirmation_ms": 193.71494199731387
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 9.726322998176329,
+            "execution_ms": 7.31407999410294,
+            "feedback_ms": 40.6646009942051,
+            "native_confirmation_ms": 411.330310991616
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.771818993613124,
+            "execution_ms": 0.4662120045395568,
+            "feedback_ms": 16.318199996021576,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.898465999867767,
+            "execution_ms": 0.7709320052526891,
+            "feedback_ms": 18.968584001413547,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.847527002217248,
+            "execution_ms": 0.12690700532402843,
+            "feedback_ms": 14.907231001416221,
+            "native_confirmation_ms": 31.33988800982479
+          },
+          {
+            "action": "playPause",
+            "dispatch_ms": 8.992930001113564,
+            "execution_ms": 0.1601040130481124,
+            "feedback_ms": 15.482457005418837,
+            "native_confirmation_ms": 42.00065400800668
+          },
+          {
+            "action": "forward",
+            "dispatch_ms": 9.23630800389219,
+            "execution_ms": 7.697249995544553,
+            "feedback_ms": 41.12486500525847,
+            "native_confirmation_ms": 230.7019910076633
+          },
+          {
+            "action": "backward",
+            "dispatch_ms": 8.872455000528134,
+            "execution_ms": 9.798371989745647,
+            "feedback_ms": 46.46347799280193,
+            "native_confirmation_ms": 369.817996994243
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.061343007488176,
+            "execution_ms": 0.44909099233336747,
+            "feedback_ms": 16.773477997048758,
+            "native_confirmation_ms": -1
+          },
+          {
+            "action": "toggleSidebarVisibility",
+            "dispatch_ms": 9.42851799482014,
+            "execution_ms": 0.29923400143161416,
+            "feedback_ms": 14.920743997208774,
+            "native_confirmation_ms": -1
+          }
+        ],
+        "pause_confirmation_ms": {
+          "count": 20,
+          "max": 52.425483998376876,
+          "p95": 42.18011199554894
+        },
+        "seek_confirmation_ms": [
+          238.29940099676605,
+          101.99452700908296,
+          282.5878990115598,
+          115.27179200493265,
+          288.67982400697656,
+          155.68508001160808,
+          348.33382100623567,
+          184.48960800014902,
+          340.1437060092576,
+          230.59685000043828,
+          525.9392809966812,
+          320.7844220014522,
+          84.33795599557925,
+          335.74001099623274,
+          112.8750989882974,
+          285.67132700118236,
+          193.71494199731387,
+          411.330310991616,
+          230.7019910076633,
+          369.817996994243
+        ],
+        "state": "aligning",
+        "subtitles": "5000"
+      }
+    ],
+    "version": "0.3.1"
+  },
+  "unit_tests": {
+    "swift": 64,
+    "python": 10,
+    "passed": true
+  }
+}

@@ -142,6 +142,7 @@ bash scripts/run-practice-smoke.sh
 bash scripts/run-interaction-smoke.sh
 bash scripts/run-keyboard-smoke.sh
 bash scripts/run-chrome-smoke.sh
+bash scripts/run-performance-smoke.sh
 python3 scripts/prepare-validation.py
 python3 Sources/LingoPlayer/Resources/alignment_worker.py \
   --request verification/local/clear-request.json \
@@ -155,6 +156,10 @@ v0.3 的精听、全文和兼容性结果见 [v0.3 验证记录](verification/V0
 GUI 自检会打开真实窗口、静音播放，在独立测试数据目录中保存检查结果、进度和截图。普通启动不运行自检。测试素材、依赖和构建结果不放入源码版本管理。布局快照捕获测试应用自己的实际窗口，包含 OpenGL 视频和悬浮控件的真实叠层。
 
 快捷键焦点回归保留按钮、滑杆、字幕列表和文本编辑器的真实焦点，投递原生按键与鼠标事件；覆盖自定义空格、方向键、组合键、输入法、离开输入框、设置关闭和独立学习窗口，避免每次按键前重置焦点掩盖问题。
+
+性能自检使用 5,000 条字幕与明确标记的合成单词时间，分别测量沉浸播放、操作面板、学习栏和字幕全文。报告进程 CPU 时间、界面更新与文字测量次数，并检查单词高亮和视频绘制持续进行。探针只在显式自检时启用；不评估语音对齐精度。隐藏面板停止创建控件，后台全文暂停刷新；重新展开会同步当前字幕，并保留手动阅读位置。
+
+build 8 的同条件性能对比、各场景限制与回归结果见 [性能验证记录](verification/PERFORMANCE-2026-09-27.md)。
 
 逐词精度需要独立的人工标注，不能用模型输出给自己打分。标注 CSV 字段为 `cueID,tokenIndex,start,category`，category 为 `clear` / `fast` / `music`，start 为相对于视频的秒数。评估命令：
 

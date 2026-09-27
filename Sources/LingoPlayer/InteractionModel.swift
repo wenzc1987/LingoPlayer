@@ -8,6 +8,7 @@ enum SidebarTab: String, CaseIterable {
 
 @MainActor
 extension AppModel {
+    func updateTranscriptVisibility() { transcript.setVisible(!preferences.sidebarCollapsed && sidebarTab == .transcript) }
     func updateChromePresentation() {
         chrome.hold(.presentation, active: showSettings || showSubtitleSearch || showSubtitleControls || playerPopover != nil || showAlignmentDetails || alert != nil)
     }

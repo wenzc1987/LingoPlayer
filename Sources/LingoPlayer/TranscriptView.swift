@@ -35,7 +35,7 @@ struct TranscriptPanel: View {
                     else if model.media != nil { Button("导入字幕…") { model.chooseSubtitle() } }
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                TranscriptList(transcript: transcript, loopID: model.sentenceLoop?.cueID, duration: model.duration, ready: model.playbackReady,
+                TranscriptList(transcript: transcript, visible: !model.preferences.sidebarCollapsed && model.sidebarTab == .transcript, loopID: model.sentenceLoop?.cueID, duration: model.duration, ready: model.playbackReady,
                     navigate: { model.navigateTranscript($0) }, loop: { if let cue = $0.english { model.startSentenceLoop(cue) } })
             }
             if let loop = model.sentenceLoop {
@@ -47,7 +47,7 @@ struct TranscriptPanel: View {
             if !model.practiceMessage.isEmpty { Text(model.practiceMessage).font(.caption).foregroundStyle(.orange).padding(.horizontal, 18) }
             Text("点击时间定位 · 英文句子可循环\n中文按时间对应，可能与英文分句不同")
                 .font(.system(size: 10)).foregroundStyle(Palette.muted).lineSpacing(3).padding(.bottom, 15)
-        }.onAppear { transcript.becameVisible() }
+        }
     }
 }
 
@@ -55,6 +55,7 @@ struct TranscriptPanel: View {
 /// captions doesn't instantiate or relayout thousands of SwiftUI text views.
 struct TranscriptList: NSViewRepresentable {
     @ObservedObject var transcript: TranscriptController
+    let visible: Bool
     let loopID: String?
     let duration: Double
     let ready: Bool
@@ -103,6 +104,8 @@ struct TranscriptList: NSViewRepresentable {
         deinit { heightTask?.cancel(); if let observer { NotificationCenter.default.removeObserver(observer) } }
         func update(_ next: TranscriptList) {
             parent = next
+            guard next.visible else { return }
+            PerformanceCounters.shared.hit("transcript_native_updates")
             guard let table else { return }
             let t = next.transcript
             let resize = abs(table.bounds.width - width) > 1
@@ -128,6 +131,7 @@ struct TranscriptList: NSViewRepresentable {
             }
         }
         private func prepareHeights() {
+            PerformanceCounters.shared.hit("transcript_height_batches")
             heightTask?.cancel(); heightRevision = UUID(); let revision = heightRevision
             let rows = rows, width = max(180, width)
             heightTask = Task { [weak self] in
