@@ -43,9 +43,10 @@ enum PracticeSmoke {
         if restoreOnly {
             model.restoreQueue()
             let loaded = await wait { model.playbackReady && model.media?.path == one.path && model.duration > 0 }
+            await model.openTask?.value
             await delay(0.6)
             record("restart_paused_with_display_preference_and_no_loop", loaded && model.paused && !model.endGate.wantsPlayback && model.sentenceLoop == nil && model.preferences.subtitleDisplay == .hidden)
-            record("restart_resets_search_and_following", model.transcript.query.isEmpty && model.transcript.following && model.sidebarTab == .learning)
+            record("restart_resets_search_and_following", model.transcript.query.isEmpty && model.transcript.following && model.isLearningMode && model.sidebarTab == .queue)
             record("new_action_custom_bindings_restore", model.preferences.shortcut(for: .toggleSentenceLoop)?.key == "t" && model.preferences.shortcut(for: .cycleSubtitleDisplay)?.key == "d")
             record("restart_keeps_queue_and_unfinished_progress", model.queueState.items.count == 2 && model.progress[one.path]?.finished == false && model.position > 0)
         } else {
@@ -146,9 +147,9 @@ enum PracticeSmoke {
                 record("bilingual_replacement_resets_loop_search_and_browsing", model.sentenceLoop == nil && model.transcript.query.isEmpty && model.transcript.following && model.transcript.document.rows.first?.chineseText == "替换字幕。")
                 model.startSentenceLoop(model.english[0]); let oldSession = model.sessionID
                 model.playQueueItem(two.path); model.playQueueItem(one.path); model.playQueueItem(two.path)
-                let changed = await wait { model.media?.path == two.path && model.playbackReady && model.english.first?.text == "Different movie." && !model.transcript.isPreparing }
+                let changed = await wait { model.media?.path == two.path && model.playbackReady && model.english.first?.text == "Different movie. We should watch this one together." && !model.transcript.isPreparing }
                 model.receive(PlaybackSnapshot(generation: oldSession, path: one.path, position: 8, duration: 8, paused: false, loaded: true, eof: true, error: nil, seekRevision: model.seekRevision))
-                record("rapid_media_switch_clears_loop_and_stale_transcript", changed && model.sentenceLoop == nil && !model.learning.isLocked && model.transcript.document.rows.first?.english?.text == "Different movie.")
+                record("rapid_media_switch_clears_loop_and_stale_transcript", changed && model.sentenceLoop == nil && !model.learning.isLocked && model.transcript.document.rows.first?.english?.text == "Different movie. We should watch this one together.")
             } else { record("required_fixture_cues_loaded", false) }
 
             // 5,000 real native rows while the actual mpv clock continues. Keep loops
@@ -204,7 +205,7 @@ enum PracticeSmoke {
             heartbeat.cancel(); metrics["main_actor_max_gap_seconds"] = gaps.max() ?? 0
             record("playback_advances_during_search_and_scroll_without_rebuild", model.position > clockBefore + 0.5 && model.transcript.rebuildCount == rebuilds && (gaps.max() ?? 0) < 0.5, "clock delta=\(model.position - clockBefore), maximum main actor gap=\(gaps.max() ?? 0)")
             await pause(); screenshot("large-transcript.png")
-            model.english = []; model.chinese = [SubtitleCue(id: "only-zh", start: 1, end: 2, text: "只有中文字幕。")]; model.refreshTranscript(reset: true)
+            model.primarySubtitles = []; model.primarySubtitlePath = nil; model.english = []; model.chinese = [SubtitleCue(id: "only-zh", start: 1, end: 2, text: "只有中文字幕。")]; model.refreshTranscript(reset: true)
             _ = await wait { !model.transcript.isPreparing }
             record("chinese_only_navigation_and_disabled_loop", model.transcript.rows.count == 1 && model.transcript.rows[0].english == nil && !model.canPerform(.toggleSentenceLoop))
             if let row = model.transcript.rows.first { model.navigateTranscript(row) }

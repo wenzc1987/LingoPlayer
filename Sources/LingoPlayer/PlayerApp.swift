@@ -21,6 +21,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     private var pendingFiles: [URL] = []
     private var mainWindowTransition = false
     private var applyingWindowGeometry = false
+    private var windowResize = VideoWindowResize()
     private var restoredVideoWindowSize: NSSize?
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.setActivationPolicy(.regular)
@@ -33,16 +34,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         model.onShortcutsChanged = { [weak self] in self?.installMenu() }
         let remembered = model.viewing.windowSize
         if model.viewing.fitVideoWindow { restoredVideoWindowSize = NSSize(width: remembered.width, height: remembered.height) }
-        let available = NSScreen.main?.visibleFrame.size ?? NSSize(width: 1260, height: 828)
-        let size = NSSize(width: min(max(980, remembered.width), available.width), height: min(max(640, remembered.height), available.height - 28))
+        var available = NSScreen.main?.visibleFrame.size ?? NSSize(width: 1260, height: 828)
+        available.height = max(1, available.height - 28)
+        let sidebar = model.preferences.sidebarCollapsed ? 0.0 : 333.0
+        let size = VideoWindowGeometry.freeFit(NSSize(width: remembered.width, height: remembered.height), in: available, sidebar: sidebar)
         let window = NSWindow(contentRect: NSRect(origin: .zero, size: size), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
         window.title = "LingoPlayer"; window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden; window.isOpaque = false; window.backgroundColor = .clear
-        window.minSize = NSSize(width: 980, height: 640)
+        window.contentMinSize = VideoWindowGeometry.freeMinimum(in: available, sidebar: sidebar)
         window.isReleasedWhenClosed = false
         let content = NSHostingView(rootView: PlayerRootView(model: model).preferredColorScheme(.dark))
-        // The delegate owns window limits, including the smaller cinema and
-        // portrait sizes. SwiftUI's inferred minimum would overwrite them.
+        // The delegate owns the common toolbar minimum and video aspect ratio.
+        // SwiftUI's inferred minimum would overwrite them.
         content.sizingOptions = []
         window.contentView = content
         window.center(); window.makeKeyAndOrderFront(nil)
@@ -67,8 +70,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(of: "--learning-toggle-test"), CommandLine.arguments.count > index + 2 {
+            Task { [weak self] in await LearningToggleSmoke.run(model: model, window: window,
+                folder: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]),
+                detach: { self?.detachLearning() }, learningWindow: { self?.learningWindow }) }
+            return
+        }
+        if let index = CommandLine.arguments.firstIndex(where: { ["--playback-mode-test", "--playback-mode-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
+            Task { [weak self] in await PlaybackModeSmoke.run(model: model, window: window,
+                folder: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]),
+                restore: CommandLine.arguments[index] == "--playback-mode-restore", detach: { self?.detachLearning() }, learningWindow: { self?.learningWindow }) }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(where: { ["--toolbar-test", "--toolbar-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
-            Task { await ToolbarSmoke.run(model: model, window: window, video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]), restore: CommandLine.arguments[index] == "--toolbar-restore") }
+            Task { await ToolbarSmoke.run(model: model, window: window, keyboard: keyboard, video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]), restore: CommandLine.arguments[index] == "--toolbar-restore") }
             return
         }
         if let index = CommandLine.arguments.firstIndex(where: { ["--window-geometry-test", "--window-geometry-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
@@ -170,7 +185,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     }
     func applicationWillTerminate(_ notification: Notification) { keyboard?.uninstall(); model?.shutdown() }
     private func detachLearning() {
-        guard let model else { return }
+        guard let model, model.isLearningMode else { return }
         if let learningWindow { learningWindow.makeKeyAndOrderFront(nil); return }
         let panel = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 400, height: 700), styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
         panel.title = "学习 · LingoPlayer"; panel.minSize = NSSize(width: 340, height: 420)
@@ -183,7 +198,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     }
     func windowWillClose(_ notification: Notification) {
         if let closing = notification.object as? NSWindow, closing === window { rememberMainWindowSize() }
-        if let closing = notification.object as? NSWindow, closing === learningWindow { learningWindow = nil; model?.isDetached = false; model?.sidebarTab = .learning }
+        if let closing = notification.object as? NSWindow, closing === learningWindow { learningWindow = nil; model?.isDetached = false; model?.sidebarTab = model?.isLearningMode == true ? .learning : .transcript }
     }
     private func rememberMainWindowSize() {
         guard let window, !mainWindowTransition, !applyingWindowGeometry, !window.styleMask.contains(.fullScreen), !window.isZoomed,
@@ -194,11 +209,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         guard let model, model.viewing.fitVideoWindow, let aspect = model.videoAspect else { return nil }
         return VideoWindowGeometry(aspect: aspect, sidebar: model.preferences.sidebarCollapsed ? 0 : 333)
     }
+    private var sidebarWidth: Double { model?.preferences.sidebarCollapsed == false ? 333 : 0 }
     private func availableContentSize(_ window: NSWindow) -> NSSize {
         window.contentRect(forFrameRect: window.screen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)).size
     }
     private func applyWindowGeometry() {
-        guard let window, !mainWindowTransition, !applyingWindowGeometry, !window.styleMask.contains(.fullScreen) else { return }
+        guard let window, !mainWindowTransition, !applyingWindowGeometry, !window.inLiveResize,
+              !windowResize.isActive, !window.styleMask.contains(.fullScreen) else { return }
         // Keep the current shape while the next video's display size is loading.
         if model?.viewing.fitVideoWindow == true && model?.media != nil && model?.videoAspect == nil { return }
         applyingWindowGeometry = true
@@ -212,9 +229,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
             restoredVideoWindowSize = nil
         } else {
             if model?.viewing.fitVideoWindow == false { restoredVideoWindowSize = nil }
-            let minimum = NSSize(width: min(980, available.width), height: min(640, available.height))
-            window.contentMinSize = minimum
-            target = NSSize(width: min(available.width, max(current.width, minimum.width)), height: min(available.height, max(current.height, minimum.height)))
+            window.contentMinSize = VideoWindowGeometry.freeMinimum(in: available, sidebar: sidebarWidth)
+            target = VideoWindowGeometry.freeFit(current, in: available, sidebar: sidebarWidth)
         }
         var frame = window.frameRect(forContentRect: NSRect(origin: .zero, size: target))
         frame.origin = NSPoint(x: window.frame.midX - frame.width / 2, y: window.frame.maxY - frame.height)
@@ -233,22 +249,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         let proposed = sender.contentRect(forFrameRect: NSRect(origin: .zero, size: frameSize)).size
         let available = availableContentSize(sender)
         guard let geometry = videoWindowGeometry else {
-            let size = NSSize(width: min(available.width, max(980, proposed.width)), height: min(available.height, max(640, proposed.height)))
+            let size = VideoWindowGeometry.freeFit(proposed, in: available, sidebar: sidebarWidth)
             return sender.frameRect(forContentRect: NSRect(origin: .zero, size: size)).size
         }
         let current = sender.contentView?.bounds.size ?? sender.frame.size
-        let usingHeight = abs(proposed.height - current.height) * geometry.aspect > abs(proposed.width - current.width)
+        let usingHeight = windowResize.usingHeight(for: proposed, current: current, aspect: geometry.aspect)
         let size = geometry.fit(proposed, in: available, usingHeight: usingHeight)
         return sender.frameRect(forContentRect: NSRect(origin: .zero, size: size)).size
     }
     func windowDidResize(_ notification: Notification) {
-        if let changed = notification.object as? NSWindow, changed === window, !changed.inLiveResize {
-            if videoWindowGeometry != nil { applyWindowGeometry() }
+        if let changed = notification.object as? NSWindow, changed === window, !changed.inLiveResize, !windowResize.isActive {
+            let minimum = VideoWindowGeometry.freeMinimum(in: availableContentSize(changed), sidebar: sidebarWidth)
+            let current = changed.contentView?.bounds.size ?? changed.frame.size
+            if videoWindowGeometry != nil || current.width < minimum.width || current.height < minimum.height { applyWindowGeometry() }
             rememberMainWindowSize()
         }
     }
+    func windowWillStartLiveResize(_ notification: Notification) {
+        if let changed = notification.object as? NSWindow, changed === window {
+            windowResize.begin(at: changed.contentView?.bounds.size ?? changed.frame.size)
+        }
+    }
     func windowDidEndLiveResize(_ notification: Notification) {
-        if let changed = notification.object as? NSWindow, changed === window { applyWindowGeometry(); rememberMainWindowSize() }
+        if let changed = notification.object as? NSWindow, changed === window {
+            windowResize.end(); applyWindowGeometry(); rememberMainWindowSize()
+        }
     }
     func windowDidChangeScreen(_ notification: Notification) {
         if let changed = notification.object as? NSWindow, changed === window { applyWindowGeometry() }
@@ -263,6 +288,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         if let changed = notification.object as? NSWindow, changed === window {
             mainWindowTransition = false
             model?.windowPresentation.isFullScreen = true; model?.windowPresentation.isTransitioning = false
+            model?.chrome.showFeedback("已进入全屏", symbol: "arrow.up.left.and.arrow.down.right")
         }
     }
     func windowWillExitFullScreen(_ notification: Notification) {
@@ -275,6 +301,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
             mainWindowTransition = false
             model?.windowPresentation.isFullScreen = false; model?.windowPresentation.isTransitioning = false
             applyWindowGeometry()
+            model?.chrome.showFeedback("已恢复窗口", symbol: "arrow.down.right.and.arrow.up.left")
         }
     }
     func windowDidFailToEnterFullScreen(_ window: NSWindow) {
@@ -298,6 +325,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     }
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         guard let raw = menuItem.representedObject as? String, let action = PlayerAction(rawValue: raw) else { return true }
+        if action == .toggleFullScreen { menuItem.state = model?.windowPresentation.isFullScreen == true ? .on : .off }
+        if action == .toggleFitVideoWindow { menuItem.state = model?.viewing.fitVideoWindow == true ? .on : .off }
         return keyboard?.blocked == false && model?.canPerform(action) == true
     }
     private func installMenu() {
@@ -315,7 +344,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         for (name, action, key) in [("撤销", Selector(("undo:")), "z"), ("剪切", #selector(NSText.cut(_:)), "x"), ("复制", #selector(NSText.copy(_:)), "c"), ("粘贴", #selector(NSText.paste(_:)), "v"), ("全选", #selector(NSText.selectAll(_:)), "a")] { editMenu.addItem(withTitle: name, action: action, keyEquivalent: key) }
         edit.submenu = editMenu; menu.addItem(edit)
         let playback = NSMenuItem(title: "播放", action: nil, keyEquivalent: ""); let playbackMenu = NSMenu(title: "播放")
-        for action in PlayerAction.allCases {
+        for action in PlayerAction.allCases where !action.requiresLearning || model?.isLearningMode == true {
             let binding = model?.preferences.shortcut(for: action)
             let item = playbackMenu.addItem(withTitle: action.title, action: #selector(dispatchAction(_:)), keyEquivalent: binding?.menuKey ?? "")
             item.keyEquivalentModifierMask = binding?.menuModifiers ?? []

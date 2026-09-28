@@ -1,4 +1,5 @@
 import SwiftUI
+import PlayerCore
 
 struct WindowToolButtons: View {
     @ObservedObject var model: AppModel
@@ -9,21 +10,21 @@ struct WindowToolButtons: View {
         self.model = model; viewing = model.viewing; window = model.windowPresentation; screenshots = model.screenshots
     }
     var body: some View {
-        Toggle(isOn: Binding(get: { viewing.fitVideoWindow }, set: { viewing.setFitVideoWindow($0) })) {
+        Toggle(isOn: Binding(get: { viewing.fitVideoWindow }, set: { if $0 != viewing.fitVideoWindow { model.perform(.toggleFitVideoWindow) } })) {
             symbol("aspectratio", active: viewing.fitVideoWindow)
         }.toggleStyle(.button).buttonStyle(.plain)
             .accessibilityLabel("无黑边").accessibilityValue(viewing.fitVideoWindow ? "已开启" : "已关闭")
-            .accessibilityIdentifier("fit-video-window").help(fitHelp)
-        Button { model.onToggleFullScreen?() } label: {
+            .accessibilityIdentifier("fit-video-window").help(fitHelp + shortcut(.toggleFitVideoWindow))
+        Button { model.perform(.toggleFullScreen) } label: {
             symbol(window.isFullScreen ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right", active: window.isFullScreen)
-        }.disabled(window.isTransitioning).help(window.fullScreenHelp)
+        }.disabled(!model.canPerform(.toggleFullScreen)).help(window.fullScreenHelp + shortcut(.toggleFullScreen))
             .accessibilityLabel(window.fullScreenHelp).accessibilityValue(window.isFullScreen ? "全屏" : "窗口")
             .accessibilityIdentifier("toggle-fullscreen")
-        Button { screenshots.capture(model: model) } label: {
+        Button { model.perform(.screenshot) } label: {
             if screenshots.isCapturing { ProgressView().controlSize(.small).frame(width: 28, height: 32) }
             else { symbol("camera") }
-        }.disabled(!model.playbackReady || model.videoAspect == nil || screenshots.isCapturing || window.isTransitioning)
-            .help(screenshotHelp).accessibilityLabel(screenshotHelp).accessibilityIdentifier("capture-screenshot")
+        }.disabled(!model.canPerform(.screenshot))
+            .help(screenshotHelp + shortcut(.screenshot)).accessibilityLabel(screenshotHelp).accessibilityIdentifier("capture-screenshot")
     }
     private var fitHelp: String {
         if viewing.fitVideoWindow {
@@ -43,5 +44,8 @@ struct WindowToolButtons: View {
             .foregroundStyle(active ? Palette.accent : .white.opacity(0.9))
             .frame(width: 28, height: 32)
             .background(active ? Palette.accent.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 6))
+    }
+    private func shortcut(_ action: PlayerAction) -> String {
+        model.preferences.shortcut(for: action).map { " · " + $0.label } ?? ""
     }
 }

@@ -12,14 +12,16 @@ extension AppModel {
     func updateChromePresentation() {
         chrome.hold(.presentation, active: showSettings || showSubtitleSearch || showSubtitleControls || playerPopover != nil || showAlignmentDetails || alert != nil)
     }
+    var availableSidebarTabs: [SidebarTab] { isLearningMode ? SidebarTab.allCases : [.transcript, .queue] }
     func openSidebar(_ tab: SidebarTab) {
+        guard tab != .learning || isLearningMode else { return }
         sidebarTab = tab
         if tab == .learning {
             var updated = preferences; updated.cardHidden = false; updatePreferences(updated)
         }
         setSidebarCollapsed(false)
     }
-    static let speedSteps = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+    static let speedSteps = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0]
     static var preferenceURL: URL { RuntimeSettings.supportDirectory.appendingPathComponent("interaction.json") }
     func loadInteractionState() {
         if let data = try? Data(contentsOf: Self.preferenceURL), let value = try? JSONDecoder().decode(InteractionPreferences.self, from: data) { preferences = value }
@@ -51,7 +53,7 @@ extension AppModel {
         if bindingsChanged { onShortcutsChanged?() }
         refreshDictionary(); return true
     }
-    var learningVisible: Bool { !preferences.cardHidden && (isDetached || (!preferences.sidebarCollapsed && sidebarTab == .learning)) }
+    var learningVisible: Bool { isLearningMode && !preferences.cardHidden && (isDetached || (!preferences.sidebarCollapsed && sidebarTab == .learning)) }
     func closeLearningCard() {
         learning.resumeFollowing(); lookupTask?.cancel(); lookupID = UUID(); dictionaryEntry = nil; lastDictionaryKey = ""
         var updated = preferences; updated.cardHidden = true; updatePreferences(updated)
@@ -60,6 +62,7 @@ extension AppModel {
         var updated = preferences; updated.sidebarCollapsed = value; updatePreferences(updated)
     }
     func revealLearningCard() {
+        guard isLearningMode else { return }
         var updated = preferences; updated.cardHidden = false
         if !isDetached { updated.sidebarCollapsed = false; sidebarTab = .learning }
         updatePreferences(updated)
@@ -78,8 +81,11 @@ extension AppModel {
         action.title + (preferences.shortcut(for: action).map { " · " + $0.label } ?? "")
     }
     func canPerform(_ action: PlayerAction) -> Bool {
+        if action.requiresLearning && !isLearningMode { return false }
         switch action {
-        case .toggleSidebar, .toggleSidebarVisibility, .cycleSubtitleDisplay: return true
+        case .toggleSidebar, .toggleSidebarVisibility, .cycleSubtitleDisplay, .toggleFitVideoWindow: return true
+        case .toggleFullScreen: return !windowPresentation.isTransitioning && onToggleFullScreen != nil
+        case .screenshot: return playbackReady && videoAspect != nil && !screenshots.isCapturing && !windowPresentation.isTransitioning
         case .toggleSentenceLoop: return sentenceLoop != nil || currentLoopCandidate != nil
         case .previousVideo: return queueState.adjacent(-1) != nil
         case .nextVideo: return queueState.adjacent(1) != nil
@@ -121,13 +127,19 @@ extension AppModel {
                 playQueueItem(next)
                 chrome.showFeedback(action == .previousVideo ? "上一部视频" : "下一部视频", symbol: action == .previousVideo ? "backward.fill" : "forward.fill", detail: media?.title)
             }
-        case .toggleSidebar: setSidebarCollapsed(false); sidebarTab = sidebarTab.next
+        case .toggleSidebar: setSidebarCollapsed(false); sidebarTab = availableSidebarTabs[(availableSidebarTabs.firstIndex(of: sidebarTab).map { $0 + 1 } ?? 0) % availableSidebarTabs.count]
         case .toggleSidebarVisibility: setSidebarCollapsed(!preferences.sidebarCollapsed)
+        case .toggleFullScreen: onToggleFullScreen?()
+        case .toggleFitVideoWindow:
+            viewing.setFitVideoWindow(!viewing.fitVideoWindow)
+            chrome.showFeedback(viewing.fitVideoWindow ? "无黑边已开启" : "无黑边已关闭", symbol: "aspectratio",
+                detail: viewing.fitVideoWindow ? (windowPresentation.isFullScreen ? "退出全屏后生效" : "按视频比例缩放") : "自由调整窗口比例")
+        case .screenshot: screenshots.capture(model: self)
         case .toggleSentenceLoop:
             toggleSentenceLoop()
             chrome.showFeedback(sentenceLoop == nil ? "已关闭单句循环" : "单句循环", symbol: "repeat.1", detail: sentenceLoop.map { "\(clock($0.start)) – \(clock($0.end))" })
         case .cycleSubtitleDisplay:
-            setSubtitleDisplay(preferences.subtitleDisplay.next)
+            setSubtitleDisplay(isLearningMode ? preferences.subtitleDisplay.next : (preferences.subtitleDisplay == .hidden ? .bilingual : .hidden))
             chrome.showFeedback(preferences.subtitleDisplay.title, symbol: "captions.bubble", detail: "字幕显示")
         }
     }
@@ -182,6 +194,9 @@ extension AppModel {
     }
     func moveQueueItem(_ id: String, before target: String?) { queueState.move(id, before: target); persistQueue() }
     func stopMedia() {
+        awaitingLoad = true; learningOverride = nil; subtitleSelectionRevision &+= 1
+        primarySubtitles = []; primarySubtitlePath = nil; subtitles.plain = []
+        seekPreview.setMedia(nil, ffmpeg: settings.ffmpeg)
         chrome.resetFeedback(); cancelPendingSubtitleOffsets()
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
         sessionID = UUID(); searchID = UUID(); lookupID = UUID(); player.stop()

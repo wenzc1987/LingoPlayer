@@ -19,10 +19,10 @@ final class AppModel: ObservableObject {
         if oldValue.sidebarCollapsed != preferences.sidebarCollapsed { onWindowGeometryChanged?() }
     } }
     var onWindowGeometryChanged: (() -> Void)?
-    var videoAspect: Double? { didSet {
+    @Published var videoAspect: Double? { didSet {
         if oldValue != videoAspect { onWindowGeometryChanged?() }
     } }
-    @Published var sidebarTab: SidebarTab = .learning { didSet { if sidebarTab != oldValue { refreshDictionary(); updateTranscriptVisibility() } } }
+    @Published var sidebarTab: SidebarTab = .queue { didSet { if sidebarTab != oldValue { refreshDictionary(); updateTranscriptVisibility() } } }
     @Published var recordingAction: PlayerAction?
     @Published var shortcutMessage = ""
     @Published var queueMessage = ""
@@ -52,11 +52,22 @@ final class AppModel: ObservableObject {
     @Published var settings = RuntimeSettings.load()
     @Published var media: MediaIdentity?
     var position = 0.0 { didSet { playback.updatePosition(position) } }
-    var duration: Double { get { playback.duration } set { if newValue != playback.duration { playback.duration = newValue; mediaPresentation.duration = newValue } } }
+    var duration: Double { get { playback.duration } set { if newValue != playback.duration { playback.duration = newValue; mediaPresentation.duration = newValue; updateLearningMode() } } }
     var paused: Bool { get { playback.paused } set { if newValue != playback.paused { playback.paused = newValue }; chrome.playback(paused: newValue, ready: playbackReady); if newValue { playback.updatePosition(position, immediate: true) } } }
     var speed: Double { get { playback.speed } set { if newValue != playback.speed { playback.speed = newValue } } }
     var volume: Double { get { playback.volume } set { if newValue != playback.volume { playback.volume = newValue } } }
-    @Published var english: [SubtitleCue] = [] { didSet { englishIndex = TimelineIndex(starts: english.map(\.start), ends: english.map(\.end)) } }
+    @Published var isLearningMode = false
+    @Published var learningEligible = false
+    var learningOverride: Bool?
+    var appliedLearningPolicy: LearningActivationPolicy = .automatic
+    var subtitleSelectionRevision: UInt64 = 0
+    var audioSelectionRevision: UInt64 = 0
+    var primarySubtitles: [SubtitleCue] = [] { didSet { displaySubtitles = primarySubtitles } }
+    var displaySubtitles: [SubtitleCue] = [] { didSet { primaryIndex = TimelineIndex(starts: displaySubtitles.map(\.start), ends: displaySubtitles.map(\.end)) } }
+    var primaryIndex = TimelineIndex()
+    var primarySubtitlePath: String?
+    let seekPreview = SeekPreviewController()
+    @Published var english: [SubtitleCue] = [] { didSet { englishIndex = TimelineIndex(starts: english.map(\.start), ends: english.map(\.end)); updateLearningMode() } }
     @Published var chinese: [SubtitleCue] = [] { didSet { chineseIndex = TimelineIndex(starts: chinese.map(\.start), ends: chinese.map(\.end)) } }
     var englishIndex = TimelineIndex(), chineseIndex = TimelineIndex(), wordIndex = TimelineIndex()
     var activeEnglish: [SubtitleCue] { get { subtitles.english } set { if newValue != subtitles.english { subtitles.english = newValue } } }
@@ -113,6 +124,7 @@ final class AppModel: ObservableObject {
     var stateTask: Task<Void, Never>?
     var interactionReady = false
     var lastPersistedQueue: PlaybackQueue?
+    var dictionaryConfigured = false
     var dictionary: ECDictionary?
     var timings: [TimedWord] = [] { didSet { wordIndex = TimelineIndex(starts: timings.map(\.start), ends: timings.map(\.end)) } }
     var englishPath: String?
@@ -127,7 +139,7 @@ final class AppModel: ObservableObject {
     var searchID = UUID()
     var lastDictionaryKey = ""
     var lastSavedAt = Date.distantPast
-    var awaitingLoad = false { didSet { let value = media != nil && !awaitingLoad; if playback.ready != value { playback.ready = value; mediaPresentation.ready = value }; chrome.playback(paused: paused, ready: value) } }
+    var awaitingLoad = false { didSet { let value = media != nil && !awaitingLoad; if playback.ready != value { playback.ready = value; mediaPresentation.ready = value }; chrome.playback(paused: paused, ready: value); updateLearningMode() } }
     var replayRange: ClosedRange<Double>?
     var replayArmed = false
     // Keep the practiced subtitle visible through its tail and the final pause.
@@ -146,20 +158,21 @@ final class AppModel: ObservableObject {
         player.onUpdate = { [weak self] snapshot in self?.receive(snapshot) }
         videoView.onRenderError = { [weak self] message in self?.alert = message }
         aligner.onChange = { [weak self] words, status in
-            guard let self else { return }
+            guard let self, self.isLearningMode else { return }
             if self.timings != words { self.timings = words }
             if self.alignmentStatus != status { self.alignmentStatus = status }
             self.refreshLearning()
         }
         aligner.onStatus = { [weak self] status in
-            guard let self else { return }
+            guard let self, self.isLearningMode else { return }
             if self.alignmentTaskStatus != status { self.alignmentTaskStatus = status }
             if status.phase == .environmentFailure || status.phase == .partialFailure {
                 self.chrome.showNotice("逐词准备遇到问题，可在播放设置中查看或重试。", key: status.message)
             }
         }
         loadInteractionState()
-        configureDictionary()
+        appliedLearningPolicy = viewing.learningActivation
+        viewing.onPlaybackPreferencesChanged = { [weak self] in self?.playbackPreferencesChanged() }
         if let error = player.startupError { subtitleStatus = error }
         player.set("volume", String(volume))
     }
@@ -177,7 +190,7 @@ final class AppModel: ObservableObject {
         filePanels.present { panel in
             panel.allowedContentTypes = [.movie, .video, .audio, .mpeg4Movie, UTType(filenameExtension: "mkv") ?? .movie]
             panel.allowsMultipleSelection = true
-            panel.message = "打开本地视频，开始字幕学习"
+            panel.message = "打开本地视频"
         } completion: { [weak self] urls in self?.ingest(urls, adding: adding) }
     }
     func chooseSubtitle(_ language: SubtitleLanguage? = nil) {
@@ -197,12 +210,17 @@ final class AppModel: ObservableObject {
         chrome.resetFeedback(); cancelPendingSubtitleOffsets()
         savePlayback()
         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
+        awaitingLoad = true; learningOverride = nil
+        subtitleSelectionRevision &+= 1; audioSelectionRevision &+= 1
+        primarySubtitles = []; primarySubtitlePath = nil; seekPreview.setMedia(nil, ffmpeg: settings.ffmpeg)
         sessionID = UUID(); searchID = UUID(); lookupID = UUID()
         sentenceLoop = nil; practiceMessage = ""; seekRevision = 0; transcript.reset()
         cancelReplay()
         let session = sessionID
         guard let identity = try? MediaIdentity(url: url) else { alert = "无法读取视频文件。"; return }
         media = identity
+        seekPreview.setMedia(url, ffmpeg: settings.ffmpeg)
+        seekPreview.setEnabled(viewing.seekPreviewEnabled)
         videoAspect = nil
         awaitingLoad = true; player.pause(true)
         english = []; chinese = []; activeEnglish = []; activeChinese = []
@@ -239,34 +257,32 @@ final class AppModel: ObservableObject {
         if let error = player.startupError { alert = error }
         let settings = settings
         let saved = saved
+        let selectionRevision = subtitleSelectionRevision, audioRevision = audioSelectionRevision
         openTask = Task { [weak self] in
             guard let self else { return }
             do {
                 // Restore previously chosen files before discovery; missing files fall through.
-                for (path, language) in [(saved.englishPath, SubtitleLanguage.english), (saved.chinesePath, .chinese)] {
+                for (path, language) in [(saved.primarySubtitlePath ?? saved.englishPath, Optional<SubtitleLanguage>.none), (saved.chinesePath, .some(.chinese))] {
                     if let path, FileManager.default.fileExists(atPath: path) {
-                        try? await self.attachSubtitle(URL(fileURLWithPath: path), language: language, onlyMissing: true, session: session)
+                        // A saved secondary selection takes precedence over any
+                        // translation bundled with the restored primary file.
+                        try? await self.attachSubtitle(URL(fileURLWithPath: path), language: language, onlyMissing: language != .chinese, session: session, revision: selectionRevision)
                     }
                 }
                 for sidecar in MediaInspector.sidecars(video: url) {
                     try Task.checkCancellation(); guard self.sessionID == session else { return }
                     self.subtitleOptions.append(.init(title: sidecar.lastPathComponent, url: sidecar))
-                    try? await self.attachSubtitle(sidecar, language: nil, onlyMissing: true, session: session)
+                    try? await self.attachSubtitle(sidecar, language: nil, onlyMissing: true, session: session, revision: selectionRevision)
                 }
                 let streams = try await MediaInspector.inspect(url: url, settings: settings)
                 try Task.checkCancellation(); guard self.sessionID == session else { return }
                 self.audioStreams = streams.filter { $0.kind == "audio" }
-                let preferred = self.audioStreams.first { $0.id == saved.audioStream } ?? self.audioStreams.first { ["en", "eng"].contains($0.language) } ?? self.audioStreams.first { $0.isDefault } ?? self.audioStreams.first
-                if let preferred { self.selectedAudio = preferred.id; self.player.selectAudio(streamIndex: preferred.id) }
+                let preferred = self.audioStreams.first { $0.id == saved.audioStream } ?? self.audioStreams.first { $0.isDefault } ?? self.audioStreams.first
+                if let preferred, self.audioSelectionRevision == audioRevision { self.selectedAudio = preferred.id; self.player.selectAudio(streamIndex: preferred.id) }
                 let folder = RuntimeSettings.supportDirectory.appendingPathComponent("Subtitles/\(identity.key)")
                 try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-                let languageRank: (MediaStream) -> Int = { stream in
-                    if ["en", "eng"].contains(stream.language.lowercased()) { return 0 }
-                    if ["zh", "zho", "chi", "zh-cn", "zh-tw"].contains(stream.language.lowercased()) { return 1 }
-                    return ["", "und"].contains(stream.language.lowercased()) ? 2 : 3
-                }
                 let textStreams = streams.filter(\.isTextSubtitle).sorted {
-                    (languageRank($0), $0.isDefault ? 0 : 1, $0.id) < (languageRank($1), $1.isDefault ? 0 : 1, $1.id)
+                    ($0.isDefault ? 0 : 1, $0.id) < ($1.isDefault ? 0 : 1, $1.id)
                 }
                 for stream in textStreams {
                     try Task.checkCancellation(); guard self.sessionID == session else { return }
@@ -274,9 +290,7 @@ final class AppModel: ObservableObject {
                     if !FileManager.default.fileExists(atPath: extracted.path) { try await MediaInspector.extractSubtitle(video: url, stream: stream, destination: extracted, settings: settings) }
                     guard self.sessionID == session else { return }
                     self.subtitleOptions.append(.init(title: "内嵌 · \(stream.label)", url: extracted))
-                    // Keep other language tracks selectable, but never mistake
-                    // a known French/Spanish/etc. Latin-script track for English.
-                    if languageRank(stream) < 3 { try? await self.attachSubtitle(extracted, language: nil, onlyMissing: true, session: session) }
+                    try? await self.attachSubtitle(extracted, language: nil, onlyMissing: true, session: session, revision: selectionRevision)
                 }
                 self.updateSubtitleStatus(); self.restartAlignment(); self.maybeSearchMissing()
             } catch is CancellationError {}
@@ -290,39 +304,50 @@ final class AppModel: ObservableObject {
 
     func importSubtitle(_ url: URL, language: SubtitleLanguage? = nil) {
         guard media != nil else { alert = "请先打开视频，再导入字幕。"; return }
-        let session = sessionID
+        subtitleSelectionRevision &+= 1
+        let revision = subtitleSelectionRevision, session = sessionID
         Task {
             do {
-                try await attachSubtitle(url, language: language, onlyMissing: false, session: session)
-                guard sessionID == session else { return }
+                try await attachSubtitle(url, language: language, onlyMissing: false, session: session, revision: revision)
+                guard sessionID == session, subtitleSelectionRevision == revision else { return }
                 if !subtitleOptions.contains(where: { $0.url == url }) { subtitleOptions.append(.init(title: url.lastPathComponent, url: url)) }
                 updateSubtitleStatus(); savePlayback()
-            } catch { if sessionID == session { alert = error.localizedDescription } }
+            } catch { if sessionID == session && subtitleSelectionRevision == revision { alert = error.localizedDescription } }
         }
     }
-    func attachSubtitle(_ url: URL, language: SubtitleLanguage?, onlyMissing: Bool, session: UUID) async throws {
+    func attachSubtitle(_ url: URL, language: SubtitleLanguage?, onlyMissing: Bool, session: UUID, revision: UInt64? = nil) async throws {
+        let revision = revision ?? subtitleSelectionRevision
         let result = try await Task.detached(priority: .userInitiated) {
             let data = try Data(contentsOf: url)
             return (try SubtitleParser.parse(data: data, ext: url.pathExtension), Digest.data(data))
         }.value
         try Task.checkCancellation()
-        guard sessionID == session else { return }
+        guard sessionID == session, revision == subtitleSelectionRevision else { return }
         let parsed = result.0
-        if language == .english && parsed.english.isEmpty { throw ProcessFailure(message: "这份字幕中没有英文台词。") }
-        if language == .chinese && parsed.chinese.isEmpty { throw ProcessFailure(message: "这份字幕中没有中文台词。") }
-        var replacedEnglish = false
-        if language != .chinese, !parsed.english.isEmpty, !onlyMissing || english.isEmpty {
-            english = parsed.english; englishPath = url.path; englishSource = url.lastPathComponent; englishDigest = result.1; replacedEnglish = true
+        if (language == .chinese && (parsed.english.isEmpty || !parsed.chinese.isEmpty)) || (onlyMissing && !english.isEmpty && parsed.english.isEmpty && !parsed.chinese.isEmpty) {
+            if !onlyMissing || chinese.isEmpty {
+                chinese = parsed.english.isEmpty ? parsed.cues : parsed.chinese; chinesePath = url.path; chineseSource = url.lastPathComponent
+            }
+        } else if !onlyMissing || primarySubtitles.isEmpty {
+            // The language menu is an import hint, never evidence of English.
+            cancelSentenceLoop(); cancelReplay(); aligner.cancel()
+            primarySubtitlePath = url.path; englishSource = url.lastPathComponent
+            primarySubtitles = parsed.cues
+            displaySubtitles = parsed.primaryCues
+            // Replacing only English leaves the independently selected Chinese
+            // track intact. A general bilingual import replaces both tracks.
+            if parsed.english.isEmpty || (language != .english && !parsed.chinese.isEmpty) {
+                chinese = parsed.english.isEmpty ? [] : parsed.chinese
+                chinesePath = chinese.isEmpty ? nil : url.path
+                chineseSource = chinese.isEmpty ? "未加载" : url.lastPathComponent
+            }
+            englishPath = parsed.english.isEmpty ? nil : url.path; englishDigest = result.1
+            learning.reset(); timings = []; currentWordID = nil
+            english = parsed.english
+            restartAlignment()
         }
-        if language != .english, !parsed.chinese.isEmpty, !onlyMissing || chinese.isEmpty {
-            chinese = parsed.chinese; chinesePath = url.path; chineseSource = url.lastPathComponent
-        }
-        if replacedEnglish {
-            cancelSentenceLoop(); cancelReplay()
-            endGate.purpose = .normal; learning.reset(); restartAlignment()
-        }
-        refreshTranscript(reset: replacedEnglish)
-        refreshLearning(); savePlayback()
+        updateLearningMode(); refreshTranscript(reset: !onlyMissing)
+        refreshLearning(); updateSubtitleStatus(); savePlayback()
     }
     func setOffset(_ value: Double, language: SubtitleLanguage) {
         guard value.isFinite else { return }
@@ -395,11 +420,13 @@ final class AppModel: ObservableObject {
     func selectAudio(_ stream: Int) {
         guard audioStreams.contains(where: { $0.id == stream }) else { return }
         cancelSentenceLoop()
+        audioSelectionRevision &+= 1
         selectedAudio = stream; player.selectAudio(streamIndex: stream)
         learning.reset(); cancelReplay(); endGate.purpose = .normal; restartAlignment(); refreshLearning(); savePlayback()
     }
-    func retryAlignment() { aligner.retry(settings: settings) }
+    func retryAlignment() { guard isLearningMode else { return }; aligner.retry(settings: settings) }
     func viewAlignmentDetails() {
+        guard isLearningMode else { return }
         alignmentDetails = "正在读取诊断记录…"; showAlignmentDetails = true
         let url = alignmentTaskStatus.diagnostic
         Task {
@@ -408,6 +435,7 @@ final class AppModel: ObservableObject {
         }
     }
     func restartAlignment() {
+        guard isLearningMode else { return }
         timings = []; currentWordID = nil
         guard selectedAudio >= 0 else { alignmentStatus = "等待可用音轨 · 字幕可点词查阅"; return }
         aligner.configure(media: media, cues: english, sourceDigest: englishDigest, audioStream: selectedAudio, offset: englishOffset, position: position, settings: settings, store: store)
@@ -467,7 +495,7 @@ final class AppModel: ObservableObject {
             savePlayback()
             if preferences.autoplay, let next = queueState.adjacent(1) { playQueueItem(next); return }
         }
-        refreshLearning(); aligner.updatePosition(position)
+        refreshLearning(); if isLearningMode { aligner.updatePosition(position) }
         if Date().timeIntervalSince(lastSavedAt) > 5 { savePlayback() }
     }
     func requestSeek(_ time: Double) {
@@ -496,7 +524,7 @@ final class AppModel: ObservableObject {
             endGate.wantsPlayback = false; player.pause(true); paused = true
         }
         requestSeek(target)
-        aligner.updatePosition(target, seek: true); refreshLearning()
+        if isLearningMode { aligner.updatePosition(target, seek: true) }; refreshLearning()
     }
     func setSpeed(_ value: Double) {
         guard value.isFinite, value > 0 else { return }
@@ -513,12 +541,13 @@ final class AppModel: ObservableObject {
         if playbackReady { chrome.showFeedback("\(current)%", symbol: "speaker.wave.3.fill", detail: detail, volume: volume) }
     }
     func lock(cue: SubtitleCue, token: WordToken) {
-        guard token.isWord else { return }
+        guard isLearningMode, token.isWord else { return }
         revealLearningCard()
         cancelReplay()
         learning.lock(selection(cue: cue, token: token)); endGate.wantsPlayback = false; player.pause(true); paused = true; refreshLearning()
     }
     func resumeLearning() {
+        guard isLearningMode else { return }
         cancelSentenceLoop()
         cancelReplay(); learning.resumeFollowing()
         endGate.purpose = .normal; endGate.wantsPlayback = true; restoring = false
@@ -526,7 +555,7 @@ final class AppModel: ObservableObject {
         paused = false; player.pause(false); refreshLearning()
     }
     func replaySentence() {
-        guard let selected, let range = loopRange(for: selected.cue) else { return }
+        guard isLearningMode, let selected, let range = loopRange(for: selected.cue) else { return }
         cancelSentenceLoop()
         learning.lock(selected)
         let start = range.start
@@ -544,12 +573,15 @@ final class AppModel: ObservableObject {
     }
     func refreshLearning() {
         transcript.updatePosition(position)
-        let practicedCue = self.practicedCue
+        let plain = primaryIndex.active(at: position - englishOffset).map { displaySubtitles[$0] }
+        if subtitles.plain != plain { subtitles.plain = plain }
+        let practicedCue = isLearningMode ? self.practicedCue : nil
         let en = practicedCue.map { [$0] } ?? englishIndex.active(at: position - englishOffset).map { english[$0] }
         let translationTime = practicedCue.map { ($0.start + $0.end) / 2 + englishOffset } ?? position
         let zh = chineseIndex.active(at: translationTime - chineseOffset).map { chinese[$0] }
         if activeEnglish != en { activeEnglish = en }
         if activeChinese != zh { activeChinese = zh }
+        guard isLearningMode else { return }
         if let word = wordIndex.active(at: position).map({ timings[$0] }).first(where: { word in en.contains { $0.id == word.cueID } }), let cue = en.first(where: { $0.id == word.cueID }), let token = cue.tokens.first(where: { $0.id == word.tokenIndex }) {
             currentWordID = "\(word.cueID):\(word.tokenIndex)"
             let next = selection(cue: cue, token: token)
@@ -561,15 +593,18 @@ final class AppModel: ObservableObject {
         refreshDictionary()
     }
     func configureDictionary() {
+        guard isLearningMode else { return }
+        dictionaryConfigured = true
         do { dictionary = try ECDictionary(path: settings.dictionary); dictionaryStatus = "词典释义 · ECDICT" }
         catch { dictionary = nil; dictionaryStatus = error.localizedDescription }
         lastDictionaryKey = ""; refreshDictionary()
     }
     func refreshDictionary() {
-        guard learningVisible else {
+        guard isLearningMode, learningVisible else {
             if !lastDictionaryKey.isEmpty { lookupTask?.cancel(); lookupID = UUID(); lastDictionaryKey = ""; dictionaryEntry = nil }
             return
         }
+        if selected != nil && !dictionaryConfigured { configureDictionary(); return }
         if learningPresentation.state != learningState { learningPresentation.state = learningState }
         let key = selected.map { $0.cue.id + ":" + String($0.token.id) + ":" + $0.token.normalized } ?? ""
         guard key != lastDictionaryKey else { return }
@@ -589,7 +624,10 @@ final class AppModel: ObservableObject {
     func saveSettings(_ updated: RuntimeSettings, apiKey: String) throws {
         let previousLibrary = settings.libmpv
         try updated.save(); try SecretStore.write(apiKey, name: "api-key")
-        settings = updated; configureDictionary(); restartAlignment()
+        settings = updated
+        lookupTask?.cancel(); lookupID = UUID(); dictionaryEntry = nil
+        dictionary = nil; dictionaryConfigured = false; lastDictionaryKey = ""
+        refreshDictionary(); restartAlignment()
         if previousLibrary != updated.libmpv { alert = "播放库路径已保存。请重新启动 LingoPlayer 以加载新的播放内核。" }
     }
     func login(apiKey: String, username: String, password: String) async throws {
@@ -598,6 +636,7 @@ final class AppModel: ObservableObject {
     }
     func subtitleClient() -> OpenSubtitlesClient { OpenSubtitlesClient(apiKey: SecretStore.read("api-key"), token: SecretStore.read("token")) }
     func updateSubtitleStatus() {
+        guard isLearningMode else { subtitleStatus = primarySubtitles.isEmpty && chinese.isEmpty ? "未加载字幕" : "普通播放 · 字幕 \(primarySubtitles.count + chinese.count) 句"; return }
         let en = english.isEmpty ? "缺少英文字幕" : "英文 \(english.count) 句"
         let zh = chinese.isEmpty ? "缺少中文字幕" : "中文 \(chinese.count) 句"
         subtitleStatus = "\(en) · \(zh)"
@@ -610,7 +649,7 @@ final class AppModel: ObservableObject {
     func searchSubtitles(_ language: SubtitleLanguage, automatic: Bool = false) {
         guard let url = mediaURL else { return }
         searchTask?.cancel(); searchID = UUID()
-        let searchID = searchID, session = sessionID
+        let searchID = searchID, session = sessionID, revision = subtitleSelectionRevision
         searchLanguage = language; isSearching = true; searchResults = []
         searchMessage = "正在搜索\(language.title)字幕…"
         if !automatic { showSubtitleSearch = true }
@@ -625,10 +664,12 @@ final class AppModel: ObservableObject {
                 if results.isEmpty, hash != nil { results = try await client.search(query: query, hash: nil, language: language) }
                 try Task.checkCancellation()
                 guard let self, self.searchID == searchID, self.sessionID == session else { return }
+                if automatic && revision != self.subtitleSelectionRevision { self.isSearching = false; return }
                 self.searchResults = results; self.isSearching = false
                 self.searchMessage = results.isEmpty ? "没有找到合适字幕。可修改片名、年份或季集信息，或手动导入。" : "找到 \(results.count) 个候选。优先选择文件匹配的版本；片名匹配仍需确认时间。"
                 let exact = results.filter(\.hashMatched)
-                if automatic, exact.count == 1, let candidate = exact.first { self.downloadSubtitle(candidate, language: language, automatic: true) }
+                let canAutoAttach = language == .english ? self.primarySubtitles.isEmpty : (self.chinese.isEmpty && !self.english.isEmpty)
+                if automatic, canAutoAttach, exact.count == 1, let candidate = exact.first { self.downloadSubtitle(candidate, language: language, automatic: true, revision: revision) }
                 else { self.showSubtitleSearch = true }
             } catch is CancellationError {}
             catch {
@@ -638,9 +679,12 @@ final class AppModel: ObservableObject {
             }
         }
     }
-    func downloadSubtitle(_ candidate: SubtitleCandidate, language: SubtitleLanguage? = nil, automatic: Bool = false) {
+    func downloadSubtitle(_ candidate: SubtitleCandidate, language: SubtitleLanguage? = nil, automatic: Bool = false, revision: UInt64? = nil) {
+        guard revision == nil || revision == subtitleSelectionRevision else { return }
         guard !isDownloading, let media else { return }
         let language = language ?? searchLanguage
+        if !automatic { subtitleSelectionRevision &+= 1 }
+        let revision = revision ?? subtitleSelectionRevision
         let session = sessionID
         isDownloading = true; searchMessage = "正在下载并检查字幕…"
         Task { [weak self] in
@@ -648,18 +692,21 @@ final class AppModel: ObservableObject {
             do {
                 let data = try await self.subtitleClient().download(fileID: candidate.id)
                 guard self.sessionID == session else { return }
+                guard self.subtitleSelectionRevision == revision else { self.isDownloading = false; return }
                 let folder = RuntimeSettings.supportDirectory.appendingPathComponent("Subtitles/\(media.key)")
                 try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
                 let url = folder.appendingPathComponent("opensubtitles-\(candidate.id)-\(language.rawValue).srt")
                 // Validate before persisting a remote body as a subtitle.
                 _ = try SubtitleParser.parse(data: data, ext: "srt")
                 try data.write(to: url, options: .atomic)
-                try await self.attachSubtitle(url, language: language, onlyMissing: automatic, session: session)
+                try await self.attachSubtitle(url, language: language, onlyMissing: automatic, session: session, revision: revision)
                 guard self.sessionID == session else { return }
+                guard self.subtitleSelectionRevision == revision else { self.isDownloading = false; return }
                 self.isDownloading = false; self.showSubtitleSearch = false
                 self.updateSubtitleStatus(); self.savePlayback(); self.maybeSearchMissing()
             } catch {
                 guard self.sessionID == session else { return }
+                guard self.subtitleSelectionRevision == revision else { self.isDownloading = false; return }
                 self.isDownloading = false; self.searchMessage = error.localizedDescription; self.showSubtitleSearch = true
             }
         }
@@ -667,7 +714,8 @@ final class AppModel: ObservableObject {
     func savePlayback() {
         guard let media, !awaitingLoad else { return }
         var saved = SavedPlayback()
-        saved.position = position; saved.englishPath = englishPath ?? self.saved.englishPath; saved.chinesePath = chinesePath ?? self.saved.chinesePath
+        saved.position = position; saved.primarySubtitlePath = primarySubtitlePath
+        saved.englishPath = englishPath; saved.chinesePath = chinesePath
         saved.englishOffset = englishOffset; saved.chineseOffset = chineseOffset
         saved.sentenceTailPadding = sentenceTailPadding
         saved.audioStream = selectedAudio >= 0 ? selectedAudio : nil
@@ -679,6 +727,7 @@ final class AppModel: ObservableObject {
         lastSavedAt = Date()
     }
     func prepareShutdown() async {
+        seekPreview.endDrag(); await seekPreview.waitForIdle()
         await screenshots.finishPendingCapture()
         player.onUpdate = nil; player.pause(true)
         // Preserve the last values the user selected without starting new
@@ -691,6 +740,7 @@ final class AppModel: ObservableObject {
         await aligner.waitForCancellation(); await store?.flush()
     }
     func shutdown() {
+        seekPreview.endDrag()
         cancelPendingSubtitleOffsets(); chrome.resetFeedback()
          openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel(); transcript.reset()
         videoView.shutdown(); player.shutdown()

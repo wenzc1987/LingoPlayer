@@ -7,6 +7,9 @@ import PlayerCore
     @Published private(set) var linkedSubtitleOffsets: Bool
     @Published private(set) var fitVideoWindow: Bool
     @Published private(set) var screenshot: ScreenshotPreferences
+    @Published private(set) var seekPreviewEnabled: Bool
+    @Published private(set) var learningActivation: LearningActivationPolicy
+    var onPlaybackPreferencesChanged: (() -> Void)?
     var onWindowModeChanged: (() -> Void)?
     private var values: ViewingPreferences
     private let storage: StorageWorker
@@ -20,6 +23,7 @@ import PlayerCore
         let loaded = (try? Data(contentsOf: Self.url)).flatMap { try? JSONDecoder().decode(ViewingPreferences.self, from: $0) } ?? ViewingPreferences()
         values = loaded; subtitles = loaded.subtitles; linkedSubtitleOffsets = loaded.linkedSubtitleOffsets; fitVideoWindow = loaded.fitVideoWindow
         screenshot = loaded.screenshot
+        seekPreviewEnabled = loaded.seekPreviewEnabled; learningActivation = loaded.learningActivation
     }
     private func update(_ change: (inout ViewingPreferences) -> Void) {
         var next = values; change(&next); next.normalize()
@@ -31,8 +35,12 @@ import PlayerCore
         let windowModeChanged = fitVideoWindow != next.fitVideoWindow
         if windowModeChanged { fitVideoWindow = next.fitVideoWindow }
         if screenshot != next.screenshot { screenshot = next.screenshot }
+        let playbackChanged = seekPreviewEnabled != next.seekPreviewEnabled || learningActivation != next.learningActivation
+        if seekPreviewEnabled != next.seekPreviewEnabled { seekPreviewEnabled = next.seekPreviewEnabled }
+        if learningActivation != next.learningActivation { learningActivation = next.learningActivation }
         storage.write(next, to: Self.url)
         if windowModeChanged { onWindowModeChanged?() }
+        if playbackChanged { onPlaybackPreferencesChanged?() }
     }
     func setVolume(_ value: Double) { update { $0.volume = value } }
     func setSpeed(_ value: Double) { update { $0.speed = value } }
@@ -41,4 +49,6 @@ import PlayerCore
     func setLinkedOffsets(_ value: Bool) { update { $0.linkedSubtitleOffsets = value } }
     func setFitVideoWindow(_ value: Bool) { update { $0.fitVideoWindow = value } }
     func setScreenshot(_ value: ScreenshotPreferences) { update { $0.screenshot = value } }
+    func setSeekPreviewEnabled(_ value: Bool) { update { $0.seekPreviewEnabled = value } }
+    func setLearningActivation(_ value: LearningActivationPolicy) { update { $0.learningActivation = value } }
 }

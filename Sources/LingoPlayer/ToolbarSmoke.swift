@@ -3,7 +3,7 @@ import PlayerCore
 
 /// Uses an isolated pasteboard and data directory; never changes the user's clipboard.
 @MainActor enum ToolbarSmoke {
-    static func run(model: AppModel, window: NSWindow, video: URL, output: URL, restore: Bool) async {
+    static func run(model: AppModel, window: NSWindow, keyboard: KeyboardRouter, video: URL, output: URL, restore: Bool) async {
         var checks: [[String: Any]] = []
         func record(_ name: String, _ passed: Bool, _ detail: String = "") {
             checks.append(["name": name, "passed": passed, "detail": detail]); print(name, passed, detail); fflush(stdout)
@@ -32,6 +32,33 @@ import PlayerCore
             }; await delay()
         }
         func value(_ id: String, _ key: String = "accessibilityValue") -> Any? { node(id)?.value(forKey: key) }
+        func keyEvent(_ key: Shortcut, repeatKey: Bool = false) -> NSEvent {
+            NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: key.menuModifiers,
+                timestamp: ProcessInfo.processInfo.systemUptime, windowNumber: (NSApp.keyWindow ?? window).windowNumber,
+                context: nil, characters: key.menuKey, charactersIgnoringModifiers: key.menuKey, isARepeat: repeatKey, keyCode: key.keyCode)!
+        }
+        func key(_ shortcut: Shortcut, repeatKey: Bool = false) async {
+            NSApp.postEvent(keyEvent(shortcut, repeatKey: repeatKey), atStart: false); await delay(0.2)
+        }
+        let learningToolIDs = ["action-previousSentence", "action-nextSentence", "action-toggleSentenceLoop"]
+        let allToolIDs = ["open-video", "action-previousSentence", "action-backward", "action-playPause", "action-forward", "action-nextSentence", "action-toggleSentenceLoop", "subtitle-menu", "speed-control", "volume-control", "open-queue", "toggle-sidebar", "fit-video-window", "toggle-fullscreen", "capture-screenshot", "quick-settings"]
+        var toolIDs: [String] { allToolIDs.filter { model.isLearningMode || !learningToolIDs.contains($0) } }
+        func singleRow() -> Bool {
+            let frames = toolIDs.compactMap { (value($0, "accessibilityFrame") as? NSValue)?.rectValue }
+            let stage = window.convertToScreen(model.videoView.convert(model.videoView.bounds, to: nil))
+            // AppKit reports glyph bounds for some buttons and hit bounds for
+            // others. A shared vertical band detects wrapping without assuming
+            // every accessibility frame has the same optical center.
+            let valid = (model.isLearningMode || learningToolIDs.allSatisfy { node($0) == nil }) &&
+                frames.count == toolIDs.count && frames.allSatisfy({ !$0.isEmpty && stage.contains($0) }) &&
+                (frames.map(\.minY).max() ?? 0) < (frames.map(\.maxY).min() ?? 0)
+            if !valid { print("toolbar-layout", stage, Array(zip(toolIDs, frames))); fflush(stdout) }
+            return valid
+        }
+        func resize(_ size: NSSize) async {
+            var frame = window.frame; frame.size = window.delegate?.windowWillResize?(window, to: size) ?? size
+            window.setFrame(frame, display: true); await delay(0.35)
+        }
         func capture() async { model.screenshots.capture(model: model); await model.screenshots.finishPendingCapture(); await delay(0.05) }
         func image() -> NSBitmapImageRep? { model.screenshots.pasteboard.data(forType: .png).flatMap(NSBitmapImageRep.init(data:)) }
         func saveImage(_ name: String) {
@@ -53,6 +80,8 @@ import PlayerCore
         let directory = output.appendingPathComponent("saved")
         if restore {
             record("destinations-and-directory-restored", model.viewing.screenshot.clipboard && model.viewing.screenshot.file && model.viewing.screenshot.directory == directory.path)
+            record("custom-screenshot-shortcut-restored", model.preferences.shortcut(for: .screenshot) == Shortcut(22, "6", [.command, .option]))
+            record("small-free-window-restored", !model.viewing.fitVideoWindow && window.contentView?.bounds.size == NSSize(width: 680, height: 360), "\(window.frame)")
         } else {
             await delay()
             record("default-clipboard-only", model.viewing.screenshot.clipboard && !model.viewing.screenshot.file)
@@ -67,13 +96,22 @@ import PlayerCore
         model.setSidebarCollapsed(true); model.seek(1)
         _ = await wait { model.seekTarget == nil }; await delay(0.6)
         if loaded && !restore {
-            let toolIDs = ["fit-video-window", "toggle-fullscreen", "capture-screenshot", "quick-settings", "action-playPause", "toggle-sidebar", "volume-control"]
             record("tools-have-hover-help", toolIDs.allSatisfy { !(value($0, "accessibilityHelp") as? String ?? "").isEmpty })
             record("fit-icon-enables-mode", await press("fit-video-window") && model.viewing.fitVideoWindow)
+            record("fit-button-shows-feedback", model.chrome.feedback?.title == "无黑边已开启")
+            window.makeKeyAndOrderFront(nil); window.makeFirstResponder(window.contentView)
+            let metrics = OperationMetrics.shared; metrics.enabled = true
+            let firstRevision = metrics.revision
+            await key(PlayerAction.toggleFitVideoWindow.defaultShortcut)
+            record("fit-shortcut-dispatches-once-and-shows-feedback", metrics.revision == firstRevision + 1 && !model.viewing.fitVideoWindow && model.chrome.feedback?.title == "无黑边已关闭")
+            await key(PlayerAction.toggleFitVideoWindow.defaultShortcut, repeatKey: true)
+            record("held-fit-shortcut-does-not-repeat", !model.viewing.fitVideoWindow && metrics.revision == firstRevision + 1)
+            await key(PlayerAction.toggleFitVideoWindow.defaultShortcut)
             let normalHelp = value("toggle-fullscreen", "accessibilityHelp") as? String
             _ = await press("toggle-fullscreen")
             let entered = await wait { model.windowPresentation.isFullScreen && !model.windowPresentation.isTransitioning }; await delay(0.6)
             record("fullscreen-button-syncs-window", entered && window.styleMask.contains(.fullScreen) && value("toggle-fullscreen", "accessibilityHelp") as? String != normalHelp)
+            record("fullscreen-entry-shows-feedback", model.chrome.feedback?.title == "已进入全屏")
             model.togglePlayback(); await delay(0.3)
             await capture()
             record("fullscreen-capture-keeps-playing", image() != nil && model.endGate.wantsPlayback && !model.paused)
@@ -81,7 +119,18 @@ import PlayerCore
             window.toggleFullScreen(nil)
             let exited = await wait { !model.windowPresentation.isFullScreen && !model.windowPresentation.isTransitioning }; await delay(0.6)
             record("native-fullscreen-exit-syncs-toolbar", exited && !window.styleMask.contains(.fullScreen))
+            record("native-fullscreen-exit-shows-feedback", model.chrome.feedback?.title == "已恢复窗口")
+            window.makeKeyAndOrderFront(nil); window.makeFirstResponder(window.contentView)
+            await key(PlayerAction.toggleFullScreen.defaultShortcut)
+            let keyedEntry = await wait { model.windowPresentation.isFullScreen && !model.windowPresentation.isTransitioning }
+            record("fullscreen-shortcut-enters-with-feedback", keyedEntry && model.chrome.feedback?.title == "已进入全屏")
+            await key(PlayerAction.toggleFullScreen.defaultShortcut, repeatKey: true); await delay(0.3)
+            record("held-fullscreen-shortcut-does-not-repeat", model.windowPresentation.isFullScreen && !model.windowPresentation.isTransitioning)
+            await key(PlayerAction.toggleFullScreen.defaultShortcut)
+            let keyedExit = await wait { !model.windowPresentation.isFullScreen && !model.windowPresentation.isTransitioning }; await delay(0.5)
+            record("fullscreen-shortcut-restores-with-feedback", keyedExit && model.chrome.feedback?.title == "已恢复窗口")
             model.chrome.resetNotice()
+            model.chrome.resetFeedback()
             let original = window.frame
             var small = original
             small.size = window.delegate?.windowWillResize?(window, to: NSSize(width: 540, height: 300)) ?? small.size
@@ -90,12 +139,29 @@ import PlayerCore
             let transport = (value("action-playPause", "accessibilityFrame") as? NSValue)?.rectValue ?? .zero
             let camera = (value("capture-screenshot", "accessibilityFrame") as? NSValue)?.rectValue ?? .zero
             record("compact-wide-window-keeps-tools-and-title-visible", !title.isEmpty && window.frame.contains(transport) && window.frame.contains(camera) && transport.maxY < title.minY)
+            record("minimum-fit-window-keeps-single-row", singleRow())
             _ = WindowSnapshot.save(window, to: output.appendingPathComponent("compact-toolbar.png"))
+            let fittedMinimum = window.frame.size
+            model.perform(.toggleFitVideoWindow); await delay()
+            record("turning-fit-off-does-not-enlarge-window", window.frame.size == fittedMinimum)
+            await resize(NSSize(width: 100, height: 100))
+            record("free-window-reaches-common-minimum", model.videoView.bounds.size == NSSize(width: 680, height: 360) && singleRow(), "\(model.videoView.bounds)")
+            _ = WindowSnapshot.save(window, to: output.appendingPathComponent("minimum-free-toolbar.png"))
+            model.setSidebarCollapsed(false); await delay()
+            await resize(NSSize(width: 100, height: 100))
+            record("sidebar-preserves-single-row-stage", model.videoView.bounds.width == 680 && singleRow())
+            model.setSidebarCollapsed(true); model.perform(.toggleFitVideoWindow); await delay()
             window.setFrame(original, display: true); await delay(0.6)
             var preferences = ScreenshotPreferences()
             let forbidden = output.appendingPathComponent("clipboard-must-not-create")
             preferences.directory = forbidden.path; model.viewing.setScreenshot(preferences)
-            _ = await press("capture-screenshot"); await model.screenshots.finishPendingCapture()
+            window.makeKeyAndOrderFront(nil); window.makeFirstResponder(window.contentView)
+            let screenshotRevision = metrics.revision
+            await key(PlayerAction.screenshot.defaultShortcut); await model.screenshots.finishPendingCapture()
+            record("screenshot-shortcut-dispatches-once", metrics.revision == screenshotRevision + 1 && metrics.action == .screenshot)
+            let clipboardVersion = model.screenshots.pasteboard.changeCount
+            await key(PlayerAction.screenshot.defaultShortcut, repeatKey: true)
+            record("held-screenshot-shortcut-does-not-repeat", model.screenshots.pasteboard.changeCount == clipboardVersion)
             let bilingual = image(); saveImage("bilingual-capture")
             record("clipboard-image-has-video-size", bilingual?.pixelsWide == Int(model.videoView.bounds.width * window.backingScaleFactor) && bilingual?.pixelsHigh == Int(model.videoView.bounds.height * window.backingScaleFactor))
             record("clipboard-only-never-creates-folder", !FileManager.default.fileExists(atPath: forbidden.path) && model.screenshots.lastFile == nil)
@@ -130,6 +196,25 @@ import PlayerCore
             preferences.clipboard = false; model.viewing.setScreenshot(preferences); await capture()
             record("file-failure-never-reports-success", !model.screenshots.lastMessage.contains("成功") && model.screenshots.lastMessage.contains("文件保存失败"))
             model.viewing.setScreenshot(ScreenshotPreferences())
+            let editor = NSTextView(frame: NSRect(x: 10, y: 10, width: 200, height: 40))
+            window.contentView?.addSubview(editor); window.makeFirstResponder(editor)
+            record("text-input-keeps-new-shortcuts", [PlayerAction.toggleFullScreen, .toggleFitVideoWindow, .screenshot].allSatisfy { keyboard.handle(keyEvent($0.defaultShortcut)) != nil })
+            editor.removeFromSuperview(); window.makeFirstResponder(window.contentView)
+            model.settingsPage = 1; model.showSettings = true; await delay(0.6)
+            record("new-actions-appear-in-shortcut-settings", [PlayerAction.toggleFullScreen, .toggleFitVideoWindow, .screenshot].allSatisfy { node("shortcut-binding-" + $0.rawValue) != nil })
+            record("settings-block-new-actions", [PlayerAction.toggleFullScreen, .toggleFitVideoWindow, .screenshot].allSatisfy { keyboard.handle(keyEvent($0.defaultShortcut)) != nil })
+            _ = await press("shortcut-binding-screenshot")
+            let customScreenshot = Shortcut(22, "6", [.command, .option])
+            await key(customScreenshot)
+            record("native-shortcut-recording-updates-screenshot", model.preferences.shortcut(for: .screenshot) == customScreenshot && model.recordingAction == nil)
+            model.showSettings = false; await delay(0.4)
+            window.makeKeyAndOrderFront(nil); window.makeFirstResponder(window.contentView)
+            let beforeCustom = metrics.revision
+            await key(PlayerAction.screenshot.defaultShortcut)
+            record("rebound-shortcut-disables-old-chord", metrics.revision == beforeCustom)
+            await key(customScreenshot); await model.screenshots.finishPendingCapture()
+            record("custom-screenshot-chord-and-help-update", metrics.revision == beforeCustom + 1 && model.screenshots.lastMessage == "截图保存成功至剪贴板" && (value("capture-screenshot", "accessibilityHelp") as? String)?.contains(customScreenshot.label) == true)
+            metrics.enabled = false
             model.settingsPage = 2; model.showSettings = true; await delay(0.7)
             record("advanced-screenshot-page-shown", node("screenshot-save-clipboard") != nil && node("screenshot-directory") != nil)
             if let settings = NSApp.windows.first(where: { $0 !== window && $0.isVisible && find($0, "screenshot-directory") != nil }) {
@@ -157,7 +242,7 @@ import PlayerCore
                 record("video-chooser-resets-folder-mode", panel.canChooseFiles && !panel.canChooseDirectories && !panel.canCreateDirectories); panel.cancel(nil)
             } else { record("video-chooser-resets-folder-mode", false) }
             _ = await wait { !model.filePanels.isPresenting }; await delay()
-            // A portrait fixture makes the fit-mode window narrow enough for all three toolbar rows.
+            // A short screen cannot fit a portrait video's ratio and toolbar width simultaneously.
             model.open(video.deletingLastPathComponent().appendingPathComponent("Portrait.mp4"))
             _ = await wait { model.playbackReady && (model.videoAspect ?? 1) < 1 }
             await model.openTask?.value; model.aligner.cancel(); await model.aligner.waitForCancellation()
@@ -167,9 +252,13 @@ import PlayerCore
             record("narrow-window-keeps-all-tools-visible", toolIDs.allSatisfy { id in
                 guard let rect = value(id, "accessibilityFrame") as? NSValue else { return false }; return window.frame.contains(rect.rectValue)
             })
+            record("portrait-toolbar-never-wraps", singleRow())
             _ = WindowSnapshot.save(window, to: output.appendingPathComponent("portrait-toolbar.png"))
             model.stopMedia(); await delay()
             record("camera-disabled-after-stop", value("capture-screenshot", "accessibilityEnabled") as? Bool == false)
+            model.viewing.setFitVideoWindow(false); await delay()
+            await resize(NSSize(width: 680, height: 360))
+            record("empty-player-keeps-single-row", singleRow())
         }
         await model.store?.flush()
         let result: [String: Any] = ["passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "checks": checks]

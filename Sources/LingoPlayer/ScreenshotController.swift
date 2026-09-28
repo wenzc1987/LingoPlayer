@@ -35,7 +35,7 @@ enum ScreenshotFailure: LocalizedError {
     func capture(model: AppModel) {
         guard !isCapturing, model.playbackReady, model.videoAspect != nil else { return }
         isCapturing = true; lastFile = nil; lastMessage = ""
-        let session = model.sessionID, size = model.videoView.bounds.size
+        let session = model.sessionID, size = model.videoView.bounds.size, aspect = model.videoAspect
         let subtitles = SubtitleFrame(model: model), preferences = model.viewing.screenshot
         let filename = ScreenshotPreferences.filename(title: model.media?.title ?? "LingoPlayer", position: model.position)
         task = Task {
@@ -46,9 +46,9 @@ enum ScreenshotFailure: LocalizedError {
                     try await Task.sleep(nanoseconds: 20_000_000)
                     bitmap = await model.videoView.captureFrame()
                 }
-                guard session == model.sessionID, size == model.videoView.bounds.size else { throw ScreenshotFailure.frameChanged }
+                guard session == model.sessionID, size == model.videoView.bounds.size, aspect == model.videoAspect else { throw ScreenshotFailure.frameChanged }
                 guard let video = bitmap?.cgImage, size.width > 0, size.height > 0 else { throw ScreenshotFailure.unavailable }
-                let image = try Self.compose(video: video, size: size, subtitles: subtitles)
+                let image = try Self.compose(video: video, size: size, aspect: aspect, subtitles: subtitles)
                 // PNG/TIFF encoding and filesystem work stay off the UI thread.
                 let destination = preferences.file ? Result { try Self.directory(for: preferences) } : nil
                 let saved = await Task.detached(priority: .userInitiated) {
@@ -75,21 +75,22 @@ enum ScreenshotFailure: LocalizedError {
         lastMessage = message
         model.chrome.showNotice(message, key: "screenshot-" + UUID().uuidString)
     }
-    static func compose(video: CGImage, size: CGSize, subtitles: SubtitleFrame) throws -> CGImage {
+    static func compose(video: CGImage, size: CGSize, aspect: Double?, subtitles: SubtitleFrame) throws -> CGImage {
         let scale = CGFloat(video.width) / size.width
         guard let context = CGContext(data: nil, width: video.width, height: video.height, bitsPerComponent: 8, bytesPerRow: video.width * 4,
                                       space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { throw ScreenshotFailure.encoding }
         let bounds = CGRect(x: 0, y: 0, width: video.width, height: video.height)
         context.setFillColor(NSColor.black.cgColor); context.fill(bounds); context.draw(video, in: bounds)
         if subtitles.display != .hidden && subtitles.hasContent {
+            let geometry = VideoContentGeometry(size: size, aspect: aspect)
             let content = SubtitleCaptionContent(frame: subtitles)
-                .frame(maxWidth: size.width * 0.92).fixedSize(horizontal: false, vertical: true)
+                .frame(width: geometry.subtitleWidth).fixedSize(horizontal: false, vertical: true)
                 .environment(\.colorScheme, .dark)
             let renderer = ImageRenderer(content: content)
-            renderer.scale = scale; renderer.proposedSize = ProposedViewSize(width: size.width * 0.92, height: nil)
+            renderer.scale = scale; renderer.proposedSize = ProposedViewSize(width: geometry.subtitleWidth, height: nil)
             guard let overlay = renderer.cgImage else { throw ScreenshotFailure.encoding }
             let height = CGFloat(overlay.height) / scale
-            let bottom = min(subtitles.appearance.bottomInset, max(8, size.height - height - 250))
+            let bottom = geometry.subtitleBottomInset(subtitles.appearance.bottomInset, captionHeight: height)
             context.draw(overlay, in: CGRect(x: (CGFloat(video.width) - CGFloat(overlay.width)) / 2, y: bottom * scale,
                                              width: CGFloat(overlay.width), height: CGFloat(overlay.height)))
         }

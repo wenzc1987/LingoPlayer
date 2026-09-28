@@ -1,0 +1,705 @@
+{
+  "version": "0.3.1",
+  "build": "16",
+  "sha256": "cb86752e58dfed65c438818d0cad074376af6e2fe55075718f6ea5c993e17625",
+  "unit_tests": {
+    "swift": 87,
+    "python": 10,
+    "passed": true
+  },
+  "native_check_count": 132,
+  "native_reports": {
+    "window": {
+      "checks": [
+        {
+          "detail": "aspect=Optional(1.7777777777777777)",
+          "name": "loaded-Wide.mp4",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native-toggle-enables-mode",
+          "passed": true
+        },
+        {
+          "detail": "(0.0, 0.0, 1260.0, 709.0)",
+          "name": "wide-video-fits-window",
+          "passed": true
+        },
+        {
+          "detail": "(0.0, 0.0, 927.0, 522.0)",
+          "name": "sidebar-false-keeps-video-aspect",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "horizontal-resize-false",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "vertical-resize-false",
+          "passed": true
+        },
+        {
+          "detail": "(0.0, 0.0, 1037.0, 584.0)",
+          "name": "sidebar-true-keeps-video-aspect",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "horizontal-resize-true",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "vertical-resize-true",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "wide-screenshot",
+          "passed": true
+        },
+        {
+          "detail": "aspect=Optional(0.5625000000000002)",
+          "name": "loaded-Portrait.mp4",
+          "passed": true
+        },
+        {
+          "detail": "(0.0, 0.0, 680.0, 875.0)",
+          "name": "portrait-keeps-toolbar-minimum-on-short-screen",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "portrait-resize-keeps-toolbar-minimum",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "compact-controls-remain-visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "portrait-screenshot",
+          "passed": true
+        },
+        {
+          "detail": "image=(93.90624999999991, 0.0, 492.18750000000017, 875.0), wordInset=16.0, configured=8.0",
+          "name": "portrait-caption-position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "portrait-snapshot",
+          "passed": true
+        },
+        {
+          "detail": "changed inside=9640, outside=0",
+          "name": "portrait-export",
+          "passed": true
+        },
+        {
+          "detail": "aspect=Optional(3.5555555555555554)",
+          "name": "loaded-Anamorphic.mp4",
+          "passed": true
+        },
+        {
+          "detail": "video=(0.0, 0.0, 1280.0, 360.0), window=(0.0, 515.0, 1280.0, 360.0), content=Optional((0.0, 0.0, 1280.0, 360.0)), minimum=(0.0, 0.0)",
+          "name": "pixel-aspect-fits",
+          "passed": true
+        },
+        {
+          "detail": "aspect=Optional(1.7777777777777777)",
+          "name": "loaded-Wide.mp4",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-unconstrained",
+          "passed": true
+        },
+        {
+          "detail": "aspect=Optional(3.5555555555555554)",
+          "name": "loaded-Anamorphic.mp4",
+          "passed": true
+        },
+        {
+          "detail": "image=(0.0, 247.5, 1440.0, 405.0), wordInset=16.0, configured=8.0",
+          "name": "fullscreen-minimum-caption-position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-minimum-snapshot",
+          "passed": true
+        },
+        {
+          "detail": "changed inside=29108, outside=0",
+          "name": "fullscreen-minimum-export",
+          "passed": true
+        },
+        {
+          "detail": "image=(0.0, 247.5, 1440.0, 405.0), wordInset=168.0, configured=160.0",
+          "name": "fullscreen-raised-caption-position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-raised-snapshot",
+          "passed": true
+        },
+        {
+          "detail": "changed inside=29108, outside=0",
+          "name": "fullscreen-raised-export",
+          "passed": true
+        },
+        {
+          "detail": "image=(0.0, 294.328125, 1107.0, 311.34375), wordInset=16.171875, configured=8.0",
+          "name": "fullscreen-sidebar-caption-position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-sidebar-snapshot",
+          "passed": true
+        },
+        {
+          "detail": "changed inside=22379, outside=0",
+          "name": "fullscreen-sidebar-export",
+          "passed": true
+        },
+        {
+          "detail": "aspect=Optional(1.7777777777777777)",
+          "name": "loaded-Wide.mp4",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "exit-fullscreen-restores-aspect",
+          "passed": true
+        },
+        {
+          "detail": "minimum=(680.0, 360.0)",
+          "name": "disable-restores-free-resize",
+          "passed": true
+        },
+        {
+          "detail": "image=(0.0, 60.625, 1100.0, 618.75), wordInset=15.875, configured=8.0",
+          "name": "window-letterbox-caption-position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "window-letterbox-snapshot",
+          "passed": true
+        },
+        {
+          "detail": "changed inside=22216, outside=0",
+          "name": "window-letterbox-export",
+          "passed": true
+        },
+        {
+          "detail": "frames=60, samples=76, maxGeometryError=0.9898392094262363",
+          "name": "tracking-fit-true-playing-false",
+          "passed": true
+        },
+        {
+          "detail": "frames=68, samples=99, maxGeometryError=0.9964740975506174",
+          "name": "tracking-fit-true-playing-true",
+          "passed": true
+        },
+        {
+          "detail": "frames=64, samples=93, maxGeometryError=0.9964740975506174",
+          "name": "tracking-fit-false-playing-false",
+          "passed": true
+        },
+        {
+          "detail": "frames=73, samples=104, maxGeometryError=0.9964740975506174",
+          "name": "tracking-fit-false-playing-true",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "stop-clears-video-geometry",
+          "passed": true
+        },
+        {
+          "detail": "aspect=Optional(1.7777777777777777)",
+          "name": "loaded-Wide.mp4",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "final-fitted-size",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "rendering-continues",
+          "passed": true
+        },
+        {
+          "detail": "maximum=0.004332574804938538s",
+          "name": "audio-video-sync-after-resize",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "window-restore": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "mode-restored",
+          "passed": true
+        },
+        {
+          "detail": "aspect=Optional(1.7777777777777777)",
+          "name": "loaded-Wide.mp4",
+          "passed": true
+        },
+        {
+          "detail": "(270.0, 276.0, 900.0, 507.0)",
+          "name": "fitted-size-restored",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "toolbar": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "default-clipboard-only",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "camera-disabled-without-video",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "symbols-available",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video-and-subtitles-loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "tools-have-hover-help",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fit-icon-enables-mode",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fit-button-shows-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fit-shortcut-dispatches-once-and-shows-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "held-fit-shortcut-does-not-repeat",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-button-syncs-window",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-entry-shows-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-capture-keeps-playing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native-fullscreen-exit-syncs-toolbar",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native-fullscreen-exit-shows-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-shortcut-enters-with-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "held-fullscreen-shortcut-does-not-repeat",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-shortcut-restores-with-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "compact-wide-window-keeps-tools-and-title-visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "minimum-fit-window-keeps-single-row",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "turning-fit-off-does-not-enlarge-window",
+          "passed": true
+        },
+        {
+          "detail": "(0.0, 0.0, 680.0, 360.0)",
+          "name": "free-window-reaches-common-minimum",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "sidebar-preserves-single-row-stage",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot-shortcut-dispatches-once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "held-screenshot-shortcut-does-not-repeat",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clipboard-image-has-video-size",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clipboard-only-never-creates-folder",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "clipboard-png-and-tiff-and-message",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "subtitles-only-change-caption-region",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "english-mode-omits-chinese",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "file-only-creates-png-without-touching-clipboard",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "both-destinations-unique-files-and-busy-guard",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "partial-failure-reports-clipboard-success-and-file-error",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "file-failure-never-reports-success",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "text-input-keeps-new-shortcuts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new-actions-appear-in-shortcut-settings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings-block-new-actions",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native-shortcut-recording-updates-screenshot",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "rebound-shortcut-disables-old-chord",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "custom-screenshot-chord-and-help-update",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "advanced-screenshot-page-shown",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "empty-destinations-disable-save",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings-tabs-retain-screenshot-draft",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "directory-chooser-mode",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "cancel-folder-chooser-keeps-draft",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "save-settings-persists-both-destinations",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video-chooser-resets-folder-mode",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "narrow-window-keeps-all-tools-visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "portrait-toolbar-never-wraps",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "camera-disabled-after-stop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "empty-player-keeps-single-row",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "toolbar-restore": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "destinations-and-directory-restored",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "custom-screenshot-shortcut-restored",
+          "passed": true
+        },
+        {
+          "detail": "(380.0, 386.0, 680.0, 360.0)",
+          "name": "small-free-window-restored",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video-and-subtitles-loaded",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "viewing": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_opens",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offset_status_visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_timing-settings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_link_toggle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "linked_step_keeps_legacy_language_gap_and_waits",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "either_language_can_drive_linked_adjustment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_is_debounced",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_clears_both_offsets",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "unlinked_adjustment_leaves_other_language_unchanged",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_tab_has_live_preview",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_font_slider_changes_style",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_appearance-settings",
+          "passed": true
+        },
+        {
+          "detail": "before=(460.0, 160.5, 55.0, 34.0), after=(389.5, 241.5, 71.5, 44.0)",
+          "name": "appearance_changes_live_subtitle_size_and_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_styled",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_reset_restores_only_visual_defaults",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "large_subtitles_stay_below_controls_in_small_window",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_large-subtitles",
+          "passed": true
+        },
+        {
+          "detail": "PlayerWindowSize(width: 1100.0, height: 720.0)",
+          "name": "normal_window_size_is_remembered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen_does_not_overwrite_normal_size",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "zero_volume_is_persisted",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "viewing-restore": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "volume_and_speed_restore_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_and_link_restore_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "(1100.0, 720.0)",
+          "name": "window_size_restores_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "saved_audio_preferences_survive_media_load",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "saved_offsets_restore_independently_of_global_preferences",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_restored",
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  },
+  "codesign_verified": true,
+  "note": "Programmatic AppKit event-tracking resize coverage; not a physical mouse latency measurement."
+}

@@ -6,7 +6,7 @@ mkdir -p "$TASK_OUTPUT/fixtures"
 TASK_FIXTURES="$(cd "$TASK_OUTPUT/fixtures" && pwd)"
 export LINGOPLAYER_DATA_DIR="$TASK_FIXTURES/state-$(uuidgen)" LINGOPLAYER_RUNTIME="$TASK_ROOT/.runtime"
 TASK_FFMPEG="$TASK_ROOT/.runtime/aligner/bin/ffmpeg"
-"$TASK_FFMPEG" -hide_banner -loglevel error -y -f lavfi -i 'testsrc2=size=960x540:rate=30' -t 30 -c:v mpeg4 -q:v 7 "$TASK_FIXTURES/Wide.mp4"
+"$TASK_FFMPEG" -hide_banner -loglevel error -y -f lavfi -i 'testsrc2=size=960x540:rate=30' -f lavfi -i 'sine=frequency=440:sample_rate=44100' -t 30 -c:v mpeg4 -q:v 7 -c:a aac "$TASK_FIXTURES/Wide.mp4"
 "$TASK_FFMPEG" -hide_banner -loglevel error -y -display_rotation 90 -i "$TASK_FIXTURES/Wide.mp4" -c copy "$TASK_FIXTURES/Portrait.mp4"
 "$TASK_FFMPEG" -hide_banner -loglevel error -y -f lavfi -i 'testsrc2=size=640x360:rate=30' -vf setsar=2/1 -t 30 -c:v mpeg4 -q:v 7 "$TASK_FIXTURES/Anamorphic.mp4"
 for TASK_MODE in --window-geometry-test --window-geometry-restore; do

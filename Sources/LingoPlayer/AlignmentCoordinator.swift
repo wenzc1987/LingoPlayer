@@ -28,6 +28,7 @@ struct AlignmentResult: Codable {
 
 @MainActor
 final class AlignmentCoordinator {
+    private(set) var configurationCount = 0
     var onChange: (([TimedWord], String) -> Void)?
     var onStatus: ((AlignmentTaskStatus) -> Void)?
     private(set) var status = AlignmentTaskStatus(.idle, "导入英文字幕后可准备逐词高亮")
@@ -58,6 +59,7 @@ final class AlignmentCoordinator {
         onStatus?(status); onChange?(words, message)
     }
     func configure(media: MediaIdentity?, cues: [SubtitleCue], sourceDigest: String, audioStream: Int, offset: Double, position: Double, settings: RuntimeSettings, store: StorageWorker?) {
+        configurationCount += 1
         cancel()
         self.media = media; self.cues = cues; self.audioStream = audioStream; self.offset = offset; self.settings = settings; self.store = store; self.position = position
         let modelRoot = RuntimeSettings.supportDirectory.appendingPathComponent("MFA/pretrained_models")

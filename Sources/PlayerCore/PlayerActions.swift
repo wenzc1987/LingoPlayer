@@ -5,7 +5,9 @@ public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
     case volumeDown, volumeUp, slower, faster, previousVideo, nextVideo, toggleSidebar
     case toggleSentenceLoop, cycleSubtitleDisplay
     case toggleSidebarVisibility
+    case toggleFullScreen, toggleFitVideoWindow, screenshot
     public var id: String { rawValue }
+    public var requiresLearning: Bool { [.replaySentence, .resumeLearning, .previousSentence, .nextSentence, .toggleSentenceLoop].contains(self) }
     public var title: String {
         switch self {
         case .playPause: return "播放／暂停"
@@ -25,6 +27,9 @@ public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
         case .toggleSentenceLoop: return "开启／关闭单句循环"
         case .cycleSubtitleDisplay: return "切换视频字幕显示"
         case .toggleSidebarVisibility: return "展开／折叠侧栏"
+        case .toggleFullScreen: return "全屏／恢复窗口"
+        case .toggleFitVideoWindow: return "开启／关闭无黑边"
+        case .screenshot: return "截图"
         }
     }
     public var defaultShortcut: Shortcut {
@@ -46,6 +51,9 @@ public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
         case .toggleSentenceLoop: return .init(15, "r", [.command, .shift])
         case .cycleSubtitleDisplay: return .init(11, "b", .command)
         case .toggleSidebarVisibility: return .init(37, "l", [.command, .option])
+        case .toggleFullScreen: return .init(3, "f", [.command, .control])
+        case .toggleFitVideoWindow: return .init(11, "b", [.command, .option])
+        case .screenshot: return .init(35, "p", [.command, .option])
         }
     }
 }
@@ -73,6 +81,9 @@ public struct Shortcut: Codable, Hashable {
         (key == "\r" ? "Return" : key == " " ? "Space" : key.uppercased())
     }
     public var isReserved: Bool {
+        // The player owns the standard fullscreen chord; plain Cmd-F remains
+        // reserved for native text/search behavior.
+        if keyCode == 3 && key.lowercased() == "f" && modifiers == [.command, .control] { return false }
         // Leave application, file, editing and system window shortcuts to AppKit.
         if modifiers.contains(.command) && ["o", "i", ",", "q", "w", "h", "m", "a", "c", "v", "x", "z", "s", "f", "g", "t", "n", "`", "\t", " "].contains(key.lowercased()) { return true }
         if modifiers.contains(.control) && !modifiers.contains(.command) { return true } // IME / native navigation

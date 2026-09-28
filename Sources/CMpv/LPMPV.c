@@ -53,6 +53,11 @@ LPPlayer *lp_create(const char *path, char *error, size_t error_size) {
     if (!p->handle) { snprintf(error, error_size, "无法创建播放内核。"); dlclose(p->library); free(p); return NULL; }
     const char *options[][2] = { {"config", "no"}, {"terminal", "no"}, {"vo", "libmpv"}, {"hwdec", "auto-safe"}, {"idle", "yes"}, {"keep-open", "yes"}, {"sub-auto", "no"}, {"sid", "no"}, {"input-default-bindings", "no"}, {"osd-level", "0"}, {"audio-client-name", "LingoPlayer"} };
     for (unsigned i = 0; i < sizeof(options) / sizeof(options[0]); ++i) p->set_option_string(p->handle, options[i][0], options[i][1]);
+    // Let libmpv deliver frames at their display time instead of holding the GL
+    // context in an early-render wait. Geometry redraws can then use the same
+    // renderer while dragging, retaining mpv's normal audio/video timing.
+    // https://github.com/mpv-player/mpv/blob/master/include/mpv/render.h
+    p->set_option_string(p->handle, "video-timing-offset", "0");
     int result = p->initialize(p->handle);
     if (result < 0) { snprintf(error, error_size, "%s", p->error_string(result)); lp_destroy(p); return NULL; }
     return p;

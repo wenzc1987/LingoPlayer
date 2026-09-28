@@ -19,7 +19,7 @@ struct SidebarPanel: View {
         VStack(spacing: 0) {
             HStack(spacing: 8) {
                 Picker("右侧面板", selection: $model.sidebarTab) {
-                    ForEach(SidebarTab.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(model.availableSidebarTabs, id: \.self) { Text($0.rawValue).tag($0) }
                 }.pickerStyle(.segmented).labelsHidden().help(model.help(.toggleSidebar))
                 Button { model.setSidebarCollapsed(true) } label: { Image(systemName: "xmark") }
                     .buttonStyle(.plain).help("收起侧栏").accessibilityIdentifier("collapse-sidebar")
@@ -29,7 +29,7 @@ struct SidebarPanel: View {
                     .opacity(model.sidebarTab == .transcript ? 1 : 0)
                     .allowsHitTesting(model.sidebarTab == .transcript).accessibilityHidden(model.sidebarTab != .transcript)
                 if model.sidebarTab == .queue { QueuePanel(model: model) }
-                else if model.sidebarTab == .learning {
+                else if model.sidebarTab == .learning && model.isLearningMode {
                     if model.isDetached {
                 VStack(spacing: 18) {
                     Image(systemName: "macwindow.on.rectangle").font(.system(size: 32)).foregroundStyle(Palette.accent)
@@ -155,6 +155,7 @@ struct SettingsPanel: View {
                 Text("字幕与环境").tag(0)
                 Text("快捷键").tag(1)
                 Text("截图").tag(2)
+                Text("播放").tag(3)
             }.pickerStyle(.segmented).labelsHidden().frame(width: 360).accessibilityIdentifier("settings-page")
             ZStack {
                 RuntimeSettingsPanel(model: model)
@@ -166,6 +167,9 @@ struct SettingsPanel: View {
                 ScreenshotSettingsPanel(model: model)
                     .opacity(page == 2 ? 1 : 0)
                     .allowsHitTesting(page == 2).accessibilityHidden(page != 2).disabled(page != 2)
+                PlaybackSettingsPanel(viewing: model.viewing)
+                    .opacity(page == 3 ? 1 : 0)
+                    .allowsHitTesting(page == 3).accessibilityHidden(page != 3).disabled(page != 3)
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }.padding(22).frame(width: 690, height: 670).background(Palette.background)
             .onChange(of: page) { _, _ in if model.recordingAction != nil { model.recordingAction = nil } }
@@ -194,7 +198,7 @@ struct ShortcutSettingsPanel: View {
                                 Text(model.recordingAction == action ? "请按键…" : model.preferences.shortcut(for: action)?.label ?? "未绑定")
                                     .font(.system(size: 12, weight: .medium, design: .monospaced)).frame(width: 115)
                                     .foregroundStyle(model.recordingAction == action ? Palette.accent : .primary)
-                            }
+                            }.accessibilityIdentifier("shortcut-binding-" + action.rawValue).help("为“\(action.title)”设置快捷键")
                             Button("清除") { model.bind(nil, to: action) }.disabled(model.preferences.shortcut(for: action) == nil)
                             Button("恢复") { model.bind(action.defaultShortcut, to: action) }
                         }.padding(.vertical, 7)

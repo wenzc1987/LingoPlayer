@@ -147,9 +147,13 @@ private final class VideoRenderer: @unchecked Sendable {
     private var renderer: OpaquePointer?
     private var notification: UnsafeMutableRawPointer?
     private var size = CGSize(width: 1, height: 1)
-    private var drawableUpdating = false, drawableRevision = 0
+    private var drawableUpdating = false
     private let lock = NSLock()
     private var queued = false, stopped = false, ready = false, frames = 0
+    // Protected by lock: invalidate synchronously with AppKit geometry changes,
+    // before any queued draw can present a viewport for the previous size.
+    private var pendingSize = CGSize(width: 1, height: 1)
+    private var drawableRevision = 0, drawableDirty = false
     var statistics: (Bool, Int) { lock.lock(); defer { lock.unlock() }; return (ready, frames) }
     func prepare(handle: OpaquePointer, context: NSOpenGLContext, size: CGSize, failure: @escaping (String) -> Void) {
         queue.async { [self] in
@@ -170,24 +174,33 @@ private final class VideoRenderer: @unchecked Sendable {
         }
     }
     func resize(_ size: CGSize) {
+        lock.lock()
+        guard !stopped else { lock.unlock(); return }
+        pendingSize = size; drawableRevision += 1; drawableDirty = true
+        lock.unlock()
         queue.async { [self] in
             guard !stopped else { return }
-            self.size = size; drawableRevision += 1
             if !drawableUpdating { updateDrawable() }
         }
     }
     private func updateDrawable() {
         guard let context, !stopped else { return }
-        drawableUpdating = true; let revision = drawableRevision
+        drawableUpdating = true
         // Drain previous draws, skip new draws during the main-thread drawable
         // update, then resume. Neither queue waits synchronously for the other.
         RunLoop.main.perform(inModes: [.common]) { [self] in
-            lock.lock(); let stop = stopped; lock.unlock()
+            lock.lock()
+            let stop = stopped, revision = drawableRevision, updatedSize = pendingSize
+            lock.unlock()
             if !stop { context.update() }
             queue.async { [self] in
-                guard !stopped else { return }
-                if revision != drawableRevision { updateDrawable() }
-                else { drawableUpdating = false; requestDraw() }
+                lock.lock()
+                guard !stopped else { lock.unlock(); return }
+                let current = revision == drawableRevision
+                if current { size = updatedSize; drawableDirty = false }
+                lock.unlock()
+                if current { drawableUpdating = false; requestDraw() }
+                else { updateDrawable() }
             }
         }
     }
@@ -196,14 +209,24 @@ private final class VideoRenderer: @unchecked Sendable {
         guard !queued && !stopped else { lock.unlock(); return }
         queued = true; lock.unlock()
         queue.async { [self] in
-            lock.lock(); queued = false; let stop = stopped; lock.unlock()
-            guard !stop, !drawableUpdating, let context else { return }
+            lock.lock(); queued = false; lock.unlock()
+            guard drawableVersion() != nil, !drawableUpdating, let context else { return }
             CGLLockContext(context.cglContextObj!); defer { CGLUnlockContext(context.cglContextObj!) }
             context.makeCurrentContext()
-            if let renderer { lp_render_draw(renderer, Int32(max(1, size.width)), Int32(max(1, size.height))); lock.lock(); frames += 1; lock.unlock() }
+            if let renderer { lp_render_draw(renderer, Int32(max(1, size.width)), Int32(max(1, size.height))) }
             else { glClearColor(0.03, 0.04, 0.05, 1); glClear(GLbitfield(GL_COLOR_BUFFER_BIT)) }
-            context.flushBuffer(); NSOpenGLContext.clearCurrentContext()
+            // Finish the in-flight frame against its matching drawable. The
+            // context.update handshake cannot run until this draw completes.
+            // Dropping it for every new resize request starves live playback;
+            // only queued draws must wait for the latest geometry above.
+            context.flushBuffer()
+            lock.lock(); frames += 1; lock.unlock()
+            NSOpenGLContext.clearCurrentContext()
         }
+    }
+    private func drawableVersion() -> Int? {
+        lock.lock(); defer { lock.unlock() }
+        return stopped || drawableDirty ? nil : drawableRevision
     }
     func diagnosticFrame() -> NSBitmapImageRep? {
         queue.sync { readFrame() }
@@ -214,7 +237,7 @@ private final class VideoRenderer: @unchecked Sendable {
         }
     }
     private func readFrame() -> NSBitmapImageRep? {
-        guard !stopped, let renderer, let context, !drawableUpdating else { return nil }
+        guard let revision = drawableVersion(), let renderer, let context, !drawableUpdating else { return nil }
         CGLLockContext(context.cglContextObj!); defer { CGLUnlockContext(context.cglContextObj!) }
         context.makeCurrentContext(); defer { NSOpenGLContext.clearCurrentContext() }
         let width = Int(size.width), height = Int(size.height)
@@ -229,6 +252,7 @@ private final class VideoRenderer: @unchecked Sendable {
             let top = pixels.advanced(by: row * stride), bottom = pixels.advanced(by: (height - 1 - row) * stride)
             let saved = Data(bytes: top, count: stride); memcpy(top, bottom, stride); saved.copyBytes(to: bottom, count: stride)
         }
+        guard drawableVersion() == revision else { return nil }
         context.flushBuffer(); return bitmap
     }
     func shutdown() {
@@ -254,7 +278,6 @@ final class MPVVideoView: NSView {
     private let context: NSOpenGLContext
     private var drawableFrame = CGRect.null
     private var drawableSize = CGSize.zero
-    private var drawableUpdateScheduled = false
     var renderedFrames: Int { renderer.statistics.1 }
     var rendererReady: Bool { renderer.statistics.0 }
     var onRenderError: ((String) -> Void)?
@@ -281,29 +304,23 @@ final class MPVVideoView: NSView {
         guard !prepared, let handle = player.handle else { updateDrawable(); return }
         prepared = true; context.view = self; NSOpenGLContext.clearCurrentContext()
         renderer.prepare(handle: handle, context: context, size: convertToBacking(bounds).size) { [weak self] in self?.onRenderError?($0) }
+        updateDrawable()
     }
     override func draw(_ dirtyRect: NSRect) { updateDrawable(); renderer.requestDraw() }
     override func layout() { super.layout(); updateDrawable() }
     override func setFrameSize(_ newSize: NSSize) { super.setFrameSize(newSize); updateDrawable() }
     override func setFrameOrigin(_ newOrigin: NSPoint) { super.setFrameOrigin(newOrigin); updateDrawable() }
+    override func setBoundsSize(_ newSize: NSSize) { super.setBoundsSize(newSize); updateDrawable() }
     override func viewDidChangeBackingProperties() { super.viewDidChangeBackingProperties(); updateDrawable() }
     private func updateDrawable() {
-        guard prepared, !drawableUpdateScheduled else { return }
-        drawableUpdateScheduled = true
-        // Size, origin and layout often change in one AppKit transaction. Read
-        // the final geometry once, including inside the live-resize run loop.
-        RunLoop.main.perform(inModes: [.common]) { [weak self] in
-            guard let self else { return }
-            self.drawableUpdateScheduled = false
-            self.commitDrawableSize()
-        }
-    }
-    private func commitDrawableSize() {
         guard prepared else { return }
         let pixels = convertToBacking(bounds).size
         let frame = window?.convertToScreen(convert(bounds, to: nil)) ?? .null
         guard frame != drawableFrame || pixels != drawableSize else { return }
-        drawableFrame = frame; drawableSize = pixels; renderer.resize(pixels)
+        drawableFrame = frame; drawableSize = pixels
+        // Invalidate immediately; the renderer coalesces changes and samples
+        // the matching size during the main-thread context.update handshake.
+        renderer.resize(pixels)
     }
     func diagnosticFrame() -> NSBitmapImageRep? { let bitmap = renderer.diagnosticFrame(); bitmap?.size = bounds.size; return bitmap }
     func captureFrame() async -> NSBitmapImageRep? { await renderer.captureFrame() }

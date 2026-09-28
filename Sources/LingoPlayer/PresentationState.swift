@@ -20,6 +20,7 @@ import PlayerCore
     }
 }
 @MainActor final class SubtitlePresentation: ObservableObject {
+    @Published var plain: [SubtitleCue] = []
     @Published var english: [SubtitleCue] = []
     @Published var chinese: [SubtitleCue] = []
     @Published var wordID: String?

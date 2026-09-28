@@ -11,17 +11,20 @@ public enum SubtitleDisplayMode: String, Codable, CaseIterable, Sendable {
 public struct TranscriptRow: Identifiable, Equatable, Sendable {
     public let id: String
     public let english: SubtitleCue?
+    public let plain: SubtitleCue?
+    public var text: String { plain?.text ?? english?.text ?? "" }
     public let chinese: [SubtitleCue]
     public let start: Double
     public let end: Double
     public let chineseText: String
     public let searchText: String
     public var playbackStart: Double { max(0, start) }
-    fileprivate init(english: SubtitleCue?, chinese: [SubtitleCue], start: Double, end: Double) {
+    fileprivate init(english: SubtitleCue?, chinese: [SubtitleCue], start: Double, end: Double, plain: SubtitleCue? = nil) {
+        self.plain = plain
         self.english = english; self.chinese = chinese; self.start = start; self.end = end
-        id = english.map { "en:\($0.id)" } ?? "zh:\(chinese.first!.id)"
+        id = plain.map { "plain:\($0.id)" } ?? english.map { "en:\($0.id)" } ?? "zh:\(chinese.first!.id)"
         chineseText = chinese.map(\.text).joined(separator: "\n")
-        searchText = ((english?.text ?? "") + "\n" + chineseText).lowercased()
+        searchText = ((plain?.text ?? english?.text ?? "") + "\n" + chineseText).lowercased()
     }
 }
 
@@ -55,6 +58,13 @@ public struct TranscriptDocument: Sendable {
             return $0.id < $1.id
         }
         maximum = -Double.infinity
+        prefixEnd = rows.map { maximum = max(maximum, $0.end); return maximum }
+    }
+    public init(cues: [SubtitleCue], offset: Double, secondary: [SubtitleCue] = [], secondaryOffset: Double = 0) {
+        let primaryRows = cues.map { TranscriptRow(english: nil, chinese: [], start: $0.start + offset, end: $0.end + offset, plain: $0) }
+        let secondaryRows = secondary.map { TranscriptRow(english: nil, chinese: [$0], start: $0.start + secondaryOffset, end: $0.end + secondaryOffset) }
+        rows = (primaryRows + secondaryRows).sorted { ($0.start, $0.id) < ($1.start, $1.id) }
+        var maximum = -Double.infinity
         prefixEnd = rows.map { maximum = max(maximum, $0.end); return maximum }
     }
     private static func lowerBound(_ starts: [Double], _ time: Double) -> Int {

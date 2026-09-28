@@ -54,6 +54,42 @@ private final class ProcessControl: @unchecked Sendable {
 }
 
 public enum ProcessRunner {
+    /// Small in-memory image output. The consumer drains the pipe off the main
+    /// thread, and cancellation returns only after the owned process has exited.
+    public static func preview(executable: String, arguments: [String]) async throws -> Data {
+        let control = ProcessControl()
+        return try await withTaskCancellationHandler(operation: {
+            try Task.checkCancellation()
+            let process = Process(), pipe = Pipe()
+            process.executableURL = URL(fileURLWithPath: executable); process.arguments = arguments
+            process.standardOutput = pipe; process.standardError = FileHandle.nullDevice
+            let deadline = DispatchWorkItem { control.cancel(timeout: true) }
+            DispatchQueue.global().asyncAfter(deadline: .now() + 2, execute: deadline)
+            defer { deadline.cancel(); try? pipe.fileHandleForReading.close(); try? pipe.fileHandleForWriting.close() }
+            let output = Task.detached(priority: .utility) { () -> Data in
+                var data = Data()
+                while let chunk = try? pipe.fileHandleForReading.read(upToCount: 65536), !chunk.isEmpty {
+                    if data.count + chunk.count <= 2 * 1024 * 1024 { data.append(chunk) }
+                }
+                return data
+            }
+            let status: Int32
+            do {
+                status = try await withCheckedThrowingContinuation { continuation in
+                    process.terminationHandler = { continuation.resume(returning: $0.terminationStatus) }
+                    do { try control.launch(process); try? pipe.fileHandleForWriting.close() }
+                    catch { process.terminationHandler = nil; continuation.resume(throwing: error) }
+                }
+            } catch {
+                try? pipe.fileHandleForWriting.close(); _ = await output.value
+                throw error
+            }
+            let data = await output.value
+            try Task.checkCancellation()
+            guard status == 0, !control.timedOut, !data.isEmpty else { throw ProcessFailure(message: "预览不可用") }
+            return data
+        }, onCancel: { control.cancel() })
+    }
     /// File-backed output avoids a child blocking forever on a full stdout/stderr pipe.
     public static func run(executable: String, arguments: [String], environment: [String: String] = [:], timeout: TimeInterval = 600) async throws -> ProcessResult {
         let control = ProcessControl()

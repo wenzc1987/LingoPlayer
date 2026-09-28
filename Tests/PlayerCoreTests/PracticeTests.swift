@@ -55,7 +55,7 @@ struct PracticeTests {
     @Test func bilingualParserFeedsTranscriptWithoutLosingTranslations() throws {
         let data = Data("1\n00:00:01,000 --> 00:00:02,000\nHello.\n你好。\n".utf8)
         let parsed = try SubtitleParser.parse(data: data, ext: "srt")
-        let doc = TranscriptDocument(english: parsed.english, chinese: parsed.chinese)
+        let doc = TranscriptDocument(english: parsed.latinCandidates, chinese: parsed.chinese)
         #expect(doc.rows.count == 1); #expect(doc.rows[0].chineseText == "你好。")
     }
     @Test func fiveThousandRowsSearchAndClockIndexRemainReusable() {

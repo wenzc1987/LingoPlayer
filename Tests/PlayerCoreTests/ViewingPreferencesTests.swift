@@ -14,7 +14,7 @@ struct ViewingPreferencesTests {
     @Test func invalidFieldsCannotBreakLayoutOrDiscardValidPreferences() throws {
         let raw = #"{"volume":-100,"speed":50,"windowSize":{"width":10,"height":99999},"subtitles":{"englishSize":999,"chineseSize":"bad","backgroundOpacity":-1,"bottomInset":1000},"linkedSubtitleOffsets":true}"#
         let value = try JSONDecoder().decode(ViewingPreferences.self, from: Data(raw.utf8))
-        #expect(value.volume == 0 && value.speed == 2)
+        #expect(value.volume == 0 && value.speed == 3)
         #expect(value.windowSize.width == 240 && value.windowSize.height == 4320)
         #expect(value.subtitles.englishSize == 36 && value.subtitles.chineseSize == 15)
         #expect(value.subtitles.backgroundOpacity == 0 && value.subtitles.bottomInset == 160)

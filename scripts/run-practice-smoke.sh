@@ -14,10 +14,10 @@ python3 - "$TASK_FIXTURES" "$TASK_STATE" <<'PY'
 import json,sys
 from pathlib import Path
 folder,state=map(Path,sys.argv[1:])
-folder.joinpath('Practice1.en.srt').write_text('1\n00:00:00,200 --> 00:00:01,000\nFirst [sentence].\n\n2\n00:00:02,000 --> 00:00:03,000\nAnother sentence.\n\n3\n00:00:07,600 --> 00:00:09,000\nFinal word.\n')
+folder.joinpath('Practice1.en.srt').write_text('1\n00:00:00,200 --> 00:00:01,000\nFirst [sentence]. We should listen to this carefully.\n\n2\n00:00:02,000 --> 00:00:03,000\nAnother sentence.\n\n3\n00:00:07,600 --> 00:00:09,000\nFinal word.\n')
 folder.joinpath('Practice1.zh.srt').write_text('1\n00:00:00,300 --> 00:00:02,500\n跨两句的中文。\n\n2\n00:00:04,000 --> 00:00:05,000\n独立中文。\n\n3\n00:00:07,700 --> 00:00:09,000\n最后一句。\n')
-folder.joinpath('Practice2.en.srt').write_text('1\n00:00:00,200 --> 00:00:02,000\nDifferent movie.\n')
-folder.joinpath('replacement.srt').write_text('1\n00:00:00,500 --> 00:00:01,500\nReplacement text.\n替换字幕。\n')
+folder.joinpath('Practice2.en.srt').write_text('1\n00:00:00,200 --> 00:00:02,000\nDifferent movie. We should watch this one together.\n')
+folder.joinpath('replacement.srt').write_text('1\n00:00:00,500 --> 00:00:01,500\nReplacement text. We can read this sentence together.\n替换字幕。\n')
 # An actual v0.2 file: old custom actions occupy both new defaults.
 state.joinpath('interaction.json').write_text(json.dumps({'autoplay':True,'bindings':{'playPause':{'keyCode':15,'key':'r','modifiers':9},'forward':{'keyCode':11,'key':'b','modifiers':1}},'disabled':[]}))
 PY

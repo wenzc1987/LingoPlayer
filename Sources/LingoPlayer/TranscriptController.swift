@@ -30,14 +30,15 @@ final class TranscriptController: ObservableObject {
         document = TranscriptDocument(); rows = []; activeIDs = []; following = true
         isPreparing = false; isSearching = false; lastAnchor = nil; scrollID = nil; rowsVersion += 1
     }
-    func rebuild(english: [SubtitleCue], chinese: [SubtitleCue], englishOffset: Double, chineseOffset: Double, resetBrowsing: Bool = false) {
+    func rebuild(english: [SubtitleCue], chinese: [SubtitleCue], englishOffset: Double, chineseOffset: Double, resetBrowsing: Bool = false, plain: [SubtitleCue]? = nil) {
         if resetBrowsing { reset() }
         revision = UUID(); let token = revision
         preparation?.cancel(); searchTask?.cancel(); searchRevision = UUID()
         isPreparing = true; rebuildCount += 1
         preparation = Task { [weak self] in
             let result = await Task.detached(priority: .userInitiated) {
-                TranscriptDocument(english: english, chinese: chinese, englishOffset: englishOffset, chineseOffset: chineseOffset)
+                if let plain { return TranscriptDocument(cues: plain, offset: englishOffset, secondary: chinese, secondaryOffset: chineseOffset) }
+                return TranscriptDocument(english: english, chinese: chinese, englishOffset: englishOffset, chineseOffset: chineseOffset)
             }.value
             guard !Task.isCancelled, let self, self.revision == token else { return }
             self.document = result; self.isPreparing = false

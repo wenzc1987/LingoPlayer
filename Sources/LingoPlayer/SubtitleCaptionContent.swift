@@ -3,6 +3,8 @@ import PlayerCore
 
 /// Immutable caption state, shared by the interactive overlay and screenshots.
 struct SubtitleFrame {
+    let plain: String
+    let learning: Bool
     let english: [SubtitleCue]
     let chinese: String
     let hasContent: Bool
@@ -11,8 +13,10 @@ struct SubtitleFrame {
     let appearance: SubtitleAppearance
     let display: SubtitleDisplayMode
     @MainActor init(model: AppModel) {
+        learning = model.isLearningMode
+        plain = model.subtitles.plain.map(\.text).joined(separator: "\n")
         english = model.activeEnglish; chinese = model.bilingualText
-        hasContent = !model.activeEnglish.isEmpty || !model.activeChinese.isEmpty
+        hasContent = (model.isLearningMode ? !model.activeEnglish.isEmpty : !model.subtitles.plain.isEmpty) || !model.activeChinese.isEmpty
         wordID = model.currentWordID; lockedWordID = model.subtitles.lockedWordID
         appearance = model.viewing.subtitles; display = model.preferences.subtitleDisplay
     }
@@ -24,6 +28,7 @@ struct SubtitleCaptionContent: View {
     var body: some View {
         VStack(spacing: 8) {
             if frame.hasContent {
+                if frame.learning {
                 ForEach(frame.english) { cue in
                     WordWrap(spacing: 1, lineSpacing: 4) {
                         ForEach(cue.tokens) { token in
@@ -41,10 +46,14 @@ struct SubtitleCaptionContent: View {
                         }
                     }
                 }
+                } else if !frame.plain.isEmpty {
+                    Text(frame.plain).font(.system(size: frame.appearance.englishSize, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.93)).multilineTextAlignment(.center)
+                }
                 if !frame.chinese.isEmpty {
                     Text(frame.chinese).font(.system(size: frame.appearance.chineseSize))
                         .foregroundStyle(.white.opacity(0.85)).multilineTextAlignment(.center)
-                        .opacity(frame.display == .bilingual ? 1 : 0).accessibilityHidden(frame.display != .bilingual)
+                        .opacity(!frame.learning || frame.display == .bilingual ? 1 : 0).accessibilityHidden(frame.learning && frame.display != .bilingual)
                 }
             }
         }

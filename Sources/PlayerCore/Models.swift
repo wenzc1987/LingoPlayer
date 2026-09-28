@@ -120,17 +120,19 @@ public enum Digest {
 public struct SavedPlayback: Codable, Sendable {
     public var position: Double = 0
     public var englishPath: String?
+    public var primarySubtitlePath: String?
     public var chinesePath: String?
     public var englishOffset: Double = 0
     public var chineseOffset: Double = 0
     public var sentenceTailPadding: Double = SentenceLoop.defaultTailPadding
     public var audioStream: Int?
     public init() {}
-    enum CodingKeys: String, CodingKey { case position, englishPath, chinesePath, englishOffset, chineseOffset, sentenceTailPadding, audioStream }
+    enum CodingKeys: String, CodingKey { case position, englishPath, primarySubtitlePath, chinesePath, englishOffset, chineseOffset, sentenceTailPadding, audioStream }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         position = try values.decodeIfPresent(Double.self, forKey: .position) ?? 0
         englishPath = try values.decodeIfPresent(String.self, forKey: .englishPath)
+        primarySubtitlePath = try values.decodeIfPresent(String.self, forKey: .primarySubtitlePath)
         chinesePath = try values.decodeIfPresent(String.self, forKey: .chinesePath)
         englishOffset = try values.decodeIfPresent(Double.self, forKey: .englishOffset) ?? 0
         chineseOffset = try values.decodeIfPresent(Double.self, forKey: .chineseOffset) ?? 0

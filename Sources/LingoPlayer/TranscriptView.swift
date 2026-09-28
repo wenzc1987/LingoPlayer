@@ -214,12 +214,12 @@ final class TranscriptCell: NSTableCellView {
     @objc private func startLoop() { loopAction?() }
     func configure(_ row: TranscriptRow, active: Bool, looping: Bool, canNavigate: Bool, canLoop: Bool, navigate: @escaping () -> Void, loop: @escaping () -> Void) {
         item = row; highlighted = active; self.looping = looping; navigateAction = navigate; loopAction = loop
-        time.title = clock(row.playbackStart) + (row.english == nil ? " · 中文" : "")
+        time.title = clock(row.playbackStart) + (row.english == nil && row.plain == nil ? " · 中文" : "")
         time.isEnabled = canNavigate; time.toolTip = "定位到这句，保留播放或暂停状态"
         repeatButton.isHidden = row.english == nil; repeatButton.isEnabled = canLoop
         repeatButton.contentTintColor = looping ? Self.lime : .secondaryLabelColor
-        english.stringValue = row.english?.text ?? ""; chinese.stringValue = row.chineseText
-        english.isHidden = row.english == nil; chinese.isHidden = row.chineseText.isEmpty
+        english.stringValue = row.text; chinese.stringValue = row.chineseText
+        english.isHidden = row.text.isEmpty; chinese.isHidden = row.chineseText.isEmpty
         needsLayout = true; needsDisplay = true
     }
     nonisolated static func textHeight(_ text: String, font: NSFont, width: CGFloat) -> CGFloat {
@@ -227,7 +227,7 @@ final class TranscriptCell: NSTableCellView {
         return ceil((text as NSString).boundingRect(with: NSSize(width: max(100, width), height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: [.font: font]).height) + 3
     }
     nonisolated static func height(_ row: TranscriptRow, width: CGFloat) -> CGFloat {
-        let en = textHeight(row.english?.text ?? "", font: .systemFont(ofSize: 13, weight: .medium), width: width - 44)
+        let en = textHeight(row.text, font: .systemFont(ofSize: 13, weight: .medium), width: width - 44)
         let zh = textHeight(row.chineseText, font: .systemFont(ofSize: 12), width: width - 44)
         return 44 + en + zh + (en > 0 && zh > 0 ? 6 : 0)
     }
@@ -237,7 +237,7 @@ final class TranscriptCell: NSTableCellView {
         time.frame = NSRect(x: 18, y: 8, width: 150, height: 22)
         repeatButton.frame = NSRect(x: bounds.width - 45, y: 7, width: 26, height: 24)
         let width = max(100, bounds.width - 44)
-        let en = Self.textHeight(item.english?.text ?? "", font: english.font!, width: width)
+        let en = Self.textHeight(item.text, font: english.font!, width: width)
         english.frame = NSRect(x: 18, y: 34, width: width, height: en)
         let y = en > 0 ? 34 + en + 6 : 34
         chinese.frame = NSRect(x: 18, y: y, width: width, height: Self.textHeight(item.chineseText, font: chinese.font!, width: width))
