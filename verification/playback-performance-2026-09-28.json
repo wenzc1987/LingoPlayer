@@ -1,0 +1,955 @@
+{
+  "baseline_commit": "f779f2d",
+  "baseline_harness_changes": [
+    "cancel and join alignment after assigning fixture English",
+    "count learning panel body evaluations"
+  ],
+  "platform": {
+    "os": "macOS 15.8 (24H23)",
+    "architecture": "x86_64",
+    "build": "Release"
+  },
+  "workload": {
+    "video": "MPEG-4 960x540 24fps 30s",
+    "english_cues": 5000,
+    "chinese_cues": 5000,
+    "word_timings": 180,
+    "distinct_words": 9,
+    "synthetic_word_times": true,
+    "cpu_unit": "percent of one core, app process only",
+    "warmup_seconds": 1,
+    "samples": 120,
+    "sample_interval_seconds": 0.05
+  },
+  "run_order": [
+    "before-1",
+    "after-1",
+    "before-2",
+    "after-2"
+  ],
+  "binary_sha256": {
+    "before": "d4eaf4c4bc404bdc7d5d17c91c55e6bb98cf8e3a5f0d9ceb68c482a3c669e816",
+    "after": "eb58446a98361c24ed919038618b8bb22dd990c1451a3b92b8ee359f4fd63343"
+  },
+  "runs": {
+    "before": [
+      {
+        "scenarios": [
+          {
+            "controls_visible": false,
+            "counts": {
+              "learning_panel_body": 1,
+              "subtitle_body": 43,
+              "word_measurements": 774
+            },
+            "cpu_percent_one_core": 23.071910517093823,
+            "cpu_seconds": 1.4658469999999997,
+            "english_count": 5000,
+            "highlighted_words": 39,
+            "main_wakeup_max_ms": 31.527233996894207,
+            "main_wakeup_p95_ms": 11.096574994735416,
+            "name": "immersive",
+            "paused": false,
+            "rendered_frames": 152,
+            "wall_seconds": 6.353383691021008,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 54,
+              "learning_panel_body": 2,
+              "subtitle_body": 46,
+              "word_measurements": 828
+            },
+            "cpu_percent_one_core": 33.43443133241605,
+            "cpu_seconds": 2.1665140000000003,
+            "english_count": 5000,
+            "highlighted_words": 40,
+            "main_wakeup_max_ms": 25.49321401165798,
+            "main_wakeup_p95_ms": 13.374663994181898,
+            "name": "controls",
+            "paused": false,
+            "rendered_frames": 155,
+            "wall_seconds": 6.479888885980472,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 56,
+              "learning_panel_body": 86,
+              "subtitle_body": 45,
+              "word_measurements": 810
+            },
+            "cpu_percent_one_core": 51.40645856249358,
+            "cpu_seconds": 3.5302059999999997,
+            "english_count": 5000,
+            "highlighted_words": 42,
+            "main_wakeup_max_ms": 54.17637901264243,
+            "main_wakeup_p95_ms": 27.90307799587026,
+            "name": "learning",
+            "paused": false,
+            "rendered_frames": 164,
+            "wall_seconds": 6.86724216901348,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 54,
+              "subtitle_body": 44,
+              "transcript_native_updates": 10,
+              "word_measurements": 792
+            },
+            "cpu_percent_one_core": 38.02561611090772,
+            "cpu_seconds": 2.4469720000000006,
+            "english_count": 5000,
+            "highlighted_words": 40,
+            "main_wakeup_max_ms": 28.484375990228724,
+            "main_wakeup_p95_ms": 14.238777995342385,
+            "name": "transcript",
+            "paused": false,
+            "rendered_frames": 155,
+            "wall_seconds": 6.4350620720069855,
+            "word_timing_count": 180
+          }
+        ],
+        "subtitle_count": 5000,
+        "synthetic_word_times": true
+      },
+      {
+        "scenarios": [
+          {
+            "controls_visible": false,
+            "counts": {
+              "learning_panel_body": 1,
+              "subtitle_body": 42,
+              "word_measurements": 756
+            },
+            "cpu_percent_one_core": 21.696845358707666,
+            "cpu_seconds": 1.3801930000000002,
+            "english_count": 5000,
+            "highlighted_words": 39,
+            "main_wakeup_max_ms": 25.19246701849624,
+            "main_wakeup_p95_ms": 9.956136014079672,
+            "name": "immersive",
+            "paused": false,
+            "rendered_frames": 152,
+            "wall_seconds": 6.361261174984975,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 50,
+              "learning_panel_body": 2,
+              "subtitle_body": 44,
+              "word_measurements": 792
+            },
+            "cpu_percent_one_core": 33.261565310112786,
+            "cpu_seconds": 2.1291770000000003,
+            "english_count": 5000,
+            "highlighted_words": 40,
+            "main_wakeup_max_ms": 18.280550010967996,
+            "main_wakeup_p95_ms": 13.431007001781833,
+            "name": "controls",
+            "paused": false,
+            "rendered_frames": 153,
+            "wall_seconds": 6.401313288020901,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 52,
+              "learning_panel_body": 86,
+              "subtitle_body": 46,
+              "word_measurements": 828
+            },
+            "cpu_percent_one_core": 50.10552809818745,
+            "cpu_seconds": 3.3664580000000006,
+            "english_count": 5000,
+            "highlighted_words": 42,
+            "main_wakeup_max_ms": 42.04755097744055,
+            "main_wakeup_p95_ms": 22.891108982730653,
+            "name": "learning",
+            "paused": false,
+            "rendered_frames": 161,
+            "wall_seconds": 6.718735692003975,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 49,
+              "subtitle_body": 45,
+              "transcript_native_updates": 10,
+              "word_measurements": 810
+            },
+            "cpu_percent_one_core": 37.0484554174019,
+            "cpu_seconds": 2.399405,
+            "english_count": 5000,
+            "highlighted_words": 40,
+            "main_wakeup_max_ms": 31.526927999220785,
+            "main_wakeup_p95_ms": 14.757740998174992,
+            "name": "transcript",
+            "paused": false,
+            "rendered_frames": 155,
+            "wall_seconds": 6.476396851008758,
+            "word_timing_count": 180
+          }
+        ],
+        "subtitle_count": 5000,
+        "synthetic_word_times": true
+      }
+    ],
+    "after": [
+      {
+        "scenarios": [
+          {
+            "controls_visible": false,
+            "counts": {
+              "learning_panel_body": 1,
+              "subtitle_body": 42,
+              "word_measurements": 756
+            },
+            "cpu_percent_one_core": 22.466623920156913,
+            "cpu_seconds": 1.415447,
+            "english_count": 5000,
+            "highlighted_words": 39,
+            "main_wakeup_max_ms": 20.442113006720316,
+            "main_wakeup_p95_ms": 8.26862002140842,
+            "name": "immersive",
+            "paused": false,
+            "rendered_frames": 151,
+            "wall_seconds": 6.300221186014824,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 10,
+              "learning_panel_body": 2,
+              "progress_body": 56,
+              "subtitle_body": 44,
+              "word_measurements": 792
+            },
+            "cpu_percent_one_core": 29.27227155863934,
+            "cpu_seconds": 1.8901730000000003,
+            "english_count": 5000,
+            "highlighted_words": 39,
+            "main_wakeup_max_ms": 27.123765018768605,
+            "main_wakeup_p95_ms": 14.824984990991648,
+            "name": "controls",
+            "paused": false,
+            "rendered_frames": 155,
+            "wall_seconds": 6.457213257992407,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 9,
+              "dictionary_cache_hits": 37,
+              "dictionary_queries": 3,
+              "learning_panel_body": 47,
+              "progress_body": 57,
+              "subtitle_body": 44,
+              "word_measurements": 792
+            },
+            "cpu_percent_one_core": 37.399179133082676,
+            "cpu_seconds": 2.454699999999999,
+            "english_count": 5000,
+            "highlighted_words": 40,
+            "main_wakeup_max_ms": 29.198386985808607,
+            "main_wakeup_p95_ms": 21.92624101298861,
+            "name": "learning",
+            "paused": false,
+            "rendered_frames": 157,
+            "wall_seconds": 6.563513041997794,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 10,
+              "progress_body": 57,
+              "subtitle_body": 43,
+              "transcript_native_updates": 10,
+              "word_measurements": 774
+            },
+            "cpu_percent_one_core": 34.94337865862193,
+            "cpu_seconds": 2.2248110000000008,
+            "english_count": 5000,
+            "highlighted_words": 39,
+            "main_wakeup_max_ms": 33.103092008968815,
+            "main_wakeup_p95_ms": 10.217868012841787,
+            "name": "transcript",
+            "paused": false,
+            "rendered_frames": 153,
+            "wall_seconds": 6.366902930982178,
+            "word_timing_count": 180
+          }
+        ],
+        "subtitle_count": 5000,
+        "synthetic_word_times": true
+      },
+      {
+        "scenarios": [
+          {
+            "controls_visible": false,
+            "counts": {
+              "learning_panel_body": 1,
+              "subtitle_body": 43,
+              "word_measurements": 774
+            },
+            "cpu_percent_one_core": 22.49062538830704,
+            "cpu_seconds": 1.4220510000000002,
+            "english_count": 5000,
+            "highlighted_words": 39,
+            "main_wakeup_max_ms": 36.82688800035976,
+            "main_wakeup_p95_ms": 8.336973015684631,
+            "name": "immersive",
+            "paused": false,
+            "rendered_frames": 151,
+            "wall_seconds": 6.322861082997406,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 10,
+              "learning_panel_body": 2,
+              "progress_body": 57,
+              "subtitle_body": 44,
+              "word_measurements": 792
+            },
+            "cpu_percent_one_core": 29.357095676466148,
+            "cpu_seconds": 1.8715539999999997,
+            "english_count": 5000,
+            "highlighted_words": 39,
+            "main_wakeup_max_ms": 37.30576900416054,
+            "main_wakeup_p95_ms": 9.107962006237354,
+            "name": "controls",
+            "paused": false,
+            "rendered_frames": 153,
+            "wall_seconds": 6.375133360008476,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 9,
+              "dictionary_cache_hits": 37,
+              "dictionary_queries": 2,
+              "learning_panel_body": 47,
+              "progress_body": 58,
+              "subtitle_body": 44,
+              "word_measurements": 792
+            },
+            "cpu_percent_one_core": 37.1313203704673,
+            "cpu_seconds": 2.4461109999999993,
+            "english_count": 5000,
+            "highlighted_words": 40,
+            "main_wakeup_max_ms": 52.667177998228,
+            "main_wakeup_p95_ms": 19.614709995221343,
+            "name": "learning",
+            "paused": false,
+            "rendered_frames": 158,
+            "wall_seconds": 6.587729646009393,
+            "word_timing_count": 180
+          },
+          {
+            "controls_visible": true,
+            "counts": {
+              "controls_body": 10,
+              "progress_body": 57,
+              "subtitle_body": 45,
+              "transcript_native_updates": 10,
+              "word_measurements": 810
+            },
+            "cpu_percent_one_core": 36.72588438211609,
+            "cpu_seconds": 2.3715789999999988,
+            "english_count": 5000,
+            "highlighted_words": 40,
+            "main_wakeup_max_ms": 28.505331999622282,
+            "main_wakeup_p95_ms": 13.55746698682196,
+            "name": "transcript",
+            "paused": false,
+            "rendered_frames": 155,
+            "wall_seconds": 6.457513658009702,
+            "word_timing_count": 180
+          }
+        ],
+        "subtitle_count": 5000,
+        "synthetic_word_times": true
+      }
+    ]
+  },
+  "means": {
+    "before": {
+      "immersive": {
+        "cpu_percent_one_core": 22.384377937900744,
+        "main_wakeup_p95_ms": 10.526355504407544,
+        "main_wakeup_max_ms": 28.359850507695224,
+        "counts_per_second": {
+          "learning_panel_body": 0.15729898780393242,
+          "subtitle_body": 6.685255709738853,
+          "word_measurements": 120.33460277529936
+        }
+      },
+      "controls": {
+        "cpu_percent_one_core": 33.34799832126441,
+        "main_wakeup_p95_ms": 13.402835497981865,
+        "main_wakeup_max_ms": 21.886882011312988,
+        "counts_per_second": {
+          "controls_body": 8.072186711716938,
+          "subtitle_body": 6.986238344564818,
+          "word_measurements": 125.7522902021667,
+          "learning_panel_body": 0.31054157775856306
+        }
+      },
+      "learning": {
+        "cpu_percent_one_core": 50.755993330340516,
+        "main_wakeup_p95_ms": 25.397093489300456,
+        "main_wakeup_max_ms": 48.11196499504149,
+        "counts_per_second": {
+          "controls_body": 7.947103860662008,
+          "subtitle_body": 6.699687532653565,
+          "word_measurements": 120.59437558776416,
+          "learning_panel_body": 12.661624759532877
+        }
+      },
+      "transcript": {
+        "cpu_percent_one_core": 37.53703576415481,
+        "main_wakeup_p95_ms": 14.498259496758688,
+        "main_wakeup_max_ms": 30.005651994724754,
+        "counts_per_second": {
+          "controls_body": 7.978731408067535,
+          "subtitle_body": 6.892924437404961,
+          "word_measurements": 124.07263987328929,
+          "transcript_native_updates": 1.5490275034705232
+        }
+      }
+    },
+    "after": {
+      "immersive": {
+        "cpu_percent_one_core": 22.47862465423198,
+        "main_wakeup_p95_ms": 8.302796518546526,
+        "main_wakeup_max_ms": 28.63450050354004,
+        "counts_per_second": {
+          "learning_panel_body": 0.15844041818864127,
+          "subtitle_body": 6.73357568906861,
+          "word_measurements": 121.20436240323498
+        }
+      },
+      "controls": {
+        "cpu_percent_one_core": 29.314683617552745,
+        "main_wakeup_p95_ms": 11.966473498614501,
+        "main_wakeup_max_ms": 32.21476701146457,
+        "counts_per_second": {
+          "controls_body": 1.5586251594591447,
+          "subtitle_body": 6.857950701620236,
+          "progress_body": 8.806730624831648,
+          "word_measurements": 123.44311262916426,
+          "learning_panel_body": 0.31172503189182893
+        }
+      },
+      "learning": {
+        "cpu_percent_one_core": 37.26524975177499,
+        "main_wakeup_p95_ms": 20.770475504104976,
+        "main_wakeup_max_ms": 40.932782492018305,
+        "counts_per_second": {
+          "controls_body": 1.3686965909098119,
+          "dictionary_queries": 0.3803335145911178,
+          "subtitle_body": 6.691405555559081,
+          "progress_body": 8.74431042480763,
+          "word_measurements": 120.44530000006344,
+          "learning_panel_body": 7.147637752529018,
+          "dictionary_cache_hits": 5.6268637626292275
+        }
+      },
+      "transcript": {
+        "cpu_percent_one_core": 35.834631520369015,
+        "main_wakeup_p95_ms": 11.887667499831874,
+        "main_wakeup_max_ms": 30.80421200429555,
+        "counts_per_second": {
+          "controls_body": 1.5596029911151343,
+          "subtitle_body": 6.86115122570417,
+          "progress_body": 8.889737049356267,
+          "word_measurements": 123.50072206267507,
+          "transcript_native_updates": 1.5596029911151343
+        }
+      }
+    }
+  },
+  "validation": {
+    "swift_tests": 110,
+    "swift_suites": 17,
+    "python_tests": 10,
+    "native_checks": 80,
+    "native": {
+      "playback-mode": {
+        "checks": [
+          {
+            "detail": "",
+            "name": "new-defaults",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "normal-first-no-learning-work",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "default-audio-not-english",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "faster-3",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "faster-4",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "faster-5",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "faster-6",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "slower-2.5",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "slower-2.0",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "speed-lower-bound",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-French.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-French.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-French.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Spanish.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Spanish.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Spanish.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Japanese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Japanese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Japanese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Chinese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Chinese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Chinese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Short.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Short.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Short.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Effects.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Effects.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Effects.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "automatic-without-alignment",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "detached-learning-open",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "exit-preserves-playback",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "exit-cleans-learning",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "manual-exit-survives-callbacks",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "preview-toggle-preserves-mode-override",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "manual-policy-stays-normal",
+            "passed": true
+          },
+          {
+            "detail": "toggle found=true, learning=true",
+            "name": "native-enter-learning-toggle",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "policy-change-reevaluates",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "no-overlapping-interval-no-learning",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "late-subtitle-cannot-replace-selection",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "native-normal-toolbar-hides-learning",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "normal-caption-screenshot",
+            "passed": true
+          },
+          {
+            "detail": "seek delta=1",
+            "name": "native-slider-release-seeks-once",
+            "passed": true
+          },
+          {
+            "detail": "max stall=12.680110659372684ms",
+            "name": "preview-workload-false",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "main-stall-budget-false",
+            "passed": true
+          },
+          {
+            "detail": "max stall=9.666071673079085ms",
+            "name": "preview-workload-true",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "main-stall-budget-true",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "thumbnail-real-frame",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "preview-native-snapshot",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "two-second-cache-hit",
+            "passed": true
+          },
+          {
+            "detail": "min=0.27735331997973844",
+            "name": "start-frequency-limit",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "cache-bounds",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "fullscreen-preview",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "disable-hides-immediately",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "disabled-never-starts",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "missing-ffmpeg-time-only",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "timeout-time-only",
+            "passed": true
+          },
+          {
+            "detail": "start\nend\nstart\nend\n",
+            "name": "cancelled-process-never-overlaps-replacement",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "media-switch-clears-preview-cache",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "portrait-frame-aspect",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "portrait-snapshot",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "stop-hides-preview",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "english-import-preserves-chinese-english",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "english-import-preserves-chinese-general",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "english-only-bilingual-import-preserves-chinese",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "general-bilingual-import-replaces-translation",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "reopening-keeps-custom-chinese",
+            "passed": true
+          },
+          {
+            "detail": "stage=(90.0, 56.0, 680.0, 360.0), content=(90.0, 56.0, 680.0, 360.0), title=(391.75, 363.0, 76.5, 19.0)",
+            "name": "large-captions-preserve-stage-and-title-false",
+            "passed": true
+          },
+          {
+            "detail": "stage=(90.0, 56.0, 680.0, 360.0), controls=[(177.0, 302.0, 506.0, 20.0), (127.0, 264.5, 18.0, 14.5), (232.0, 263.0, 16.0, 18.0), (262.0, 254.0, 44.0, 36.0), (320.0, 263.0, 16.0, 18.0), (423.5, 263.5, 17.5, 16.5), (463.25, 264.5, 13.5, 15.0), (497.5, 264.0, 21.0, 15.5), (536.0, 266.0, 16.0, 11.5), (571.0, 264.5, 18.5, 14.5), (607.0, 264.5, 18.5, 14.5), (644.5, 264.5, 15.0, 15.0), (678.5, 264.5, 19.5, 15.0), (716.0, 265.0, 16.0, 13.5)]",
+            "name": "large-captions-keep-all-controls-visible-false",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "large-captions-snapshot-false",
+            "passed": true
+          },
+          {
+            "detail": "stage=(90.0, 56.0, 680.0, 360.0), content=(90.0, 56.0, 680.0, 360.0), title=(391.75, 363.0, 76.5, 19.0)",
+            "name": "large-captions-preserve-stage-and-title-true",
+            "passed": true
+          },
+          {
+            "detail": "stage=(90.0, 56.0, 680.0, 360.0), controls=[(177.0, 302.0, 506.0, 20.0), (127.0, 264.5, 18.0, 14.5), (214.0, 263.0, 16.0, 18.0), (244.0, 254.0, 44.0, 36.0), (302.0, 263.0, 16.0, 18.0), (423.5, 263.5, 17.5, 16.5), (463.25, 264.5, 13.5, 15.0), (497.5, 264.0, 21.0, 15.5), (536.0, 266.0, 16.0, 11.5), (571.0, 264.5, 18.5, 14.5), (607.0, 264.5, 18.5, 14.5), (644.5, 264.5, 15.0, 15.0), (678.5, 264.5, 19.5, 15.0), (716.0, 265.0, 22.0, 23.0), (180.0, 266.0, 12.0, 12.0), (340.0, 266.0, 12.0, 12.0), (373.5, 264.5, 17.0, 14.5)]",
+            "name": "large-captions-keep-all-controls-visible-true",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "large-captions-snapshot-true",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "native-loop-button-updates-at-cue-boundary",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "seek-progress-still-reports-native-feedback",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "repeated-word-presents-cached-result-synchronously",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "leaving-learning-clears-dictionary-cache",
+            "passed": true
+          }
+        ],
+        "method": "Native AppKit/SwiftUI window; real libmpv and FFmpeg; deterministic controller requests at 30 Hz. Does not measure physical mouse latency.",
+        "passed": true,
+        "scenarios": [
+          {
+            "cache_bytes": 0,
+            "cache_hit_rate": 0,
+            "cache_hits": 0,
+            "child_cpu_percent_one_core": 0,
+            "cpu_percent_one_core": 22.020148231101313,
+            "decode_seconds": [],
+            "main_stall_max_ms": 12.680110659372684,
+            "main_stall_p95_ms": 2.9330636529872818,
+            "preview": false,
+            "rendered_frames": 153,
+            "requests": 0,
+            "resident_before_mib": 131.8359375,
+            "resident_peak_mib": 133.12890625,
+            "starts": 0,
+            "wall_seconds": 6.311701380996965
+          },
+          {
+            "cache_bytes": 1337316,
+            "cache_hit_rate": 0.6666666666666666,
+            "cache_hits": 120,
+            "child_cpu_percent_one_core": 28.082034185007576,
+            "cpu_percent_one_core": 27.058861880872314,
+            "decode_seconds": [
+              0.19431185998837464,
+              0.1802955019811634,
+              0.18100993600091897,
+              0.18809347599744797,
+              0.18605667699011974,
+              0.18684675000258721,
+              0.1839293450175319,
+              0.18332849800935946,
+              0.19665218802401796,
+              0.19576055998913944
+            ],
+            "main_stall_max_ms": 9.666071673079085,
+            "main_stall_p95_ms": 2.8017786603110535,
+            "preview": true,
+            "rendered_frames": 153,
+            "requests": 180,
+            "resident_before_mib": 133.3359375,
+            "resident_peak_mib": 135.48828125,
+            "starts": 10,
+            "wall_seconds": 6.319267999992007
+          }
+        ]
+      },
+      "restore": {
+        "checks": [
+          {
+            "detail": "",
+            "name": "restored-new-preferences",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restored-subtitles-rechecked-manual",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restored-custom-chinese-overrides-bilingual",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restored-user-audio",
+            "passed": true
+          }
+        ],
+        "method": "Native AppKit/SwiftUI window; real libmpv and FFmpeg; deterministic controller requests at 30 Hz. Does not measure physical mouse latency.",
+        "passed": true,
+        "scenarios": []
+      }
+    }
+  }
+}

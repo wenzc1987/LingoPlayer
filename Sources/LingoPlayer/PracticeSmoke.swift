@@ -220,7 +220,7 @@ enum PracticeSmoke {
             model.startSentenceLoop(model.english[1]); await pause(); model.transcript.query = "sentence"
             model.savePlayback()
         }
-        let result: [String: Any] = ["version": "0.3.1", "passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "elapsed_seconds": Date().timeIntervalSince(started), "checks": checks, "metrics": metrics]
+        let result: [String: Any] = ["version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "", "passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "elapsed_seconds": Date().timeIntervalSince(started), "checks": checks, "metrics": metrics]
         if let data = try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]) {
             try? data.write(to: output.appendingPathComponent(restoreOnly ? "practice-restore.json" : "practice.json"))
         }

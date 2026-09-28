@@ -229,21 +229,10 @@ struct PlaybackControls: View {
     @ObservedObject var model: AppModel
     @ObservedObject var playback: PlaybackPresentation
     init(model: AppModel) { self.model = model; playback = model.playback }
-    @State private var seeking = false
-    @State private var draft = 0.0
     var body: some View {
         let _ = PerformanceCounters.shared.hit("controls_body")
         VStack(spacing: 12) {
-            HStack(spacing: 10) {
-                Text(clock(seeking ? draft : playback.position)).monospacedDigit().frame(minWidth: 45, alignment: .leading)
-                Slider(value: Binding(get: { seeking ? draft : playback.position }, set: { draft = $0; if seeking { model.seekPreview.request(draft, duration: model.duration) } }), in: 0...max(1, model.duration), onEditingChanged: { active in
-                    model.chrome.hold(.scrubbing, active: active)
-                    if active { model.cancelSentenceLoop(); draft = playback.position; seeking = true; model.seekPreview.request(draft, duration: model.duration) }
-                    else if seeking { seeking = false; model.seekPreview.endDrag(); model.seek(draft) }
-                }).disabled(!model.playbackReady).accessibilityLabel("播放进度").accessibilityIdentifier("playback-progress").help("拖动调整播放进度")
-                    .overlay { SeekPreviewOverlay(preview: model.seekPreview, duration: model.duration) }
-                Text(clock(model.duration)).monospacedDigit().frame(minWidth: 45, alignment: .trailing)
-            }.font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
+            PlaybackProgressBar(model: model)
             HStack(spacing: 8) {
                HStack(spacing: 8) {
                 Button { model.chooseVideo() } label: { icon("folder") }
@@ -312,13 +301,10 @@ struct PlaybackControls: View {
                }
             }.buttonStyle(.plain).foregroundStyle(.white.opacity(0.9))
         }
-        .onChange(of: model.media?.key) { _, _ in seeking = false; model.seekPreview.endDrag(); model.chrome.hold(.scrubbing, active: false) }
-        .onDisappear { seeking = false; model.seekPreview.endDrag(); model.chrome.hold(.scrubbing, active: false) }
         .padding(.horizontal, 16).padding(.vertical, 14)
         .background(Palette.panel.opacity(0.94), in: RoundedRectangle(cornerRadius: 15))
         .overlay { RoundedRectangle(cornerRadius: 15).stroke(.white.opacity(0.12), lineWidth: 1).allowsHitTesting(false) }
         .shadow(color: .black.opacity(0.25), radius: 16, y: 6)
-        .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
     }
     private func icon(_ name: String, active: Bool = false) -> some View {
         Image(systemName: name).font(.system(size: 16)).foregroundStyle(active ? Palette.accent : .white.opacity(0.9)).frame(width: 28, height: 32)
@@ -329,6 +315,36 @@ struct PlaybackControls: View {
     }
     private func popover(_ value: PlayerPopover) -> Binding<Bool> {
         Binding(get: { model.playerPopover == value }, set: { if !$0 && model.playerPopover == value { model.playerPopover = nil } })
+    }
+}
+
+private struct PlaybackProgressBar: View {
+    @ObservedObject var model: AppModel
+    @ObservedObject var playback: PlaybackPresentation
+    @ObservedObject var progress: PlaybackProgressPresentation
+    @State private var seeking = false
+    @State private var draft = 0.0
+    init(model: AppModel) {
+        self.model = model; playback = model.playback; progress = model.playback.progress
+    }
+    var body: some View {
+        let _ = PerformanceCounters.shared.hit("progress_body")
+        HStack(spacing: 10) {
+            Text(clock(seeking ? draft : progress.position)).monospacedDigit().frame(minWidth: 45, alignment: .leading)
+            Slider(value: Binding(get: { seeking ? draft : progress.position }, set: { draft = $0; if seeking { model.seekPreview.request(draft, duration: model.duration) } }), in: 0...max(1, model.duration), onEditingChanged: { active in
+                model.chrome.hold(.scrubbing, active: active)
+                if active { model.cancelSentenceLoop(); draft = progress.position; seeking = true; model.seekPreview.request(draft, duration: model.duration) }
+                else if seeking { seeking = false; model.seekPreview.endDrag(); model.seek(draft) }
+            }).disabled(!model.playbackReady).accessibilityLabel("播放进度").accessibilityIdentifier("playback-progress").help("拖动调整播放进度")
+                .overlay { SeekPreviewOverlay(preview: model.seekPreview, duration: model.duration) }
+            Text(clock(model.duration)).monospacedDigit().frame(minWidth: 45, alignment: .trailing)
+        }.font(.system(size: 11)).foregroundStyle(.white.opacity(0.7))
+            .overlay(alignment: .topLeading) { FeedbackProbe(revision: OperationMetrics.shared.revision).frame(width: 1, height: 1).allowsHitTesting(false) }
+            .onChange(of: model.media?.key) { _, _ in endDrag() }
+            .onDisappear { endDrag() }
+    }
+    private func endDrag() {
+        seeking = false; model.seekPreview.endDrag(); model.chrome.hold(.scrubbing, active: false)
     }
 }
 
@@ -373,6 +389,7 @@ struct LearningPanel: View {
     @ObservedObject var presentation: LearningPresentation
     init(model: AppModel, detached: Bool) { self.model = model; self.detached = detached; presentation = model.learningPresentation }
     var body: some View {
+        let _ = PerformanceCounters.shared.hit("learning_panel_body")
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Label("学习", systemImage: "sparkle").font(.system(size: 15, weight: .semibold))

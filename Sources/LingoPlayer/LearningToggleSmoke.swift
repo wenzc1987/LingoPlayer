@@ -133,7 +133,7 @@ import PlayerCore
         record("learning-window-open", learningWindow() != nil)
         _ = await clickSwitch()
         record("toggle-closes-learning-window-and-tasks", learningWindow() == nil && !model.isDetached && !model.isLearningMode &&
-               model.dictionary == nil && model.sentenceLoop == nil && model.replayRange == nil)
+               !model.dictionaryLookup.isAvailable && model.sentenceLoop == nil && model.replayRange == nil)
         await attach("Japanese.srt")
         record("subtitle-replacement-hides-switch", !model.learningEligible && !model.isLearningMode && find(window, "learning-mode-toggle") == nil)
         await load("A Very Long Movie Title About Learning English While Exploring The World With Friends And Finding New Stories Every Day.mp4")

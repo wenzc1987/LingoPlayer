@@ -1,0 +1,577 @@
+{
+  "review_date": "2026-09-28",
+  "baseline": "f779f2d plus the preceding uncommitted playback performance improvements",
+  "reproduced_before_fix": [
+    {
+      "test": "preferenceWritesDoNotOpenTheDatabase",
+      "failure": "JSON-only writes unexpectedly created SQLite database"
+    },
+    {
+      "test": "corruptDatabaseDoesNotDiscardPreferenceWritesInTheSameBatch",
+      "failure": "corrupt SQLite database discarded a valid JSON preference write"
+    },
+    {
+      "test": "databaseReadFailureIsNotAnUnknownWord",
+      "failure": "SQL read failure was returned as an unknown word"
+    }
+  ],
+  "validation": {
+    "swift_tests": 124,
+    "swift_suites": 20,
+    "python_tests": 10,
+    "native_checks": 80,
+    "native": {
+      "playback-mode": {
+        "checks": [
+          {
+            "detail": "",
+            "name": "new-defaults",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "normal-first-no-learning-work",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "default-audio-not-english",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "faster-3",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "faster-4",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "faster-5",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "faster-6",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "slower-2.5",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "slower-2.0",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "speed-lower-bound",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-French.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-French.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-French.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Spanish.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Spanish.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Spanish.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Japanese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Japanese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Japanese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Chinese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Chinese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Chinese.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Short.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Short.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Short.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-Effects.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "learning-disabled-Effects.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "ordinary-seek-Effects.srt",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "automatic-without-alignment",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "detached-learning-open",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "exit-preserves-playback",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "exit-cleans-learning",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "manual-exit-survives-callbacks",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "preview-toggle-preserves-mode-override",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "manual-policy-stays-normal",
+            "passed": true
+          },
+          {
+            "detail": "toggle found=true, learning=true",
+            "name": "native-enter-learning-toggle",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "policy-change-reevaluates",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "no-overlapping-interval-no-learning",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "late-subtitle-cannot-replace-selection",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "native-normal-toolbar-hides-learning",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "normal-caption-screenshot",
+            "passed": true
+          },
+          {
+            "detail": "seek delta=1",
+            "name": "native-slider-release-seeks-once",
+            "passed": true
+          },
+          {
+            "detail": "max stall=26.901402648460742ms",
+            "name": "preview-workload-false",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "main-stall-budget-false",
+            "passed": true
+          },
+          {
+            "detail": "max stall=33.172868679199986ms",
+            "name": "preview-workload-true",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "main-stall-budget-true",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "thumbnail-real-frame",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "preview-native-snapshot",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "two-second-cache-hit",
+            "passed": true
+          },
+          {
+            "detail": "min=0.27600359797361307",
+            "name": "start-frequency-limit",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "cache-bounds",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "fullscreen-preview",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "disable-hides-immediately",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "disabled-never-starts",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "missing-ffmpeg-time-only",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "timeout-time-only",
+            "passed": true
+          },
+          {
+            "detail": "start\nend\nstart\nend\n",
+            "name": "cancelled-process-never-overlaps-replacement",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "media-switch-clears-preview-cache",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "portrait-frame-aspect",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "portrait-snapshot",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "stop-hides-preview",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "english-import-preserves-chinese-english",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "english-import-preserves-chinese-general",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "english-only-bilingual-import-preserves-chinese",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "general-bilingual-import-replaces-translation",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "reopening-keeps-custom-chinese",
+            "passed": true
+          },
+          {
+            "detail": "stage=(90.0, 56.0, 680.0, 360.0), content=(90.0, 56.0, 680.0, 360.0), title=(391.75, 363.0, 76.5, 19.0)",
+            "name": "large-captions-preserve-stage-and-title-false",
+            "passed": true
+          },
+          {
+            "detail": "stage=(90.0, 56.0, 680.0, 360.0), controls=[(177.0, 302.0, 506.0, 20.0), (127.0, 264.5, 18.0, 14.5), (232.0, 263.0, 16.0, 18.0), (262.0, 254.0, 44.0, 36.0), (320.0, 263.0, 16.0, 18.0), (423.5, 263.5, 17.5, 16.5), (463.25, 264.5, 13.5, 15.0), (497.5, 264.0, 21.0, 15.5), (536.0, 266.0, 16.0, 11.5), (571.0, 264.5, 18.5, 14.5), (607.0, 264.5, 18.5, 14.5), (644.5, 264.5, 15.0, 15.0), (678.5, 264.5, 19.5, 15.0), (716.0, 265.0, 16.0, 13.5)]",
+            "name": "large-captions-keep-all-controls-visible-false",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "large-captions-snapshot-false",
+            "passed": true
+          },
+          {
+            "detail": "stage=(90.0, 56.0, 680.0, 360.0), content=(90.0, 56.0, 680.0, 360.0), title=(391.75, 363.0, 76.5, 19.0)",
+            "name": "large-captions-preserve-stage-and-title-true",
+            "passed": true
+          },
+          {
+            "detail": "stage=(90.0, 56.0, 680.0, 360.0), controls=[(177.0, 302.0, 506.0, 20.0), (127.0, 264.5, 18.0, 14.5), (214.0, 263.0, 16.0, 18.0), (244.0, 254.0, 44.0, 36.0), (302.0, 263.0, 16.0, 18.0), (423.5, 263.5, 17.5, 16.5), (463.25, 264.5, 13.5, 15.0), (497.5, 264.0, 21.0, 15.5), (536.0, 266.0, 16.0, 11.5), (571.0, 264.5, 18.5, 14.5), (607.0, 264.5, 18.5, 14.5), (644.5, 264.5, 15.0, 15.0), (678.5, 264.5, 19.5, 15.0), (716.0, 265.0, 22.0, 23.0), (180.0, 266.0, 12.0, 12.0), (340.0, 266.0, 12.0, 12.0), (373.5, 264.5, 17.0, 14.5)]",
+            "name": "large-captions-keep-all-controls-visible-true",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "large-captions-snapshot-true",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "native-loop-button-updates-at-cue-boundary",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "seek-progress-still-reports-native-feedback",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "repeated-word-presents-cached-result-synchronously",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "leaving-learning-clears-dictionary-cache",
+            "passed": true
+          }
+        ],
+        "method": "Native AppKit/SwiftUI window; real libmpv and FFmpeg; deterministic controller requests at 30 Hz. Does not measure physical mouse latency.",
+        "passed": true,
+        "scenarios": [
+          {
+            "cache_bytes": 0,
+            "cache_hit_rate": 0,
+            "cache_hits": 0,
+            "child_cpu_percent_one_core": 0,
+            "cpu_percent_one_core": 22.97201336062676,
+            "decode_seconds": [],
+            "main_stall_max_ms": 26.901402648460742,
+            "main_stall_p95_ms": 5.505910688467945,
+            "preview": false,
+            "rendered_frames": 152,
+            "requests": 0,
+            "resident_before_mib": 130.87890625,
+            "resident_peak_mib": 131.31640625,
+            "starts": 0,
+            "wall_seconds": 6.342996485007461
+          },
+          {
+            "cache_bytes": 1337316,
+            "cache_hit_rate": 0.6611111111111111,
+            "cache_hits": 119,
+            "child_cpu_percent_one_core": 27.441881898937403,
+            "cpu_percent_one_core": 25.076185645218196,
+            "decode_seconds": [
+              0.22626315598608926,
+              0.1778459560009651,
+              0.18549469401477836,
+              0.18339102499885485,
+              0.1758415290096309,
+              0.18222171100205742,
+              0.18547611599205993,
+              0.17892926299828105,
+              0.1891538959753234,
+              0.1785993410157971
+            ],
+            "main_stall_max_ms": 33.172868679199986,
+            "main_stall_p95_ms": 5.771872667052473,
+            "preview": true,
+            "rendered_frames": 151,
+            "requests": 180,
+            "resident_before_mib": 131.41015625,
+            "resident_peak_mib": 133.5234375,
+            "starts": 10,
+            "wall_seconds": 6.370598075009184
+          }
+        ]
+      },
+      "restore": {
+        "checks": [
+          {
+            "detail": "",
+            "name": "restored-new-preferences",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restored-subtitles-rechecked-manual",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restored-custom-chinese-overrides-bilingual",
+            "passed": true
+          },
+          {
+            "detail": "",
+            "name": "restored-user-audio",
+            "passed": true
+          }
+        ],
+        "method": "Native AppKit/SwiftUI window; real libmpv and FFmpeg; deterministic controller requests at 30 Hz. Does not measure physical mouse latency.",
+        "passed": true,
+        "scenarios": []
+      }
+    },
+    "performance": {
+      "scenarios": [
+        {
+          "controls_visible": false,
+          "counts": {
+            "learning_panel_body": 1,
+            "subtitle_body": 43,
+            "word_measurements": 774
+          },
+          "cpu_percent_one_core": 22.984325201493593,
+          "cpu_seconds": 1.4729130000000001,
+          "english_count": 5000,
+          "highlighted_words": 39,
+          "main_wakeup_max_ms": 30.59543097624555,
+          "main_wakeup_p95_ms": 13.053401012439277,
+          "name": "immersive",
+          "paused": false,
+          "rendered_frames": 154,
+          "wall_seconds": 6.408336930006044,
+          "word_timing_count": 180
+        },
+        {
+          "controls_visible": true,
+          "counts": {
+            "controls_body": 10,
+            "learning_panel_body": 2,
+            "progress_body": 58,
+            "subtitle_body": 46,
+            "word_measurements": 828
+          },
+          "cpu_percent_one_core": 31.806945679096515,
+          "cpu_seconds": 2.063128,
+          "english_count": 5000,
+          "highlighted_words": 40,
+          "main_wakeup_max_ms": 35.98810198600404,
+          "main_wakeup_p95_ms": 13.325591996544969,
+          "name": "controls",
+          "paused": false,
+          "rendered_frames": 156,
+          "wall_seconds": 6.4864071540068835,
+          "word_timing_count": 180
+        },
+        {
+          "controls_visible": true,
+          "counts": {
+            "controls_body": 9,
+            "dictionary_cache_hits": 38,
+            "dictionary_queries": 2,
+            "learning_panel_body": 47,
+            "progress_body": 57,
+            "subtitle_body": 45,
+            "word_measurements": 810
+          },
+          "cpu_percent_one_core": 36.96659831998394,
+          "cpu_seconds": 2.4838460000000007,
+          "english_count": 5000,
+          "highlighted_words": 41,
+          "main_wakeup_max_ms": 52.20067299087532,
+          "main_wakeup_p95_ms": 21.897101006470617,
+          "name": "learning",
+          "paused": false,
+          "rendered_frames": 161,
+          "wall_seconds": 6.719163008994656,
+          "word_timing_count": 180
+        },
+        {
+          "controls_visible": true,
+          "counts": {
+            "controls_body": 10,
+            "progress_body": 56,
+            "subtitle_body": 45,
+            "transcript_native_updates": 10,
+            "word_measurements": 810
+          },
+          "cpu_percent_one_core": 36.48089896895985,
+          "cpu_seconds": 2.353029000000001,
+          "english_count": 5000,
+          "highlighted_words": 40,
+          "main_wakeup_max_ms": 26.836737018311393,
+          "main_wakeup_p95_ms": 10.834511998109516,
+          "name": "transcript",
+          "paused": false,
+          "rendered_frames": 155,
+          "wall_seconds": 6.450030198000604,
+          "word_timing_count": 180
+        }
+      ],
+      "subtitle_count": 5000,
+      "synthetic_word_times": true
+    }
+  },
+  "release_sha256": "8f79fe4042a87417053c8de258629c5698512ff8af2d2b82d8ff0a82b2175ad1"
+}

@@ -59,7 +59,7 @@ import Darwin
         } else {
             record("new-defaults", model.viewing.seekPreviewEnabled && model.viewing.learningActivation == .automatic)
             await load()
-            record("normal-first-no-learning-work", model.playbackReady && !model.isLearningMode && model.aligner.configurationCount == 0 && model.dictionary == nil)
+            record("normal-first-no-learning-work", model.playbackReady && !model.isLearningMode && model.aligner.configurationCount == 0 && !model.dictionaryLookup.isAvailable)
             record("default-audio-not-english", model.audioStreams.first(where: { $0.id == model.selectedAudio })?.language == "zho")
             for rate in [2.0, 2.5, 3.0, 3.0] {
                 if rate == 2 { model.setSpeed(rate) } else { model.perform(.faster) }
@@ -75,7 +75,7 @@ import Darwin
                 let revision = model.seekRevision, paused = model.paused
                 for action in PlayerAction.allCases where action.requiresLearning { model.perform(action) }
                 model.resumeLearning(); model.restartAlignment(); model.retryAlignment(); model.viewAlignmentDetails(); model.replaySentence()
-                record("learning-disabled-\(name)", model.seekRevision == revision && model.paused == paused && model.dictionary == nil && model.aligner.configurationCount == 0 && !model.showAlignmentDetails)
+                record("learning-disabled-\(name)", model.seekRevision == revision && model.paused == paused && !model.dictionaryLookup.isAvailable && model.aligner.configurationCount == 0 && !model.showAlignmentDetails)
                 if let row = model.transcript.rows.first { model.navigateTranscript(row); record("ordinary-seek-\(name)", model.seekRevision == revision + 1) }
             }
             await attach("English.srt")
@@ -87,7 +87,7 @@ import Darwin
             let wanted = model.endGate.wantsPlayback, revision = model.seekRevision
             model.chooseLearningMode(false)
             record("exit-preserves-playback", model.endGate.wantsPlayback == wanted && model.seekRevision == revision && model.sentenceLoop == nil && model.replayRange == nil)
-            record("exit-cleans-learning", !model.isLearningMode && learningWindow() == nil && model.dictionary == nil && model.learning.selected == nil && model.timings.isEmpty)
+            record("exit-cleans-learning", !model.isLearningMode && learningWindow() == nil && !model.dictionaryLookup.isAvailable && model.learning.selected == nil && model.timings.isEmpty)
             model.aligner.onChange?([TimedWord(cueID: "late", tokenIndex: 0, start: 0, end: 30)], "late")
             model.aligner.onStatus?(AlignmentTaskStatus(.preparing, "late"))
             await attach("English.srt")
@@ -246,6 +246,33 @@ import Darwin
                 record("large-captions-snapshot-\(learning)", WindowSnapshot.save(window, to: output.appendingPathComponent("large-captions-\(learning).png")))
             }
             model.viewing.setSubtitles(savedAppearance); window.setFrame(savedFrame, display: true)
+            if let cue = model.english.first, let token = cue.tokens.first(where: \.isWord) {
+                // The progress clock no longer redraws buttons. Crossing a cue
+                // boundary must still change the real loop button's enabled state.
+                model.seek(0); _ = await wait { model.seekTarget == nil }; await delay(0.15)
+                let outside = find(window, "action-toggleSentenceLoop")?.value(forKey: "accessibilityEnabled") as? Bool
+                model.seek(cue.start + model.englishOffset + 0.2)
+                _ = await wait { model.seekTarget == nil }; await delay(0.15)
+                let inside = find(window, "action-toggleSentenceLoop")?.value(forKey: "accessibilityEnabled") as? Bool
+                record("native-loop-button-updates-at-cue-boundary", outside == false && inside == true)
+
+                let metrics = OperationMetrics.shared
+                metrics.enabled = true; metrics.arm(); model.perform(.forward)
+                let feedback = await wait({ metrics.feedback != nil }, timeout: 2)
+                record("seek-progress-still-reports-native-feedback", feedback)
+                metrics.enabled = false
+
+                model.lock(cue: cue, token: token)
+                let resolved = await wait { model.dictionaryEntry?.word.lowercased() == token.normalized }
+                let cached = model.dictionaryEntry
+                if let other = cue.tokens.first(where: { $0.isWord && $0.normalized != token.normalized }) {
+                    model.lock(cue: cue, token: other)
+                }
+                model.lock(cue: cue, token: token)
+                record("repeated-word-presents-cached-result-synchronously", resolved && model.dictionaryEntry == cached && model.dictionaryStatus != "正在查询词典…")
+                model.chooseLearningMode(false)
+                record("leaving-learning-clears-dictionary-cache", model.dictionaryLookup.cachedWordCount == 0)
+            }
             model.viewing.setLearningActivation(.manual); model.viewing.setSeekPreviewEnabled(false); model.setSpeed(3)
             if let englishAudio = model.audioStreams.first(where: { $0.language == "eng" }) { model.selectAudio(englishAudio.id) }
             model.savePlayback()

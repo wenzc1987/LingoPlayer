@@ -3,7 +3,8 @@ import Combine
 import PlayerCore
 
 @MainActor final class PlaybackPresentation: ObservableObject {
-    @Published private(set) var position = 0.0
+    // The playback clock only invalidates the progress view, not every button.
+    let progress = PlaybackProgressPresentation()
     @Published var duration = 0.0
     @Published var paused = true
     @Published var speed = 1.0
@@ -12,6 +13,17 @@ import PlayerCore
     @Published var previousEnabled = false
     @Published var nextEnabled = false
     @Published var loopEnabled = false
+    func updatePosition(_ value: Double, immediate: Bool = false) {
+        progress.updatePosition(value, immediate: immediate)
+    }
+    func updatePracticeAvailability(previous: Bool, next: Bool, loop: Bool) {
+        if previousEnabled != previous { previousEnabled = previous }
+        if nextEnabled != next { nextEnabled = next }
+        if loopEnabled != loop { loopEnabled = loop }
+    }
+}
+@MainActor final class PlaybackProgressPresentation: ObservableObject {
+    @Published private(set) var position = 0.0
     private var publishedAt = 0.0
     func updatePosition(_ value: Double, immediate: Bool = false) {
         let now = ProcessInfo.processInfo.systemUptime

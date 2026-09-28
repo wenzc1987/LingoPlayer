@@ -36,9 +36,11 @@ final class PerformanceCounters: @unchecked Sendable {
         // Discovery can finish after mpv is ready and reset alignment data.
         // Finish it before installing the identical synthetic workload.
         await model.openTask?.value
-        model.aligner.cancel(); await model.aligner.waitForCancellation()
         model.english = (0..<5000).map { .init(id: "perf-\($0)", start: Double($0) * 1.5, end: Double($0) * 1.5 + 1.4, text: "We can listen again and learn something new together.") }
         model.chinese = (0..<5000).map { .init(id: "zh-\($0)", start: Double($0) * 1.5, end: Double($0) * 1.5 + 1.4, text: "我们可以再听一遍，一起学习新的内容。") }
+        // Assigning English can enter learning mode and start a new aligner.
+        // Join that producer before supplying synthetic word timings.
+        model.aligner.cancel(); await model.aligner.waitForCancellation()
         // Synthetic word times exercise UI updates; they do not measure alignment accuracy.
         model.timings = model.english.prefix(20).flatMap { cue -> [TimedWord] in
             let words = cue.tokens.filter(\.isWord)

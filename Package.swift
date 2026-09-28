@@ -13,6 +13,7 @@ let package = Package(
                           exclude: ["Resources/Icon"],
                           resources: [.copy("Resources/alignment_worker.py"), .copy("Resources/AppIcon.png")],
                           linkerSettings: [.linkedFramework("AppKit"), .linkedFramework("OpenGL"), .linkedFramework("Security")]),
-        .testTarget(name: "PlayerCoreTests", dependencies: ["PlayerCore"])
+        .testTarget(name: "PlayerCoreTests", dependencies: ["PlayerCore", "CSQLite"]),
+        .testTarget(name: "LingoPlayerTests", dependencies: ["LingoPlayer"])
     ]
 )

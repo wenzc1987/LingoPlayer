@@ -55,7 +55,7 @@ extension AppModel {
     }
     var learningVisible: Bool { isLearningMode && !preferences.cardHidden && (isDetached || (!preferences.sidebarCollapsed && sidebarTab == .learning)) }
     func closeLearningCard() {
-        learning.resumeFollowing(); lookupTask?.cancel(); lookupID = UUID(); dictionaryEntry = nil; lastDictionaryKey = ""
+        learning.resumeFollowing(); dictionaryLookup.clearSelection()
         var updated = preferences; updated.cardHidden = true; updatePreferences(updated)
     }
     func setSidebarCollapsed(_ value: Bool) {
@@ -198,14 +198,14 @@ extension AppModel {
         primarySubtitles = []; primarySubtitlePath = nil; subtitles.plain = []
         seekPreview.setMedia(nil, ffmpeg: settings.ffmpeg)
         chrome.resetFeedback(); cancelPendingSubtitleOffsets()
-        openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
-        sessionID = UUID(); searchID = UUID(); lookupID = UUID(); player.stop()
+        openTask?.cancel(); searchTask?.cancel(); dictionaryLookup.clearSelection(); aligner.cancel()
+        sessionID = UUID(); searchID = UUID(); player.stop()
         sentenceLoop = nil; practiceMessage = ""; transcript.reset(); seekRevision = 0
         endGate.begin(sessionID, purpose: .normal, playing: false)
         media = nil; videoAspect = nil; position = 0; duration = 0; paused = true; awaitingLoad = false
         queueState.currentID = nil; cancelReplay(); seekTarget = nil
         english = []; chinese = []; activeEnglish = []; activeChinese = []; timings = []
-        learning.reset(); currentWordID = nil; dictionaryEntry = nil; lastDictionaryKey = ""
+        learning.reset(); currentWordID = nil; dictionaryLookup.clearSelection()
         englishPath = nil; chinesePath = nil; englishDigest = ""; audioStreams = []; selectedAudio = -1
         englishSource = "未加载"; chineseSource = "未加载"; subtitleOptions = []
         subtitleStatus = "打开视频后自动发现字幕"; alignmentStatus = "导入英文字幕后可准备逐词高亮"

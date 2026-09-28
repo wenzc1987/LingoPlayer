@@ -9,7 +9,7 @@ if [ $# -lt 2 ]; then
   "$TASK_ROOT/.runtime/aligner/bin/ffmpeg" -hide_banner -loglevel error -y -f lavfi -i "testsrc2=size=960x540:rate=24" -f lavfi -i "sine=frequency=440:sample_rate=44100" -t 30 -c:v mpeg4 -q:v 5 -c:a aac "$TASK_VIDEO"
 fi
 export LINGOPLAYER_DATA_DIR="$TASK_OUTPUT/state-$(uuidgen)" LINGOPLAYER_RUNTIME="$TASK_ROOT/.runtime"
-"$TASK_APP/Contents/MacOS/LingoPlayer" --performance-test "$TASK_VIDEO" "$TASK_OUTPUT/performance.json"
+"${LINGOPLAYER_TEST_BINARY:-$TASK_APP/Contents/MacOS/LingoPlayer}" --performance-test "$TASK_VIDEO" "$TASK_OUTPUT/performance.json"
 python3 - "$TASK_OUTPUT/performance.json" <<'PY'
 import json,sys
 r=json.load(open(sys.argv[1]))

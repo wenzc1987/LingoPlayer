@@ -77,7 +77,7 @@ public final class OpenSubtitlesClient: @unchecked Sendable {
         var request = URLRequest(url: components.url!, timeoutInterval: 25)
         request.httpMethod = method
         request.setValue(apiKey, forHTTPHeaderField: "Api-Key")
-        request.setValue("LingoPlayer v0.1", forHTTPHeaderField: "User-Agent")
+        request.setValue("LingoPlayer v1.0.0", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         if !token.isEmpty { request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization") }
         if let body { request.httpBody = try JSONSerialization.data(withJSONObject: body); request.setValue("application/json", forHTTPHeaderField: "Content-Type") }

@@ -33,7 +33,7 @@ import PlayerCore
                 record("closing_card_preserves_pause_position_loop", model.paused && model.position == position && model.sentenceLoop == loop && !model.learning.isLocked)
                 model.timings = [.init(cueID: cue.id, tokenIndex: token.id, start: cue.start, end: cue.end)]
                 model.position = cue.start + 0.05; model.refreshLearning()
-                record("closed_card_stays_hidden_but_highlight_updates", model.preferences.cardHidden && model.currentWordID != nil && model.lastDictionaryKey.isEmpty)
+                record("closed_card_stays_hidden_but_highlight_updates", model.preferences.cardHidden && model.currentWordID != nil && !model.dictionaryLookup.hasSelection)
                 model.setSidebarCollapsed(true); await delay()
                 let wide = model.videoView.bounds.width
                 model.lock(cue: cue, token: token); await delay()
@@ -88,7 +88,7 @@ import PlayerCore
             record("cancel_waits_for_job_audio_cleanup", jobs.isEmpty)
             model.settings = original; model.closeLearningCard(); model.setSidebarCollapsed(true); model.savePlayback(); await model.store?.flush()
         }
-        let result: [String: Any] = ["version": "0.3.1", "passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "checks": checks]
+        let result: [String: Any] = ["version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? "", "passed": checks.allSatisfy { $0["passed"] as? Bool == true }, "checks": checks]
         try? JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]).write(to: output.appendingPathComponent(restore ? "display-restore.json" : "display.json"))
         NSApp.terminate(nil)
     }

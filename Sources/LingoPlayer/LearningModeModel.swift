@@ -27,11 +27,11 @@ extension AppModel {
         } else {
             // Invalidate every learning producer before clearing its presentation.
             // None of these operations seeks or changes the playback intent.
-            aligner.cancel(); lookupTask?.cancel(); lookupID = UUID()
+            aligner.cancel(); dictionaryLookup.reset()
             sentenceLoop = nil; cancelReplay(); practiceMessage = ""
             endGate.purpose = .normal
             timings = []; learning.reset(); learningPresentation.state = learningState
-            currentWordID = nil; dictionaryEntry = nil; dictionary = nil; dictionaryConfigured = false; lastDictionaryKey = ""
+            currentWordID = nil
             alignmentTaskStatus = AlignmentTaskStatus(.idle, "")
             alignmentStatus = ""; showAlignmentDetails = false; alignmentDetails = ""
             chrome.resetNotice()

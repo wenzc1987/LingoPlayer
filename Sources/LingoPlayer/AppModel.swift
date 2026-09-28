@@ -32,7 +32,8 @@ final class AppModel: ObservableObject {
     let playback = PlaybackPresentation()
     let mediaPresentation = MediaPresentation()
     let subtitles = SubtitlePresentation()
-    let learningPresentation = LearningPresentation()
+    let learningPresentation: LearningPresentation
+    let dictionaryLookup: DictionaryLookupController
     let chrome = PlayerChrome()
     let viewing: ViewingPreferencesStore
     let filePanels = FilePanelPresenter()
@@ -97,8 +98,8 @@ final class AppModel: ObservableObject {
             if learningVisible && newValue != learningPresentation.state { learningPresentation.state = newValue }
         }
     }
-    var dictionaryEntry: DictionaryEntry? { get { learningPresentation.entry } set { if newValue != learningPresentation.entry { learningPresentation.entry = newValue } } }
-    var dictionaryStatus: String { get { learningPresentation.status } set { if newValue != learningPresentation.status { learningPresentation.status = newValue } } }
+    var dictionaryEntry: DictionaryEntry? { learningPresentation.entry }
+    var dictionaryStatus: String { learningPresentation.status }
     var currentWordID: String? { get { subtitles.wordID } set { if newValue != subtitles.wordID { subtitles.wordID = newValue } } }
     @Published var isDetached = false { didSet { if oldValue != isDetached { refreshDictionary() } } }
     @Published var showSettings = false { didSet { updateChromePresentation() } }
@@ -124,8 +125,6 @@ final class AppModel: ObservableObject {
     var stateTask: Task<Void, Never>?
     var interactionReady = false
     var lastPersistedQueue: PlaybackQueue?
-    var dictionaryConfigured = false
-    var dictionary: ECDictionary?
     var timings: [TimedWord] = [] { didSet { wordIndex = TimelineIndex(starts: timings.map(\.start), ends: timings.map(\.end)) } }
     var englishPath: String?
     var chinesePath: String?
@@ -133,11 +132,8 @@ final class AppModel: ObservableObject {
     var saved = SavedPlayback()
     var openTask: Task<Void, Never>?
     var searchTask: Task<Void, Never>?
-    var lookupTask: Task<Void, Never>?
-    var lookupID = UUID()
     var sessionID = UUID()
     var searchID = UUID()
-    var lastDictionaryKey = ""
     var lastSavedAt = Date.distantPast
     var awaitingLoad = false { didSet { let value = media != nil && !awaitingLoad; if playback.ready != value { playback.ready = value; mediaPresentation.ready = value }; chrome.playback(paused: paused, ready: value); updateLearningMode() } }
     var replayRange: ClosedRange<Double>?
@@ -147,6 +143,9 @@ final class AppModel: ObservableObject {
     var onDetach: (() -> Void)?
 
     init(screenshotClipboard: NSPasteboard = .general) {
+        let presentation = LearningPresentation()
+        learningPresentation = presentation
+        dictionaryLookup = DictionaryLookupController(presentation: presentation)
         screenshots = ScreenshotController(pasteboard: screenshotClipboard)
         let loaded = RuntimeSettings.load()
         player = MPVPlayer(library: loaded.libmpv)
@@ -209,11 +208,11 @@ final class AppModel: ObservableObject {
         chrome.resetNotice()
         chrome.resetFeedback(); cancelPendingSubtitleOffsets()
         savePlayback()
-        openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
+        openTask?.cancel(); searchTask?.cancel(); dictionaryLookup.clearSelection(); aligner.cancel()
         awaitingLoad = true; learningOverride = nil
         subtitleSelectionRevision &+= 1; audioSelectionRevision &+= 1
         primarySubtitles = []; primarySubtitlePath = nil; seekPreview.setMedia(nil, ffmpeg: settings.ffmpeg)
-        sessionID = UUID(); searchID = UUID(); lookupID = UUID()
+        sessionID = UUID(); searchID = UUID()
         sentenceLoop = nil; practiceMessage = ""; seekRevision = 0; transcript.reset()
         cancelReplay()
         let session = sessionID
@@ -224,7 +223,7 @@ final class AppModel: ObservableObject {
         videoAspect = nil
         awaitingLoad = true; player.pause(true)
         english = []; chinese = []; activeEnglish = []; activeChinese = []
-        learning.reset(); currentWordID = nil; dictionaryEntry = nil; lastDictionaryKey = ""
+        learning.reset(); currentWordID = nil; dictionaryLookup.clearSelection()
         openTask = Task { [weak self] in
             guard let self else { return }
             let restored = try? await store?.load(SavedPlayback.self, key: identity.key, table: "playback")
@@ -235,7 +234,7 @@ final class AppModel: ObservableObject {
     }
     private func finishLoadMedia(_ url: URL, identity: MediaIdentity, session: UUID, restoring: Bool) {
         english = []; chinese = []; activeEnglish = []; activeChinese = []; timings = []
-        learning.reset(); currentWordID = nil; dictionaryEntry = nil; lastDictionaryKey = ""
+        learning.reset(); currentWordID = nil; dictionaryLookup.clearSelection()
         englishPath = nil; chinesePath = nil; englishDigest = ""
         englishSource = "未加载"; chineseSource = "未加载"; subtitleOptions = []
         audioStreams = []; selectedAudio = -1
@@ -573,6 +572,8 @@ final class AppModel: ObservableObject {
     }
     func refreshLearning() {
         transcript.updatePosition(position)
+        // These buttons depend on sentence boundaries, not on every clock tick.
+        playback.updatePracticeAvailability(previous: canPerform(.previousSentence), next: canPerform(.nextSentence), loop: canPerform(.toggleSentenceLoop))
         let plain = primaryIndex.active(at: position - englishOffset).map { displaySubtitles[$0] }
         if subtitles.plain != plain { subtitles.plain = plain }
         let practicedCue = isLearningMode ? self.practicedCue : nil
@@ -592,41 +593,15 @@ final class AppModel: ObservableObject {
         }
         refreshDictionary()
     }
-    func configureDictionary() {
-        guard isLearningMode else { return }
-        dictionaryConfigured = true
-        do { dictionary = try ECDictionary(path: settings.dictionary); dictionaryStatus = "词典释义 · ECDICT" }
-        catch { dictionary = nil; dictionaryStatus = error.localizedDescription }
-        lastDictionaryKey = ""; refreshDictionary()
-    }
     func refreshDictionary() {
-        guard isLearningMode, learningVisible else {
-            if !lastDictionaryKey.isEmpty { lookupTask?.cancel(); lookupID = UUID(); lastDictionaryKey = ""; dictionaryEntry = nil }
-            return
-        }
-        if selected != nil && !dictionaryConfigured { configureDictionary(); return }
-        if learningPresentation.state != learningState { learningPresentation.state = learningState }
-        let key = selected.map { $0.cue.id + ":" + String($0.token.id) + ":" + $0.token.normalized } ?? ""
-        guard key != lastDictionaryKey else { return }
-        lastDictionaryKey = key; lookupTask?.cancel(); lookupID = UUID(); dictionaryEntry = nil
-        guard let selected, let dictionary else { return }
-        let word = selected.token.normalized, token = lookupID
-        dictionaryStatus = "正在查询词典…"
-        lookupTask = Task { [weak self] in
-            do {
-                let entry = try await dictionary.lookup(word)
-                guard !Task.isCancelled, let self, self.lookupID == token else { return }
-                self.dictionaryEntry = entry
-                self.dictionaryStatus = entry == nil ? "词库暂无该词 · 可回放当前台词" : "词典释义 · ECDICT"
-            } catch { if let self, self.lookupID == token { self.dictionaryStatus = error.localizedDescription } }
-        }
+        if learningVisible && learningPresentation.state != learningState { learningPresentation.state = learningState }
+        dictionaryLookup.update(selection: selected, visible: learningVisible, path: settings.dictionary)
     }
     func saveSettings(_ updated: RuntimeSettings, apiKey: String) throws {
         let previousLibrary = settings.libmpv
         try updated.save(); try SecretStore.write(apiKey, name: "api-key")
         settings = updated
-        lookupTask?.cancel(); lookupID = UUID(); dictionaryEntry = nil
-        dictionary = nil; dictionaryConfigured = false; lastDictionaryKey = ""
+        dictionaryLookup.reset()
         refreshDictionary(); restartAlignment()
         if previousLibrary != updated.libmpv { alert = "播放库路径已保存。请重新启动 LingoPlayer 以加载新的播放内核。" }
     }
@@ -736,13 +711,13 @@ final class AppModel: ObservableObject {
         if let value = pendingSubtitleOffsets[.chinese] { chineseOffset = value }
         cancelPendingSubtitleOffsets(); chrome.resetFeedback()
         savePlayback()
-        openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel()
+        openTask?.cancel(); searchTask?.cancel(); dictionaryLookup.clearSelection(); aligner.cancel()
         await aligner.waitForCancellation(); await store?.flush()
     }
     func shutdown() {
         seekPreview.endDrag()
         cancelPendingSubtitleOffsets(); chrome.resetFeedback()
-         openTask?.cancel(); searchTask?.cancel(); lookupTask?.cancel(); aligner.cancel(); transcript.reset()
+        openTask?.cancel(); searchTask?.cancel(); dictionaryLookup.clearSelection(); aligner.cancel(); transcript.reset()
         videoView.shutdown(); player.shutdown()
     }
 }
