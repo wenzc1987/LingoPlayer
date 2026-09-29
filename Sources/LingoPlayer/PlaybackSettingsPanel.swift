@@ -15,6 +15,10 @@ struct PlaybackSettingsPanel: View {
             }.accessibilityIdentifier("learning-activation-policy")
             Text("识别到有效英文字幕后，自动开启英语学习，或在字幕菜单手动开启。每部影片都可以随时退出学习，继续普通播放。")
                 .font(.caption).foregroundStyle(.secondary)
+            Toggle("暂停即选中", isOn: Binding(get: { viewing.selectWordOnPause }, set: { viewing.setSelectWordOnPause($0) }))
+                .accessibilityIdentifier("select-word-on-pause")
+            Text("英语学习模式下，按下暂停时自动选中当前高亮单词并打开学习卡；没有高亮单词时仅暂停。")
+                .font(.caption).foregroundStyle(.secondary)
         }.formStyle(.grouped)
     }
 }

@@ -67,6 +67,14 @@ public struct LearningSelection: Equatable, Sendable {
         self.cue = cue; self.token = token; self.chinese = chinese
         playbackStart = max(0, cue.start + offset); playbackEnd = max(0, cue.end + offset)
     }
+    /// Browse words within the locked sentence, preserving its original context.
+    public func adjacentWord(_ direction: Int) -> Self? {
+        guard direction == -1 || direction == 1 else { return nil }
+        let words = cue.tokens.filter(\.isWord)
+        guard let index = words.firstIndex(where: { $0.id == token.id }), words.indices.contains(index + direction) else { return nil }
+        var next = self; next.token = words[index + direction]
+        return next
+    }
 }
 
 /// The spoken word is transient; the reader's selection remains stable while locked.

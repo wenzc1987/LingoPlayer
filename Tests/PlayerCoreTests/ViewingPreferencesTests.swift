@@ -30,4 +30,13 @@ struct ViewingPreferencesTests {
         let decoded = try JSONDecoder().decode(ViewingPreferences.self, from: JSONEncoder().encode(value))
         #expect(decoded == value)
     }
+    @Test func pauseSelectionDefaultsOnAndPersistsAnExplicitOff() throws {
+        for raw in ["{}", #"{"selectWordOnPause":"invalid","volume":25}"#] {
+            let value = try JSONDecoder().decode(ViewingPreferences.self, from: Data(raw.utf8))
+            #expect(value.selectWordOnPause)
+        }
+        var value = ViewingPreferences(); value.selectWordOnPause = false
+        let restored = try JSONDecoder().decode(ViewingPreferences.self, from: JSONEncoder().encode(value))
+        #expect(!restored.selectWordOnPause && restored == value)
+    }
 }

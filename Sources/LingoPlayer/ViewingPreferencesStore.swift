@@ -9,6 +9,7 @@ import PlayerCore
     @Published private(set) var screenshot: ScreenshotPreferences
     @Published private(set) var seekPreviewEnabled: Bool
     @Published private(set) var learningActivation: LearningActivationPolicy
+    @Published private(set) var selectWordOnPause: Bool
     var onPlaybackPreferencesChanged: (() -> Void)?
     var onWindowModeChanged: (() -> Void)?
     private var values: ViewingPreferences
@@ -24,6 +25,7 @@ import PlayerCore
         values = loaded; subtitles = loaded.subtitles; linkedSubtitleOffsets = loaded.linkedSubtitleOffsets; fitVideoWindow = loaded.fitVideoWindow
         screenshot = loaded.screenshot
         seekPreviewEnabled = loaded.seekPreviewEnabled; learningActivation = loaded.learningActivation
+        selectWordOnPause = loaded.selectWordOnPause
     }
     private func update(_ change: (inout ViewingPreferences) -> Void) {
         var next = values; change(&next); next.normalize()
@@ -38,6 +40,7 @@ import PlayerCore
         let playbackChanged = seekPreviewEnabled != next.seekPreviewEnabled || learningActivation != next.learningActivation
         if seekPreviewEnabled != next.seekPreviewEnabled { seekPreviewEnabled = next.seekPreviewEnabled }
         if learningActivation != next.learningActivation { learningActivation = next.learningActivation }
+        if selectWordOnPause != next.selectWordOnPause { selectWordOnPause = next.selectWordOnPause }
         storage.write(next, to: Self.url)
         if windowModeChanged { onWindowModeChanged?() }
         if playbackChanged { onPlaybackPreferencesChanged?() }
@@ -51,4 +54,5 @@ import PlayerCore
     func setScreenshot(_ value: ScreenshotPreferences) { update { $0.screenshot = value } }
     func setSeekPreviewEnabled(_ value: Bool) { update { $0.seekPreviewEnabled = value } }
     func setLearningActivation(_ value: LearningActivationPolicy) { update { $0.learningActivation = value } }
+    func setSelectWordOnPause(_ value: Bool) { update { $0.selectWordOnPause = value } }
 }

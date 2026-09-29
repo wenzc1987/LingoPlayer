@@ -64,6 +64,14 @@ import PlayerCore
                 "stage=\(stage), title=\(title), toggle=\(toggle)")
             let sidebar = model.preferences.sidebarCollapsed ? 0.0 : 333.0
             record(name + "-video-width", abs(model.videoView.bounds.width + sidebar - (window.contentView?.bounds.width ?? 0)) < 0.5)
+            let version = frame("playback-version") ?? .zero
+            record(name + "-version-at-stage-corner", !version.isEmpty && stage.contains(version) &&
+                   (0...16).contains(stage.maxX - version.maxX) && (0...12).contains(version.minY - stage.minY),
+                   "stage=\(stage), version=\(version)")
+            let picture = VideoContentGeometry(size: stage.size, aspect: model.videoAspect).image
+            if picture.minY > version.height + 6 {
+                record(name + "-version-on-bottom-letterbox", version.maxY < stage.minY + picture.minY)
+            }
             let snapshot = output.appendingPathComponent(name + ".png")
             record(name + "-snapshot", WindowSnapshot.save(window, to: snapshot))
             if sidebar > 0, let data = try? Data(contentsOf: snapshot), let bitmap = NSBitmapImageRep(data: data) {

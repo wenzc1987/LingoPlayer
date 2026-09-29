@@ -131,6 +131,15 @@ struct PlayerStage: View {
                     .frame(maxHeight: .infinity, alignment: .top)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
+            .overlay(alignment: .bottomTrailing) {
+                if chrome.visible {
+                    Text(AppVersion.label).font(.system(size: 9)).foregroundStyle(.white.opacity(0.6))
+                        .shadow(color: .black.opacity(0.85), radius: 2)
+                        .padding(.trailing, 10).padding(.bottom, 6)
+                        .allowsHitTesting(false).accessibilityIdentifier("playback-version")
+                        .transition(.opacity)
+                }
+            }
             .coordinateSpace(name: "player-stage")
             .animation(.easeOut(duration: 0.18), value: chrome.visible)
             .onPreferenceChange(SubtitleHeightKey.self) { subtitleHeight = $0 }
@@ -424,7 +433,16 @@ struct LearningPanel: View {
                             .font(.system(size: 13)).foregroundStyle(Palette.muted).lineSpacing(7).padding(.top, 30)
                     } else if model.learningVisible, let selection = model.selected {
                         VStack(alignment: .leading, spacing: 5) {
-                            LearningText(text: selection.token.text, style: .word).equatable()
+                            HStack(alignment: .top, spacing: 8) {
+                                LearningText(text: selection.token.text, style: .word).equatable()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                if model.learning.isLocked {
+                                    HStack(spacing: 4) {
+                                        wordButton(.previousWord, "chevron.left")
+                                        wordButton(.nextWord, "chevron.right")
+                                    }.padding(.top, 5)
+                                }
+                            }
                             if let entry = model.dictionaryEntry {
                                 if let lemma = entry.lemma, lemma != selection.token.normalized { Text("原形  \(lemma)").font(.system(size: 13)).foregroundStyle(.secondary) }
                                 else if entry.word != selection.token.normalized { Text("原形候选  \(entry.word)").font(.system(size: 13)).foregroundStyle(.secondary) }
@@ -469,6 +487,14 @@ struct LearningPanel: View {
             }.padding(.horizontal, 16).padding(.vertical, 12)
         }
         .background(Palette.panel).tint(Palette.accent)
+    }
+    private func wordButton(_ action: PlayerAction, _ symbol: String) -> some View {
+        Button { model.perform(action) } label: {
+            Image(systemName: symbol).font(.system(size: 12, weight: .medium))
+                .frame(width: 24, height: 24).contentShape(Rectangle())
+        }.buttonStyle(.plain).disabled(!model.canPerform(action))
+            .help(model.help(action) + " · 仅切换本句词卡")
+            .accessibilityLabel(action.title).accessibilityIdentifier("action-" + action.rawValue)
     }
 }
 

@@ -51,6 +51,7 @@ public struct ViewingPreferences: Codable, Equatable {
     public var screenshot = ScreenshotPreferences()
     public var seekPreviewEnabled = true
     public var learningActivation = LearningActivationPolicy.automatic
+    public var selectWordOnPause = true
     public init() {}
     public mutating func normalize() {
         volume = bounded(volume, 0...100, fallback: 80)
@@ -58,7 +59,7 @@ public struct ViewingPreferences: Codable, Equatable {
         subtitles = subtitles.normalized
         screenshot = screenshot.normalized
     }
-    enum CodingKeys: String, CodingKey { case volume, speed, windowSize, subtitles, linkedSubtitleOffsets, fitVideoWindow, screenshot, seekPreviewEnabled, learningActivation }
+    enum CodingKeys: String, CodingKey { case volume, speed, windowSize, subtitles, linkedSubtitleOffsets, fitVideoWindow, screenshot, seekPreviewEnabled, learningActivation, selectWordOnPause }
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         volume = (try? c.decode(Double.self, forKey: .volume)) ?? 80
@@ -70,6 +71,7 @@ public struct ViewingPreferences: Codable, Equatable {
         screenshot = (try? c.decode(ScreenshotPreferences.self, forKey: .screenshot)) ?? ScreenshotPreferences()
         seekPreviewEnabled = (try? c.decode(Bool.self, forKey: .seekPreviewEnabled)) ?? true
         learningActivation = (try? c.decode(LearningActivationPolicy.self, forKey: .learningActivation)) ?? .automatic
+        selectWordOnPause = (try? c.decode(Bool.self, forKey: .selectWordOnPause)) ?? true
         normalize()
     }
 }

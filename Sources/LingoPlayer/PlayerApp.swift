@@ -70,6 +70,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         self.keyboard = keyboard; keyboard.install()
         installMenu()
+        if let index = CommandLine.arguments.firstIndex(where: { ["--learning-card-test", "--learning-card-restore"].contains($0) }), CommandLine.arguments.count > index + 2 {
+            Task { [weak self] in await LearningCardSmoke.run(model: model, window: window, keyboard: keyboard,
+                video: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]),
+                restore: CommandLine.arguments[index] == "--learning-card-restore", detach: { self?.detachLearning() },
+                learningWindow: { self?.learningWindow }, closeDetached: { self?.learningWindow?.performClose(nil) }) }
+            return
+        }
         if let index = CommandLine.arguments.firstIndex(of: "--learning-toggle-test"), CommandLine.arguments.count > index + 2 {
             Task { [weak self] in await LearningToggleSmoke.run(model: model, window: window,
                 folder: URL(fileURLWithPath: CommandLine.arguments[index + 1]), output: URL(fileURLWithPath: CommandLine.arguments[index + 2]),

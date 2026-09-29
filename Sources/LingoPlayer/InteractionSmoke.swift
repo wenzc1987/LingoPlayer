@@ -53,7 +53,7 @@ enum InteractionSmoke {
                 if let color = iconBitmap.colorAt(x: x, y: y)?.usingColorSpace(.deviceRGB), color.greenComponent > 0.7 && color.redComponent > 0.5 && color.blueComponent < 0.6 { limePixels += 1 }
             } }
             record("finder_icon_resolves_lime_artwork", limePixels > 500, "\(limePixels) lime pixels")
-            record("app_version_and_dock_icon_packaged", Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String == "1.0.0" && NSApp.applicationIconImage != nil && Bundle.main.url(forResource: "AppIcon", withExtension: "icns") != nil)
+            record("app_version_and_dock_icon_packaged", AppVersion.current?.range(of: #"^\d+\.\d+\.\d+$"#, options: .regularExpression) != nil && NSApp.applicationIconImage != nil && Bundle.main.url(forResource: "AppIcon", withExtension: "icns") != nil)
             NSApp.orderFrontStandardAboutPanel(nil); await delay(0.3)
             if let about = NSApp.windows.first(where: { $0 !== window && $0.isVisible && $0.frame.height < 500 }) {
                 screenshot(about, "about.png"); about.orderOut(nil)

@@ -6,8 +6,9 @@ public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
     case toggleSentenceLoop, cycleSubtitleDisplay
     case toggleSidebarVisibility
     case toggleFullScreen, toggleFitVideoWindow, screenshot
+    case previousWord, nextWord
     public var id: String { rawValue }
-    public var requiresLearning: Bool { [.replaySentence, .resumeLearning, .previousSentence, .nextSentence, .toggleSentenceLoop].contains(self) }
+    public var requiresLearning: Bool { [.replaySentence, .resumeLearning, .previousSentence, .nextSentence, .toggleSentenceLoop, .previousWord, .nextWord].contains(self) }
     public var title: String {
         switch self {
         case .playPause: return "播放／暂停"
@@ -30,6 +31,8 @@ public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
         case .toggleFullScreen: return "全屏／恢复窗口"
         case .toggleFitVideoWindow: return "开启／关闭无黑边"
         case .screenshot: return "截图"
+        case .previousWord: return "上一个单词"
+        case .nextWord: return "下一个单词"
         }
     }
     public var defaultShortcut: Shortcut {
@@ -54,6 +57,8 @@ public enum PlayerAction: String, Codable, CaseIterable, Identifiable {
         case .toggleFullScreen: return .init(3, "f", [.command, .control])
         case .toggleFitVideoWindow: return .init(11, "b", [.command, .option])
         case .screenshot: return .init(35, "p", [.command, .option])
+        case .previousWord: return .init(123, "←", .command)
+        case .nextWord: return .init(124, "→", .command)
         }
     }
 }

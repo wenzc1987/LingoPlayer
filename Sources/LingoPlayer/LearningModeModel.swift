@@ -3,6 +3,20 @@ import PlayerCore
 
 @MainActor
 extension AppModel {
+    var highlightedLearningSelection: LearningSelection? {
+        guard isLearningMode, let spoken = learning.spoken, spoken.token.isWord,
+              currentWordID == "\(spoken.cue.id):\(spoken.token.id)" else { return nil }
+        return spoken
+    }
+    func adjacentLockedWord(_ direction: Int) -> LearningSelection? {
+        guard isLearningMode, !preferences.cardHidden else { return nil }
+        return learning.locked?.adjacentWord(direction)
+    }
+    func moveLockedWord(_ direction: Int) {
+        guard let next = adjacentLockedWord(direction) else { return }
+        // Browsing the card neither seeks nor interrupts playback or replay.
+        revealLearningCard(); learning.lock(next); refreshDictionary()
+    }
     func playbackPreferencesChanged() {
         seekPreview.setEnabled(viewing.seekPreviewEnabled)
         if appliedLearningPolicy != viewing.learningActivation {

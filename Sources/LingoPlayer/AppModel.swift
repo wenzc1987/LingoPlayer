@@ -505,13 +505,17 @@ final class AppModel: ObservableObject {
     }
     func togglePlayback() {
         guard canPlay else { return }
-        cancelReplay()
         let playing = !endGate.wantsPlayback
+        // Capture the displayed highlight before cancelling a replay or refreshing
+        // the playback presentation. Never substitute an older locked selection.
+        let pauseSelection = !playing && viewing.selectWordOnPause ? highlightedLearningSelection : nil
+        cancelReplay()
         endGate.purpose = sentenceLoop == nil ? .normal : .sentenceLoop
         endGate.wantsPlayback = playing; restoring = false
         if playing, let loop = sentenceLoop, loop.reachedEnd(at: position, eof: false) { requestSeek(loop.start) }
         else if playing && (completed || (duration > 0 && position >= duration - 0.05)) { completed = false; requestSeek(0) }
-        paused = !playing; player.pause(paused); refreshLearning()
+        if let pauseSelection { lock(cue: pauseSelection.cue, token: pauseSelection.token) }
+        else { paused = !playing; player.pause(paused); refreshLearning() }
     }
     func seek(_ time: Double) {
         cancelSentenceLoop()

@@ -90,6 +90,7 @@ extension AppModel {
         case .previousVideo: return queueState.adjacent(-1) != nil
         case .nextVideo: return queueState.adjacent(1) != nil
         case .replaySentence: return playbackReady && selected != nil
+        case .previousWord, .nextWord: return playbackReady && adjacentLockedWord(action == .previousWord ? -1 : 1) != nil
         case .previousSentence, .nextSentence:
             guard playbackReady, let target = adjacentSentence(action == .previousSentence ? -1 : 1).map({ max(0, $0.start + englishOffset) }) else { return false }
             return duration <= 0 || target < duration
@@ -110,6 +111,8 @@ extension AppModel {
         case .resumeLearning:
             resumeLearning()
             chrome.showFeedback("继续学习", symbol: "play.fill")
+        case .previousWord, .nextWord:
+            moveLockedWord(action == .previousWord ? -1 : 1)
         case .backward, .forward:
             let previous = position
             seek(position + (action == .forward ? 5 : -5))
