@@ -1,0 +1,3518 @@
+{
+  "baseline_commit": "257150a",
+  "cpu_percent_basis": "one core = 100%; application process only",
+  "workload": {
+    "video": "960x540 MPEG-4, 24 fps",
+    "subtitles_each_language": 5000,
+    "synthetic_timed_words": 180,
+    "samples_per_run": 240,
+    "sample_interval_seconds": 0.05,
+    "resource_sample_every": 20,
+    "order": [
+      "before1",
+      "after1",
+      "before2",
+      "after2"
+    ]
+  },
+  "before": {
+    "runs": [
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 21,
+          "dictionary_cache_hits": 79,
+          "dictionary_queries": 2,
+          "learning_panel_body": 94,
+          "progress_body": 117,
+          "subtitle_body": 92,
+          "word_measurements": 1656
+        },
+        "cpu_percent_one_core": 36.76720797196754,
+        "cpu_seconds": 4.941146,
+        "english_count": 5000,
+        "highlighted_words": 81,
+        "main_wakeup_max_ms": 59.959483990678564,
+        "main_wakeup_p95_ms": 18.17529301042668,
+        "name": "learning",
+        "paused": false,
+        "rendered_frames": 322,
+        "resource_samples": [
+          {
+            "cpu_percent_one_core": 42.78116155129257,
+            "elapsed_seconds": 1.1498495650012046,
+            "footprint_mib": 136.0625,
+            "resident_mib": 140.69140625
+          },
+          {
+            "cpu_percent_one_core": 30.40172622239504,
+            "elapsed_seconds": 2.216315322992159,
+            "footprint_mib": 132.57421875,
+            "resident_mib": 140.76953125
+          },
+          {
+            "cpu_percent_one_core": 39.04058403034953,
+            "elapsed_seconds": 3.3419695899938233,
+            "footprint_mib": 132.98828125,
+            "resident_mib": 141.24609375
+          },
+          {
+            "cpu_percent_one_core": 38.42762189813473,
+            "elapsed_seconds": 4.483265819988446,
+            "footprint_mib": 132.93359375,
+            "resident_mib": 141.40625
+          },
+          {
+            "cpu_percent_one_core": 38.87654530295992,
+            "elapsed_seconds": 5.596584908984369,
+            "footprint_mib": 133.13671875,
+            "resident_mib": 141.625
+          },
+          {
+            "cpu_percent_one_core": 29.830372463071424,
+            "elapsed_seconds": 6.666246376989875,
+            "footprint_mib": 133.13671875,
+            "resident_mib": 141.8984375
+          },
+          {
+            "cpu_percent_one_core": 37.12205144976548,
+            "elapsed_seconds": 7.85231498797657,
+            "footprint_mib": 133.05078125,
+            "resident_mib": 141.93359375
+          },
+          {
+            "cpu_percent_one_core": 40.5863913171907,
+            "elapsed_seconds": 8.980286667996552,
+            "footprint_mib": 133.07421875,
+            "resident_mib": 141.8515625
+          },
+          {
+            "cpu_percent_one_core": 38.098509556760035,
+            "elapsed_seconds": 10.09571087997756,
+            "footprint_mib": 133.359375,
+            "resident_mib": 142.04296875
+          },
+          {
+            "cpu_percent_one_core": 30.137281201024564,
+            "elapsed_seconds": 11.165190232975874,
+            "footprint_mib": 133.59765625,
+            "resident_mib": 142.3046875
+          },
+          {
+            "cpu_percent_one_core": 36.62152295854844,
+            "elapsed_seconds": 12.294913866993738,
+            "footprint_mib": 133.46484375,
+            "resident_mib": 142.39453125
+          },
+          {
+            "cpu_percent_one_core": 38.10528190798545,
+            "elapsed_seconds": 13.438975734985434,
+            "footprint_mib": 133.17578125,
+            "resident_mib": 142.36328125
+          }
+        ],
+        "wall_seconds": 13.439002503990196,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 21,
+          "dictionary_cache_hits": 80,
+          "dictionary_queries": 2,
+          "learning_panel_body": 94,
+          "progress_body": 128,
+          "subtitle_body": 92,
+          "word_measurements": 1656
+        },
+        "cpu_percent_one_core": 39.06615368074184,
+        "cpu_seconds": 5.318011,
+        "english_count": 5000,
+        "highlighted_words": 82,
+        "main_wakeup_max_ms": 75.24246799875982,
+        "main_wakeup_p95_ms": 26.330740004777905,
+        "name": "learning",
+        "paused": false,
+        "rendered_frames": 326,
+        "resource_samples": [
+          {
+            "cpu_percent_one_core": 44.69449814203264,
+            "elapsed_seconds": 1.174055022012908,
+            "footprint_mib": 144.05078125,
+            "resident_mib": 149.05859375
+          },
+          {
+            "cpu_percent_one_core": 33.01008357466446,
+            "elapsed_seconds": 2.273361539002508,
+            "footprint_mib": 143.421875,
+            "resident_mib": 146.55078125
+          },
+          {
+            "cpu_percent_one_core": 42.47521781092005,
+            "elapsed_seconds": 3.396402278012829,
+            "footprint_mib": 143.7578125,
+            "resident_mib": 146.796875
+          },
+          {
+            "cpu_percent_one_core": 39.444125862853795,
+            "elapsed_seconds": 4.525006323005073,
+            "footprint_mib": 143.30078125,
+            "resident_mib": 146.59765625
+          },
+          {
+            "cpu_percent_one_core": 39.222771922243275,
+            "elapsed_seconds": 5.683282441023039,
+            "footprint_mib": 143.6015625,
+            "resident_mib": 146.8125
+          },
+          {
+            "cpu_percent_one_core": 33.732186413349005,
+            "elapsed_seconds": 6.769927094021114,
+            "footprint_mib": 143.52734375,
+            "resident_mib": 147.07421875
+          },
+          {
+            "cpu_percent_one_core": 41.058485330062794,
+            "elapsed_seconds": 7.8939554070238955,
+            "footprint_mib": 143.80078125,
+            "resident_mib": 147.22265625
+          },
+          {
+            "cpu_percent_one_core": 41.928080967923265,
+            "elapsed_seconds": 9.064765014016302,
+            "footprint_mib": 143.6796875,
+            "resident_mib": 147.29296875
+          },
+          {
+            "cpu_percent_one_core": 36.25806437817189,
+            "elapsed_seconds": 10.237544111005263,
+            "footprint_mib": 144.05078125,
+            "resident_mib": 147.27734375
+          },
+          {
+            "cpu_percent_one_core": 34.51590425729991,
+            "elapsed_seconds": 11.322945198015077,
+            "footprint_mib": 143.9296875,
+            "resident_mib": 147.4296875
+          },
+          {
+            "cpu_percent_one_core": 40.25440482140302,
+            "elapsed_seconds": 12.449852929014014,
+            "footprint_mib": 144.18359375,
+            "resident_mib": 147.65234375
+          },
+          {
+            "cpu_percent_one_core": 41.38780050107879,
+            "elapsed_seconds": 13.612775322020752,
+            "footprint_mib": 144.1875,
+            "resident_mib": 147.73828125
+          }
+        ],
+        "wall_seconds": 13.61283489401103,
+        "word_timing_count": 180
+      }
+    ],
+    "summary": {
+      "cpu_percent_one_core": 37.91668082635469,
+      "cpu_sample_stddev_mean": 3.841062182017592,
+      "cpu_sample_max": 44.69449814203264,
+      "resident_mib_mean": 144.50130208333334,
+      "footprint_mib_mean": 138.58528645833334
+    }
+  },
+  "after": {
+    "runs": [
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 20,
+          "dictionary_cache_hits": 78,
+          "dictionary_queries": 2,
+          "learning_panel_body": 93,
+          "learning_sentence_body": 9,
+          "progress_body": 118,
+          "subtitle_body": 91,
+          "subtitle_word_body": 223,
+          "word_measurements": 162
+        },
+        "cpu_percent_one_core": 33.46994886077963,
+        "cpu_seconds": 4.443889,
+        "english_count": 5000,
+        "highlighted_words": 80,
+        "main_wakeup_max_ms": 60.705390019575134,
+        "main_wakeup_p95_ms": 18.167927005561065,
+        "name": "learning",
+        "paused": false,
+        "rendered_frames": 318,
+        "resource_samples": [
+          {
+            "cpu_percent_one_core": 38.72246330864977,
+            "elapsed_seconds": 1.1427527129999362,
+            "footprint_mib": 153.3203125,
+            "resident_mib": 147.64453125
+          },
+          {
+            "cpu_percent_one_core": 27.25886700469709,
+            "elapsed_seconds": 2.2093377620039973,
+            "footprint_mib": 150.34375,
+            "resident_mib": 147.8984375
+          },
+          {
+            "cpu_percent_one_core": 36.62362647431559,
+            "elapsed_seconds": 3.3371097490016837,
+            "footprint_mib": 149.90625,
+            "resident_mib": 148.05078125
+          },
+          {
+            "cpu_percent_one_core": 35.22054808180118,
+            "elapsed_seconds": 4.442717188998358,
+            "footprint_mib": 150.3125,
+            "resident_mib": 148.171875
+          },
+          {
+            "cpu_percent_one_core": 34.17360662826855,
+            "elapsed_seconds": 5.587378343014279,
+            "footprint_mib": 150.24609375,
+            "resident_mib": 148.43359375
+          },
+          {
+            "cpu_percent_one_core": 27.18760363192067,
+            "elapsed_seconds": 6.659252877987456,
+            "footprint_mib": 150.5390625,
+            "resident_mib": 148.80859375
+          },
+          {
+            "cpu_percent_one_core": 34.6845613909608,
+            "elapsed_seconds": 7.736651538987644,
+            "footprint_mib": 150.49609375,
+            "resident_mib": 148.61328125
+          },
+          {
+            "cpu_percent_one_core": 36.746290090326504,
+            "elapsed_seconds": 8.857466726010898,
+            "footprint_mib": 150.26171875,
+            "resident_mib": 148.61328125
+          },
+          {
+            "cpu_percent_one_core": 35.273733963650635,
+            "elapsed_seconds": 9.968990672990913,
+            "footprint_mib": 150.421875,
+            "resident_mib": 148.56640625
+          },
+          {
+            "cpu_percent_one_core": 28.104911829875544,
+            "elapsed_seconds": 11.052954223006964,
+            "footprint_mib": 150.97265625,
+            "resident_mib": 149.1171875
+          },
+          {
+            "cpu_percent_one_core": 32.802591583098746,
+            "elapsed_seconds": 12.155827448994387,
+            "footprint_mib": 151.4296875,
+            "resident_mib": 149.09375
+          },
+          {
+            "cpu_percent_one_core": 34.02511873745719,
+            "elapsed_seconds": 13.277222506992985,
+            "footprint_mib": 150.94140625,
+            "resident_mib": 149.0078125
+          }
+        ],
+        "wall_seconds": 13.277250642015133,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 20,
+          "dictionary_cache_hits": 77,
+          "dictionary_queries": 2,
+          "learning_panel_body": 92,
+          "learning_sentence_body": 9,
+          "progress_body": 118,
+          "subtitle_body": 90,
+          "subtitle_word_body": 221,
+          "word_measurements": 162
+        },
+        "cpu_percent_one_core": 30.85192398051637,
+        "cpu_seconds": 4.075533999999999,
+        "english_count": 5000,
+        "highlighted_words": 79,
+        "main_wakeup_max_ms": 56.126500002574176,
+        "main_wakeup_p95_ms": 18.71728700934909,
+        "name": "learning",
+        "paused": false,
+        "rendered_frames": 315,
+        "resource_samples": [
+          {
+            "cpu_percent_one_core": 39.15129682086842,
+            "elapsed_seconds": 1.1387311180005781,
+            "footprint_mib": 150.79296875,
+            "resident_mib": 146.5703125
+          },
+          {
+            "cpu_percent_one_core": 27.900134625069416,
+            "elapsed_seconds": 2.215130942000542,
+            "footprint_mib": 150.4609375,
+            "resident_mib": 146.8828125
+          },
+          {
+            "cpu_percent_one_core": 36.05312958998512,
+            "elapsed_seconds": 3.336373409983935,
+            "footprint_mib": 150.21484375,
+            "resident_mib": 140.88671875
+          },
+          {
+            "cpu_percent_one_core": 35.31718017749747,
+            "elapsed_seconds": 4.46752827000455,
+            "footprint_mib": 150.234375,
+            "resident_mib": 141.0546875
+          },
+          {
+            "cpu_percent_one_core": 35.907423684165266,
+            "elapsed_seconds": 5.588377271982608,
+            "footprint_mib": 150.61328125,
+            "resident_mib": 141.33203125
+          },
+          {
+            "cpu_percent_one_core": 26.559060820038106,
+            "elapsed_seconds": 6.661408437998034,
+            "footprint_mib": 151.04296875,
+            "resident_mib": 139.421875
+          },
+          {
+            "cpu_percent_one_core": 33.21636990278512,
+            "elapsed_seconds": 7.780314570991322,
+            "footprint_mib": 150.51953125,
+            "resident_mib": 136.203125
+          },
+          {
+            "cpu_percent_one_core": 36.39335270256744,
+            "elapsed_seconds": 8.916063187993132,
+            "footprint_mib": 150.58984375,
+            "resident_mib": 134.47265625
+          },
+          {
+            "cpu_percent_one_core": 27.103744656658318,
+            "elapsed_seconds": 10.012594327010447,
+            "footprint_mib": 150.71484375,
+            "resident_mib": 122.9609375
+          },
+          {
+            "cpu_percent_one_core": 21.51270402599332,
+            "elapsed_seconds": 11.054062659997726,
+            "footprint_mib": 151.1953125,
+            "resident_mib": 121.28125
+          },
+          {
+            "cpu_percent_one_core": 23.970039618116562,
+            "elapsed_seconds": 12.145971577003365,
+            "footprint_mib": 152.21484375,
+            "resident_mib": 115.3046875
+          },
+          {
+            "cpu_percent_one_core": 25.394147049092886,
+            "elapsed_seconds": 13.20994903400424,
+            "footprint_mib": 152.69921875,
+            "resident_mib": 116.30078125
+          }
+        ],
+        "wall_seconds": 13.209983281994937,
+        "word_timing_count": 180
+      }
+    ],
+    "summary": {
+      "cpu_percent_one_core": 32.160936420648,
+      "cpu_sample_stddev_mean": 4.673762259623054,
+      "cpu_sample_max": 39.15129682086842,
+      "resident_mib_mean": 141.02880859375,
+      "footprint_mib_mean": 150.853515625
+    }
+  },
+  "all_scenarios": {
+    "scenarios": [
+      {
+        "controls_visible": false,
+        "counts": {
+          "learning_panel_body": 1,
+          "subtitle_body": 44,
+          "subtitle_word_body": 104,
+          "word_measurements": 72
+        },
+        "cpu_percent_one_core": 19.90324912666938,
+        "cpu_seconds": 1.2737659999999997,
+        "english_count": 5000,
+        "highlighted_words": 39,
+        "main_wakeup_max_ms": 18.938868003897365,
+        "main_wakeup_p95_ms": 10.617677983827885,
+        "name": "immersive",
+        "paused": false,
+        "rendered_frames": 153,
+        "resource_samples": [
+          {
+            "cpu_percent_one_core": 21.309410989810445,
+            "elapsed_seconds": 1.0477764969982672,
+            "footprint_mib": 158.609375,
+            "resident_mib": 135.80078125
+          },
+          {
+            "cpu_percent_one_core": 21.342630633679452,
+            "elapsed_seconds": 2.123702908982523,
+            "footprint_mib": 158.6328125,
+            "resident_mib": 135.921875
+          },
+          {
+            "cpu_percent_one_core": 16.482192168866288,
+            "elapsed_seconds": 3.180625423992751,
+            "footprint_mib": 158.6484375,
+            "resident_mib": 136.09765625
+          },
+          {
+            "cpu_percent_one_core": 20.764388658771054,
+            "elapsed_seconds": 4.2563469570013694,
+            "footprint_mib": 158.23828125,
+            "resident_mib": 136.21875
+          },
+          {
+            "cpu_percent_one_core": 20.341676813227433,
+            "elapsed_seconds": 5.328362808999373,
+            "footprint_mib": 158.23828125,
+            "resident_mib": 136.3046875
+          },
+          {
+            "cpu_percent_one_core": 19.150810976174743,
+            "elapsed_seconds": 6.399743024987401,
+            "footprint_mib": 157.97265625,
+            "resident_mib": 136.2109375
+          }
+        ],
+        "wall_seconds": 6.399789260001853,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 11,
+          "learning_panel_body": 1,
+          "progress_body": 59,
+          "subtitle_body": 45,
+          "subtitle_word_body": 113,
+          "word_measurements": 90
+        },
+        "cpu_percent_one_core": 29.020152020909457,
+        "cpu_seconds": 1.8895359999999997,
+        "english_count": 5000,
+        "highlighted_words": 40,
+        "main_wakeup_max_ms": 29.885754996212196,
+        "main_wakeup_p95_ms": 16.240689018741246,
+        "name": "controls",
+        "paused": false,
+        "rendered_frames": 156,
+        "resource_samples": [
+          {
+            "cpu_percent_one_core": 29.301892179390403,
+            "elapsed_seconds": 1.0842746879789047,
+            "footprint_mib": 159.01953125,
+            "resident_mib": 137.48828125
+          },
+          {
+            "cpu_percent_one_core": 27.77836260187983,
+            "elapsed_seconds": 2.1753901159972884,
+            "footprint_mib": 159.41015625,
+            "resident_mib": 137.609375
+          },
+          {
+            "cpu_percent_one_core": 26.738693622445496,
+            "elapsed_seconds": 3.2320385969942436,
+            "footprint_mib": 159.5,
+            "resident_mib": 137.83203125
+          },
+          {
+            "cpu_percent_one_core": 29.64872569960265,
+            "elapsed_seconds": 4.330473663983867,
+            "footprint_mib": 159.53515625,
+            "resident_mib": 137.92578125
+          },
+          {
+            "cpu_percent_one_core": 31.68280656894884,
+            "elapsed_seconds": 5.449683223996544,
+            "footprint_mib": 159.5625,
+            "resident_mib": 138.0234375
+          },
+          {
+            "cpu_percent_one_core": 28.81826929902408,
+            "elapsed_seconds": 6.511062020988902,
+            "footprint_mib": 159.546875,
+            "resident_mib": 138.08984375
+          }
+        ],
+        "wall_seconds": 6.511116821988253,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 11,
+          "dictionary_cache_hits": 40,
+          "learning_panel_body": 46,
+          "learning_sentence_body": 5,
+          "progress_body": 63,
+          "subtitle_body": 46,
+          "subtitle_word_body": 115,
+          "word_measurements": 90
+        },
+        "cpu_percent_one_core": 34.449992304830296,
+        "cpu_seconds": 2.317361,
+        "english_count": 5000,
+        "highlighted_words": 41,
+        "main_wakeup_max_ms": 57.49385200324468,
+        "main_wakeup_p95_ms": 21.874237008159977,
+        "name": "learning",
+        "paused": false,
+        "rendered_frames": 161,
+        "resource_samples": [
+          {
+            "cpu_percent_one_core": 36.29356267586282,
+            "elapsed_seconds": 1.1578637339989655,
+            "footprint_mib": 144.18359375,
+            "resident_mib": 142.171875
+          },
+          {
+            "cpu_percent_one_core": 36.20022724685313,
+            "elapsed_seconds": 2.306414534978103,
+            "footprint_mib": 144.47265625,
+            "resident_mib": 122.97265625
+          },
+          {
+            "cpu_percent_one_core": 30.187299649203137,
+            "elapsed_seconds": 3.401567144988803,
+            "footprint_mib": 143.9921875,
+            "resident_mib": 122.52734375
+          },
+          {
+            "cpu_percent_one_core": 31.00779325969773,
+            "elapsed_seconds": 4.483643502986524,
+            "footprint_mib": 144.17578125,
+            "resident_mib": 123.3984375
+          },
+          {
+            "cpu_percent_one_core": 37.54534669332248,
+            "elapsed_seconds": 5.61042494798312,
+            "footprint_mib": 144.17578125,
+            "resident_mib": 123.51171875
+          },
+          {
+            "cpu_percent_one_core": 35.128024889253666,
+            "elapsed_seconds": 6.726684689987451,
+            "footprint_mib": 144.25390625,
+            "resident_mib": 123.5859375
+          }
+        ],
+        "wall_seconds": 6.7267388030013535,
+        "word_timing_count": 180
+      },
+      {
+        "controls_visible": true,
+        "counts": {
+          "controls_body": 11,
+          "progress_body": 59,
+          "subtitle_body": 44,
+          "subtitle_word_body": 111,
+          "transcript_native_updates": 11,
+          "word_measurements": 90
+        },
+        "cpu_percent_one_core": 31.85731963304697,
+        "cpu_seconds": 2.061566000000001,
+        "english_count": 5000,
+        "highlighted_words": 39,
+        "main_wakeup_max_ms": 29.313894995721054,
+        "main_wakeup_p95_ms": 16.70552102150395,
+        "name": "transcript",
+        "paused": false,
+        "rendered_frames": 156,
+        "resource_samples": [
+          {
+            "cpu_percent_one_core": 43.63032211873091,
+            "elapsed_seconds": 1.0916605169768445,
+            "footprint_mib": 148.13671875,
+            "resident_mib": 130.5078125
+          },
+          {
+            "cpu_percent_one_core": 28.561900301185112,
+            "elapsed_seconds": 2.1897072039719205,
+            "footprint_mib": 150.22265625,
+            "resident_mib": 132.04296875
+          },
+          {
+            "cpu_percent_one_core": 26.099167346922453,
+            "elapsed_seconds": 3.2334837979869917,
+            "footprint_mib": 149.11328125,
+            "resident_mib": 132.140625
+          },
+          {
+            "cpu_percent_one_core": 33.20895019697713,
+            "elapsed_seconds": 4.313632365985541,
+            "footprint_mib": 149.97265625,
+            "resident_mib": 133.67578125
+          },
+          {
+            "cpu_percent_one_core": 29.223569629225395,
+            "elapsed_seconds": 5.402308403979987,
+            "footprint_mib": 150.640625,
+            "resident_mib": 134.0703125
+          },
+          {
+            "cpu_percent_one_core": 30.155535102341148,
+            "elapsed_seconds": 6.471203380991938,
+            "footprint_mib": 150.75,
+            "resident_mib": 134.83984375
+          }
+        ],
+        "wall_seconds": 6.471247498993762,
+        "word_timing_count": 180
+      }
+    ],
+    "subtitle_count": 5000,
+    "synthetic_word_times": true
+  },
+  "alignment": {
+    "before": {
+      "words": [
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 0,
+          "start": 0.550000011920929,
+          "end": 1.1799999475479126
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 2,
+          "start": 1.1799999475479126,
+          "end": 1.6399999856948853
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 4,
+          "start": 1.6399999856948853,
+          "end": 1.7599999904632568
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 6,
+          "start": 1.7599999904632568,
+          "end": 1.909999966621399
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 8,
+          "start": 1.909999966621399,
+          "end": 2.259999990463257
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 10,
+          "start": 2.259999990463257,
+          "end": 2.7100000381469727
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 12,
+          "start": 2.7100000381469727,
+          "end": 2.799999952316284
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 14,
+          "start": 2.799999952316284,
+          "end": 3.3499999046325684
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 0,
+          "start": 4.264999996423722,
+          "end": 4.364999990463257
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 2,
+          "start": 4.364999990463257,
+          "end": 4.855
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 4,
+          "start": 4.855,
+          "end": 5.355
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 6,
+          "start": 5.355,
+          "end": 5.565000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 8,
+          "start": 5.565000038146973,
+          "end": 5.664999942779541
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 10,
+          "start": 5.664999942779541,
+          "end": 6.124999980926514
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 12,
+          "start": 6.124999980926514,
+          "end": 6.654999952316285
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 14,
+          "start": 6.654999952316285,
+          "end": 6.7249998855590825
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 16,
+          "start": 6.7249998855590825,
+          "end": 7.214999895095826
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 18,
+          "start": 7.265000085830689,
+          "end": 7.4749998855590825
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 20,
+          "start": 7.4749998855590825,
+          "end": 7.755000095367432
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 22,
+          "start": 7.755000095367432,
+          "end": 7.874999980926514
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 24,
+          "start": 7.874999980926514,
+          "end": 8.07499979019165
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 26,
+          "start": 8.07499979019165,
+          "end": 8.315000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 28,
+          "start": 8.315000038146973,
+          "end": 8.374999980926514
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 30,
+          "start": 8.374999980926514,
+          "end": 8.874999980926514
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 32,
+          "start": 8.874999980926514,
+          "end": 9.474999885559082
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 34,
+          "start": 9.474999885559082,
+          "end": 9.605
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 36,
+          "start": 9.605,
+          "end": 9.934999923706055
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 38,
+          "start": 9.934999923706055,
+          "end": 10.065000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 40,
+          "start": 10.065000038146973,
+          "end": 10.585000019073487
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 42,
+          "start": 10.585000019073487,
+          "end": 10.855
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 44,
+          "start": 10.855,
+          "end": 10.974999885559082
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 46,
+          "start": 10.974999885559082,
+          "end": 11.315000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 48,
+          "start": 11.315000038146973,
+          "end": 11.974999885559082
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 50,
+          "start": 12.434999923706055,
+          "end": 12.51499984741211
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 52,
+          "start": 12.51499984741211,
+          "end": 13.004999618530274
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 54,
+          "start": 13.004999618530274,
+          "end": 13.205000381469727
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 56,
+          "start": 13.205000381469727,
+          "end": 13.695000152587891
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 58,
+          "start": 13.695000152587891,
+          "end": 14.254999618530274
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 60,
+          "start": 14.254999618530274,
+          "end": 14.365000228881836
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 62,
+          "start": 14.365000228881836,
+          "end": 14.785000305175782
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 64,
+          "start": 14.785000305175782,
+          "end": 14.974999885559082
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 66,
+          "start": 14.974999885559082,
+          "end": 15.01499984741211
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 68,
+          "start": 15.01499984741211,
+          "end": 15.565000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 70,
+          "start": 15.865000228881836,
+          "end": 16.134999732971192
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 72,
+          "start": 16.134999732971192,
+          "end": 16.28500030517578
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 74,
+          "start": 16.28500030517578,
+          "end": 16.394999961853028
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 76,
+          "start": 16.394999961853028,
+          "end": 16.51499984741211
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 78,
+          "start": 16.51499984741211,
+          "end": 16.98500011444092
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 80,
+          "start": 17.17499969482422,
+          "end": 17.254999618530274
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 82,
+          "start": 17.254999618530274,
+          "end": 17.67499969482422
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 84,
+          "start": 17.67499969482422,
+          "end": 18.0449995803833
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 0,
+          "start": 18.98999999642372,
+          "end": 20.089999990463255
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 2,
+          "start": 20.089999990463255,
+          "end": 20.209999995231627
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 4,
+          "start": 20.209999995231627,
+          "end": 20.599999980926512
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 6,
+          "start": 20.599999980926512,
+          "end": 20.909999923706053
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 8,
+          "start": 20.909999923706053,
+          "end": 21.300000028610228
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 10,
+          "start": 21.300000028610228,
+          "end": 21.369999961853026
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 12,
+          "start": 21.369999961853026,
+          "end": 21.83
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 14,
+          "start": 21.869999961853026,
+          "end": 22.58
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 16,
+          "start": 22.63000019073486,
+          "end": 22.929999904632567
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 18,
+          "start": 22.929999904632567,
+          "end": 23.13999994277954
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 20,
+          "start": 23.13999994277954,
+          "end": 23.63000019073486
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 0,
+          "start": 24.44500000357628,
+          "end": 24.605
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 2,
+          "start": 24.605,
+          "end": 24.715000014305115
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 4,
+          "start": 24.715000014305115,
+          "end": 25.2649999666214
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 6,
+          "start": 25.2649999666214,
+          "end": 25.605
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 8,
+          "start": 25.605,
+          "end": 25.864999990463257
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 10,
+          "start": 25.864999990463257,
+          "end": 26.07500002861023
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 12,
+          "start": 26.07500002861023,
+          "end": 26.364999990463257
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 14,
+          "start": 26.364999990463257,
+          "end": 27.055000047683716
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 16,
+          "start": 27.20499990463257,
+          "end": 27.374999980926514
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 18,
+          "start": 27.374999980926514,
+          "end": 27.815000038146973
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 20,
+          "start": 27.815000038146973,
+          "end": 28.065000038146973
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 22,
+          "start": 28.065000038146973,
+          "end": 28.115000228881836
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 24,
+          "start": 28.115000228881836,
+          "end": 28.594999771118164
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 26,
+          "start": 28.965000133514405,
+          "end": 29.155000190734864
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 28,
+          "start": 29.155000190734864,
+          "end": 29.44500015258789
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 30,
+          "start": 29.44500015258789,
+          "end": 29.57499979019165
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 32,
+          "start": 29.605,
+          "end": 30.474999885559082
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 34,
+          "start": 30.474999885559082,
+          "end": 30.784999828338623
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 36,
+          "start": 30.784999828338623,
+          "end": 31.034999828338623
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 38,
+          "start": 31.034999828338623,
+          "end": 31.26499984741211
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 40,
+          "start": 31.26499984741211,
+          "end": 31.48500011444092
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 42,
+          "start": 31.48500011444092,
+          "end": 31.905000190734864
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 44,
+          "start": 31.905000190734864,
+          "end": 32.09499977111817
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 46,
+          "start": 32.09499977111817,
+          "end": 32.48500011444092
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 48,
+          "start": 32.48500011444092,
+          "end": 32.67499969482422
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 50,
+          "start": 32.67499969482422,
+          "end": 33.18499992370606
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 52,
+          "start": 33.45500038146973,
+          "end": 33.71499965667725
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 54,
+          "start": 33.71499965667725,
+          "end": 34.21499965667725
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 56,
+          "start": 34.21499965667725,
+          "end": 34.355000000000004
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 58,
+          "start": 34.355000000000004,
+          "end": 34.945000152587895
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 60,
+          "start": 34.945000152587895,
+          "end": 35.11500022888184
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 62,
+          "start": 35.11500022888184,
+          "end": 35.61500022888184
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 64,
+          "start": 35.93499992370606,
+          "end": 36.05499980926514
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 66,
+          "start": 36.05499980926514,
+          "end": 36.49500034332276
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 68,
+          "start": 36.49500034332276,
+          "end": 36.84499977111817
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 70,
+          "start": 36.84499977111817,
+          "end": 37.294999580383305
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 72,
+          "start": 37.294999580383305,
+          "end": 37.384999732971195
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 74,
+          "start": 37.384999732971195,
+          "end": 37.81500003814698
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 76,
+          "start": 37.81500003814698,
+          "end": 37.92499969482422
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 78,
+          "start": 37.92499969482422,
+          "end": 38.285000305175785
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 80,
+          "start": 38.285000305175785,
+          "end": 38.875000457763676
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 82,
+          "start": 38.875000457763676,
+          "end": 39.535000305175785
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 84,
+          "start": 39.695000152587895,
+          "end": 40.17499969482422
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 86,
+          "start": 40.17499969482422,
+          "end": 40.375000457763676
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 88,
+          "start": 40.375000457763676,
+          "end": 40.49499938964844
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 90,
+          "start": 40.49499938964844,
+          "end": 40.824999313354496
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 92,
+          "start": 40.824999313354496,
+          "end": 41.355000000000004
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 94,
+          "start": 41.66499946594239,
+          "end": 42.00499961853028
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 96,
+          "start": 42.00499961853028,
+          "end": 42.24499938964844
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 98,
+          "start": 42.24499938964844,
+          "end": 42.40499923706055
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 100,
+          "start": 42.40499923706055,
+          "end": 42.86500022888184
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 102,
+          "start": 42.86500022888184,
+          "end": 43.105000000000004
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 104,
+          "start": 43.105000000000004,
+          "end": 43.34499977111817
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 106,
+          "start": 43.34499977111817,
+          "end": 44.00499961853028
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 108,
+          "start": 44.00499961853028,
+          "end": 44.18499992370606
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 110,
+          "start": 44.18499992370606,
+          "end": 44.58499954223633
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 112,
+          "start": 44.58499954223633,
+          "end": 44.80500076293946
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 114,
+          "start": 44.83499954223633,
+          "end": 45.27500007629395
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 116,
+          "start": 45.27500007629395,
+          "end": 45.42499969482422
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 118,
+          "start": 45.42499969482422,
+          "end": 45.65499923706055
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 120,
+          "start": 45.65499923706055,
+          "end": 45.95500038146973
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 122,
+          "start": 45.95500038146973,
+          "end": 46.15499923706055
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 124,
+          "start": 46.15499923706055,
+          "end": 46.574999313354496
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 126,
+          "start": 46.574999313354496,
+          "end": 47.20500038146973
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 0,
+          "start": 48.489999992847444,
+          "end": 48.67
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 2,
+          "start": 48.67,
+          "end": 49.000000042915346
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 4,
+          "start": 49.000000042915346,
+          "end": 49.130000038146974
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 6,
+          "start": 49.130000038146974,
+          "end": 49.64000002861023
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 8,
+          "start": 49.7600000333786,
+          "end": 50.17999999046326
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 10,
+          "start": 50.44999997138977,
+          "end": 50.62000004768372
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 12,
+          "start": 50.62000004768372,
+          "end": 50.82000009536743
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 14,
+          "start": 50.880000038146974,
+          "end": 51.160000009536745
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 16,
+          "start": 51.160000009536745,
+          "end": 51.67999999046326
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 18,
+          "start": 51.67999999046326,
+          "end": 51.970000190734865
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 20,
+          "start": 51.970000190734865,
+          "end": 52.20000020980835
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 22,
+          "start": 52.20000020980835,
+          "end": 52.38999979019165
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 24,
+          "start": 52.38999979019165,
+          "end": 52.74000017166138
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 26,
+          "start": 52.74000017166138,
+          "end": 52.95000020980835
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 28,
+          "start": 52.95000020980835,
+          "end": 52.99000017166138
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 30,
+          "start": 52.99000017166138,
+          "end": 53.51999990463257
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 32,
+          "start": 53.51999990463257,
+          "end": 53.8099998664856
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 34,
+          "start": 53.8099998664856,
+          "end": 53.93000022888184
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 36,
+          "start": 53.93000022888184,
+          "end": 54.189999980926515
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 38,
+          "start": 54.189999980926515,
+          "end": 54.499999923706056
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 40,
+          "start": 54.499999923706056,
+          "end": 54.63999979019165
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 42,
+          "start": 54.63999979019165,
+          "end": 55.30000011444092
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 44,
+          "start": 55.30000011444092,
+          "end": 55.92
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 46,
+          "start": 56.190000457763674,
+          "end": 56.36999980926514
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 48,
+          "start": 56.36999980926514,
+          "end": 56.560000343322756
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 50,
+          "start": 56.560000343322756,
+          "end": 56.64000026702881
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 52,
+          "start": 56.64000026702881,
+          "end": 57.380000038146974
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 54,
+          "start": 57.380000038146974,
+          "end": 57.86999980926514
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 56,
+          "start": 57.940000457763674,
+          "end": 58.27999965667725
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 58,
+          "start": 58.27999965667725,
+          "end": 58.55000011444092
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 60,
+          "start": 58.55000011444092,
+          "end": 58.819999618530275
+        }
+      ],
+      "completed": [
+        "cue-0-en",
+        "cue-1-en",
+        "cue-2-en",
+        "cue-3-en",
+        "cue-4-en"
+      ],
+      "failures": {},
+      "elapsed": 23.584159115998773,
+      "peakMemoryMB": 404.578125
+    },
+    "after": {
+      "words": [
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 0,
+          "start": 0.550000011920929,
+          "end": 1.1799999475479126
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 2,
+          "start": 1.1799999475479126,
+          "end": 1.6399999856948853
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 4,
+          "start": 1.6399999856948853,
+          "end": 1.7599999904632568
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 6,
+          "start": 1.7599999904632568,
+          "end": 1.909999966621399
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 8,
+          "start": 1.909999966621399,
+          "end": 2.259999990463257
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 10,
+          "start": 2.259999990463257,
+          "end": 2.7100000381469727
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 12,
+          "start": 2.7100000381469727,
+          "end": 2.799999952316284
+        },
+        {
+          "cueID": "cue-0-en",
+          "tokenIndex": 14,
+          "start": 2.799999952316284,
+          "end": 3.3499999046325684
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 0,
+          "start": 4.264999996423722,
+          "end": 4.364999990463257
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 2,
+          "start": 4.364999990463257,
+          "end": 4.855
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 4,
+          "start": 4.855,
+          "end": 5.355
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 6,
+          "start": 5.355,
+          "end": 5.565000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 8,
+          "start": 5.565000038146973,
+          "end": 5.664999942779541
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 10,
+          "start": 5.664999942779541,
+          "end": 6.124999980926514
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 12,
+          "start": 6.124999980926514,
+          "end": 6.654999952316285
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 14,
+          "start": 6.654999952316285,
+          "end": 6.7249998855590825
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 16,
+          "start": 6.7249998855590825,
+          "end": 7.214999895095826
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 18,
+          "start": 7.265000085830689,
+          "end": 7.4749998855590825
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 20,
+          "start": 7.4749998855590825,
+          "end": 7.755000095367432
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 22,
+          "start": 7.755000095367432,
+          "end": 7.874999980926514
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 24,
+          "start": 7.874999980926514,
+          "end": 8.07499979019165
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 26,
+          "start": 8.07499979019165,
+          "end": 8.315000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 28,
+          "start": 8.315000038146973,
+          "end": 8.374999980926514
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 30,
+          "start": 8.374999980926514,
+          "end": 8.874999980926514
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 32,
+          "start": 8.874999980926514,
+          "end": 9.474999885559082
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 34,
+          "start": 9.474999885559082,
+          "end": 9.605
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 36,
+          "start": 9.605,
+          "end": 9.934999923706055
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 38,
+          "start": 9.934999923706055,
+          "end": 10.065000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 40,
+          "start": 10.065000038146973,
+          "end": 10.585000019073487
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 42,
+          "start": 10.585000019073487,
+          "end": 10.855
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 44,
+          "start": 10.855,
+          "end": 10.974999885559082
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 46,
+          "start": 10.974999885559082,
+          "end": 11.315000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 48,
+          "start": 11.315000038146973,
+          "end": 11.974999885559082
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 50,
+          "start": 12.434999923706055,
+          "end": 12.51499984741211
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 52,
+          "start": 12.51499984741211,
+          "end": 13.004999618530274
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 54,
+          "start": 13.004999618530274,
+          "end": 13.205000381469727
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 56,
+          "start": 13.205000381469727,
+          "end": 13.695000152587891
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 58,
+          "start": 13.695000152587891,
+          "end": 14.254999618530274
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 60,
+          "start": 14.254999618530274,
+          "end": 14.365000228881836
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 62,
+          "start": 14.365000228881836,
+          "end": 14.785000305175782
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 64,
+          "start": 14.785000305175782,
+          "end": 14.974999885559082
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 66,
+          "start": 14.974999885559082,
+          "end": 15.01499984741211
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 68,
+          "start": 15.01499984741211,
+          "end": 15.565000038146973
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 70,
+          "start": 15.865000228881836,
+          "end": 16.134999732971192
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 72,
+          "start": 16.134999732971192,
+          "end": 16.28500030517578
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 74,
+          "start": 16.28500030517578,
+          "end": 16.394999961853028
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 76,
+          "start": 16.394999961853028,
+          "end": 16.51499984741211
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 78,
+          "start": 16.51499984741211,
+          "end": 16.98500011444092
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 80,
+          "start": 17.17499969482422,
+          "end": 17.254999618530274
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 82,
+          "start": 17.254999618530274,
+          "end": 17.67499969482422
+        },
+        {
+          "cueID": "cue-1-en",
+          "tokenIndex": 84,
+          "start": 17.67499969482422,
+          "end": 18.0449995803833
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 0,
+          "start": 18.98999999642372,
+          "end": 20.089999990463255
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 2,
+          "start": 20.089999990463255,
+          "end": 20.209999995231627
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 4,
+          "start": 20.209999995231627,
+          "end": 20.599999980926512
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 6,
+          "start": 20.599999980926512,
+          "end": 20.909999923706053
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 8,
+          "start": 20.909999923706053,
+          "end": 21.300000028610228
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 10,
+          "start": 21.300000028610228,
+          "end": 21.369999961853026
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 12,
+          "start": 21.369999961853026,
+          "end": 21.83
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 14,
+          "start": 21.869999961853026,
+          "end": 22.58
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 16,
+          "start": 22.63000019073486,
+          "end": 22.929999904632567
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 18,
+          "start": 22.929999904632567,
+          "end": 23.13999994277954
+        },
+        {
+          "cueID": "cue-2-en",
+          "tokenIndex": 20,
+          "start": 23.13999994277954,
+          "end": 23.63000019073486
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 0,
+          "start": 24.454999994039536,
+          "end": 24.605
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 2,
+          "start": 24.605,
+          "end": 24.715000014305115
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 4,
+          "start": 24.715000014305115,
+          "end": 25.2649999666214
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 6,
+          "start": 25.2649999666214,
+          "end": 25.605
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 8,
+          "start": 25.605,
+          "end": 25.864999990463257
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 10,
+          "start": 25.864999990463257,
+          "end": 26.07500002861023
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 12,
+          "start": 26.07500002861023,
+          "end": 26.364999990463257
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 14,
+          "start": 26.364999990463257,
+          "end": 27.055000047683716
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 16,
+          "start": 27.20499990463257,
+          "end": 27.374999980926514
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 18,
+          "start": 27.374999980926514,
+          "end": 27.815000038146973
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 20,
+          "start": 27.815000038146973,
+          "end": 28.065000038146973
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 22,
+          "start": 28.065000038146973,
+          "end": 28.115000228881836
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 24,
+          "start": 28.115000228881836,
+          "end": 28.594999771118164
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 26,
+          "start": 28.965000133514405,
+          "end": 29.155000190734864
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 28,
+          "start": 29.155000190734864,
+          "end": 29.44500015258789
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 30,
+          "start": 29.44500015258789,
+          "end": 29.57499979019165
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 32,
+          "start": 29.605,
+          "end": 30.474999885559082
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 34,
+          "start": 30.474999885559082,
+          "end": 30.784999828338623
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 36,
+          "start": 30.784999828338623,
+          "end": 31.034999828338623
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 38,
+          "start": 31.034999828338623,
+          "end": 31.26499984741211
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 40,
+          "start": 31.26499984741211,
+          "end": 31.48500011444092
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 42,
+          "start": 31.48500011444092,
+          "end": 31.905000190734864
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 44,
+          "start": 31.905000190734864,
+          "end": 32.09499977111817
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 46,
+          "start": 32.09499977111817,
+          "end": 32.48500011444092
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 48,
+          "start": 32.48500011444092,
+          "end": 32.67499969482422
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 50,
+          "start": 32.67499969482422,
+          "end": 33.18499992370606
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 52,
+          "start": 33.45500038146973,
+          "end": 33.71499965667725
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 54,
+          "start": 33.71499965667725,
+          "end": 34.21499965667725
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 56,
+          "start": 34.21499965667725,
+          "end": 34.355000000000004
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 58,
+          "start": 34.355000000000004,
+          "end": 34.945000152587895
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 60,
+          "start": 34.945000152587895,
+          "end": 35.11500022888184
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 62,
+          "start": 35.11500022888184,
+          "end": 35.61500022888184
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 64,
+          "start": 35.93499992370606,
+          "end": 36.05499980926514
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 66,
+          "start": 36.05499980926514,
+          "end": 36.49500034332276
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 68,
+          "start": 36.49500034332276,
+          "end": 36.84499977111817
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 70,
+          "start": 36.84499977111817,
+          "end": 37.294999580383305
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 72,
+          "start": 37.294999580383305,
+          "end": 37.384999732971195
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 74,
+          "start": 37.384999732971195,
+          "end": 37.81500003814698
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 76,
+          "start": 37.81500003814698,
+          "end": 37.92499969482422
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 78,
+          "start": 37.92499969482422,
+          "end": 38.285000305175785
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 80,
+          "start": 38.285000305175785,
+          "end": 38.875000457763676
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 82,
+          "start": 38.875000457763676,
+          "end": 39.535000305175785
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 84,
+          "start": 39.695000152587895,
+          "end": 40.17499969482422
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 86,
+          "start": 40.17499969482422,
+          "end": 40.375000457763676
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 88,
+          "start": 40.375000457763676,
+          "end": 40.49499938964844
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 90,
+          "start": 40.49499938964844,
+          "end": 40.824999313354496
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 92,
+          "start": 40.824999313354496,
+          "end": 41.355000000000004
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 94,
+          "start": 41.66499946594239,
+          "end": 42.00499961853028
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 96,
+          "start": 42.00499961853028,
+          "end": 42.24499938964844
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 98,
+          "start": 42.24499938964844,
+          "end": 42.40499923706055
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 100,
+          "start": 42.40499923706055,
+          "end": 42.86500022888184
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 102,
+          "start": 42.86500022888184,
+          "end": 43.105000000000004
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 104,
+          "start": 43.105000000000004,
+          "end": 43.34499977111817
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 106,
+          "start": 43.34499977111817,
+          "end": 44.00499961853028
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 108,
+          "start": 44.00499961853028,
+          "end": 44.18499992370606
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 110,
+          "start": 44.18499992370606,
+          "end": 44.58499954223633
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 112,
+          "start": 44.58499954223633,
+          "end": 44.80500076293946
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 114,
+          "start": 44.83499954223633,
+          "end": 45.27500007629395
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 116,
+          "start": 45.27500007629395,
+          "end": 45.42499969482422
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 118,
+          "start": 45.42499969482422,
+          "end": 45.65499923706055
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 120,
+          "start": 45.65499923706055,
+          "end": 45.95500038146973
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 122,
+          "start": 45.95500038146973,
+          "end": 46.15499923706055
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 124,
+          "start": 46.15499923706055,
+          "end": 46.574999313354496
+        },
+        {
+          "cueID": "cue-3-en",
+          "tokenIndex": 126,
+          "start": 46.574999313354496,
+          "end": 47.20500038146973
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 0,
+          "start": 48.489999992847444,
+          "end": 48.67
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 2,
+          "start": 48.67,
+          "end": 49.000000042915346
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 4,
+          "start": 49.000000042915346,
+          "end": 49.130000038146974
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 6,
+          "start": 49.130000038146974,
+          "end": 49.64000002861023
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 8,
+          "start": 49.7600000333786,
+          "end": 50.17999999046326
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 10,
+          "start": 50.44999997138977,
+          "end": 50.62000004768372
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 12,
+          "start": 50.62000004768372,
+          "end": 50.82000009536743
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 14,
+          "start": 50.880000038146974,
+          "end": 51.160000009536745
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 16,
+          "start": 51.160000009536745,
+          "end": 51.67999999046326
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 18,
+          "start": 51.67999999046326,
+          "end": 51.970000190734865
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 20,
+          "start": 51.970000190734865,
+          "end": 52.20000020980835
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 22,
+          "start": 52.20000020980835,
+          "end": 52.38999979019165
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 24,
+          "start": 52.38999979019165,
+          "end": 52.74000017166138
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 26,
+          "start": 52.74000017166138,
+          "end": 52.95000020980835
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 28,
+          "start": 52.95000020980835,
+          "end": 52.99000017166138
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 30,
+          "start": 52.99000017166138,
+          "end": 53.51999990463257
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 32,
+          "start": 53.51999990463257,
+          "end": 53.8099998664856
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 34,
+          "start": 53.8099998664856,
+          "end": 53.93000022888184
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 36,
+          "start": 53.93000022888184,
+          "end": 54.189999980926515
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 38,
+          "start": 54.189999980926515,
+          "end": 54.499999923706056
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 40,
+          "start": 54.499999923706056,
+          "end": 54.63999979019165
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 42,
+          "start": 54.63999979019165,
+          "end": 55.30000011444092
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 44,
+          "start": 55.30000011444092,
+          "end": 55.92
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 46,
+          "start": 56.190000457763674,
+          "end": 56.36999980926514
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 48,
+          "start": 56.36999980926514,
+          "end": 56.560000343322756
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 50,
+          "start": 56.560000343322756,
+          "end": 56.64000026702881
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 52,
+          "start": 56.64000026702881,
+          "end": 57.380000038146974
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 54,
+          "start": 57.380000038146974,
+          "end": 57.86999980926514
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 56,
+          "start": 57.940000457763674,
+          "end": 58.27999965667725
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 58,
+          "start": 58.27999965667725,
+          "end": 58.55000011444092
+        },
+        {
+          "cueID": "cue-4-en",
+          "tokenIndex": 60,
+          "start": 58.55000011444092,
+          "end": 58.819999618530275
+        }
+      ],
+      "completed": [
+        "cue-0-en",
+        "cue-1-en",
+        "cue-2-en",
+        "cue-3-en",
+        "cue-4-en"
+      ],
+      "failures": {},
+      "elapsed": 20.716387813008623,
+      "peakMemoryMB": 425.41796875
+    },
+    "cpu_seconds": {
+      "before": 15.44,
+      "after": 11.21
+    },
+    "maximum_timestamp_change_seconds": 0.01
+  },
+  "baseline_sha256": "4fbdd4d2f5838e90d1903c21e64c16a3d7eb2eb4cafa47094c29a1d1ff7667c5",
+  "optimized_sha256": "57dd346120ef4341ffd024bb31ae915700edbbb0d237b544cceab899b6daab06",
+  "validation": {
+    "viewing/viewing.json": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_opens",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "offset_status_visible",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_timing-settings",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_link_toggle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "linked_step_keeps_legacy_language_gap_and_waits",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "either_language_can_drive_linked_adjustment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_is_debounced",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reset_clears_both_offsets",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "unlinked_adjustment_leaves_other_language_unchanged",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_tab_has_live_preview",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native_font_slider_changes_style",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_appearance-settings",
+          "passed": true
+        },
+        {
+          "detail": "before=(460.0, 160.5, 55.0, 34.0), after=(389.5, 241.5, 71.5, 44.0)",
+          "name": "appearance_changes_live_subtitle_size_and_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_styled",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_reset_restores_only_visual_defaults",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "large_subtitles_do_not_overlap_controls_in_small_window",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "word_highlights_preserve_wrapping_and_hit_targets",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_large-subtitles",
+          "passed": true
+        },
+        {
+          "detail": "PlayerWindowSize(width: 1100.0, height: 720.0)",
+          "name": "normal_window_size_is_remembered",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen_does_not_overwrite_normal_size",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "zero_volume_is_persisted",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "viewing/viewing-restore.json": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "volume_and_speed_restore_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "appearance_and_link_restore_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "(1100.0, 720.0)",
+          "name": "window_size_restores_in_new_process",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "video_loaded",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "saved_audio_preferences_survive_media_load",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "saved_offsets_restore_independently_of_global_preferences",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "screenshot_restored",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "playback/playback-mode.json": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "new-defaults",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "normal-first-no-learning-work",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "default-audio-not-english",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "faster-3",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "faster-4",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "faster-5",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "faster-6",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "slower-2.5",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "slower-2.0",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "speed-lower-bound",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-French.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "learning-disabled-French.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-seek-French.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-Spanish.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "learning-disabled-Spanish.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-seek-Spanish.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-Japanese.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "learning-disabled-Japanese.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-seek-Japanese.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-Chinese.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "learning-disabled-Chinese.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-seek-Chinese.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-Short.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "learning-disabled-Short.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-seek-Short.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-Effects.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "learning-disabled-Effects.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "ordinary-seek-Effects.srt",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "automatic-without-alignment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached-learning-open",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "exit-preserves-playback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "exit-cleans-learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "manual-exit-survives-callbacks",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "preview-toggle-preserves-mode-override",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "manual-policy-stays-normal",
+          "passed": true
+        },
+        {
+          "detail": "toggle found=true, learning=true",
+          "name": "native-enter-learning-toggle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "policy-change-reevaluates",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "no-overlapping-interval-no-learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "late-subtitle-cannot-replace-selection",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native-normal-toolbar-hides-learning",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "normal-caption-screenshot",
+          "passed": true
+        },
+        {
+          "detail": "seek delta=1",
+          "name": "native-slider-release-seeks-once",
+          "passed": true
+        },
+        {
+          "detail": "max stall=11.112940664558362ms",
+          "name": "preview-workload-false",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main-stall-budget-false",
+          "passed": true
+        },
+        {
+          "detail": "max stall=12.728394670799997ms",
+          "name": "preview-workload-true",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main-stall-budget-true",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "thumbnail-real-frame",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "preview-native-snapshot",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "two-second-cache-hit",
+          "passed": true
+        },
+        {
+          "detail": "min=0.2503143759968225",
+          "name": "start-frequency-limit",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "cache-bounds",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "fullscreen-preview",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "disable-hides-immediately",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "disabled-never-starts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "missing-ffmpeg-time-only",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timeout-time-only",
+          "passed": true
+        },
+        {
+          "detail": "start\nend\nstart\nend\n",
+          "name": "cancelled-process-never-overlaps-replacement",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "media-switch-clears-preview-cache",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "portrait-frame-aspect",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "portrait-snapshot",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "stop-hides-preview",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "english-import-preserves-chinese-english",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "english-import-preserves-chinese-general",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "english-only-bilingual-import-preserves-chinese",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "general-bilingual-import-replaces-translation",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reopening-keeps-custom-chinese",
+          "passed": true
+        },
+        {
+          "detail": "stage=(90.0, 56.0, 680.0, 360.0), content=(90.0, 56.0, 680.0, 360.0), title=(391.75, 363.0, 76.5, 19.0)",
+          "name": "large-captions-preserve-stage-and-title-false",
+          "passed": true
+        },
+        {
+          "detail": "stage=(90.0, 56.0, 680.0, 360.0), controls=[(177.0, 302.0, 506.0, 20.0), (127.0, 264.5, 18.0, 14.5), (232.0, 263.0, 16.0, 18.0), (262.0, 254.0, 44.0, 36.0), (320.0, 263.0, 16.0, 18.0), (423.5, 263.5, 17.5, 16.5), (463.25, 264.5, 13.5, 15.0), (497.5, 264.0, 21.0, 15.5), (536.0, 266.0, 16.0, 11.5), (571.0, 264.5, 18.5, 14.5), (607.0, 264.5, 18.5, 14.5), (644.5, 264.5, 15.0, 15.0), (678.5, 264.5, 19.5, 15.0), (716.0, 265.0, 16.0, 13.5)]",
+          "name": "large-captions-keep-all-controls-visible-false",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "large-captions-snapshot-false",
+          "passed": true
+        },
+        {
+          "detail": "stage=(90.0, 56.0, 680.0, 360.0), content=(90.0, 56.0, 680.0, 360.0), title=(391.75, 363.0, 76.5, 19.0)",
+          "name": "large-captions-preserve-stage-and-title-true",
+          "passed": true
+        },
+        {
+          "detail": "stage=(90.0, 56.0, 680.0, 360.0), controls=[(177.0, 302.0, 506.0, 20.0), (127.0, 264.5, 18.0, 14.5), (214.0, 263.0, 16.0, 18.0), (244.0, 254.0, 44.0, 36.0), (302.0, 263.0, 16.0, 18.0), (423.5, 263.5, 17.5, 16.5), (463.25, 264.5, 13.5, 15.0), (497.5, 264.0, 21.0, 15.5), (536.0, 266.0, 16.0, 11.5), (571.0, 264.5, 18.5, 14.5), (607.0, 264.5, 18.5, 14.5), (644.5, 264.5, 15.0, 15.0), (678.5, 264.5, 19.5, 15.0), (716.0, 265.0, 22.0, 23.0), (180.0, 266.0, 12.0, 12.0), (340.0, 266.0, 12.0, 12.0), (373.5, 264.5, 17.0, 14.5)]",
+          "name": "large-captions-keep-all-controls-visible-true",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "large-captions-snapshot-true",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "native-loop-button-updates-at-cue-boundary",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "seek-progress-still-reports-native-feedback",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "repeated-word-presents-cached-result-synchronously",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "leaving-learning-clears-dictionary-cache",
+          "passed": true
+        }
+      ],
+      "method": "Native AppKit/SwiftUI window; real libmpv and FFmpeg; deterministic controller requests at 30 Hz. Does not measure physical mouse latency.",
+      "passed": true,
+      "scenarios": [
+        {
+          "cache_bytes": 0,
+          "cache_hit_rate": 0,
+          "cache_hits": 0,
+          "child_cpu_percent_one_core": 0,
+          "cpu_percent_one_core": 16.741609936578815,
+          "decode_seconds": [],
+          "main_stall_max_ms": 11.112940664558362,
+          "main_stall_p95_ms": 5.247597662188734,
+          "preview": false,
+          "rendered_frames": 150,
+          "requests": 0,
+          "resident_before_mib": 143.92578125,
+          "resident_peak_mib": 144.31640625,
+          "starts": 0,
+          "wall_seconds": 6.317367350013228
+        },
+        {
+          "cache_bytes": 1337316,
+          "cache_hit_rate": 0.5833333333333334,
+          "cache_hits": 105,
+          "child_cpu_percent_one_core": 28.039738007087312,
+          "cpu_percent_one_core": 23.16644296008924,
+          "decode_seconds": [
+            0.4764625869865995,
+            0.17535826499806717,
+            0.17500992899294943,
+            0.17991619399981573,
+            0.18691474801744334,
+            0.1847665609966498,
+            0.18582515500020236,
+            0.19133484701160342,
+            0.18746110302163288,
+            0.18189068100764416
+          ],
+          "main_stall_max_ms": 12.728394670799997,
+          "main_stall_p95_ms": 4.704473677945013,
+          "preview": true,
+          "rendered_frames": 151,
+          "requests": 180,
+          "resident_before_mib": 126.95703125,
+          "resident_peak_mib": 129.09375,
+          "starts": 10,
+          "wall_seconds": 6.321246651990805
+        }
+      ]
+    },
+    "playback/restore.json": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "restored-new-preferences",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restored-subtitles-rechecked-manual",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restored-custom-chinese-overrides-bilingual",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restored-user-audio",
+          "passed": true
+        }
+      ],
+      "method": "Native AppKit/SwiftUI window; real libmpv and FFmpeg; deterministic controller requests at 30 Hz. Does not measure physical mouse latency.",
+      "passed": true,
+      "scenarios": []
+    },
+    "practice/practice.json": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "v02_custom_bindings_win_new_default_conflicts",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "independent_files_overlap_and_unmatched_chinese",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "literal_case_insensitive_search",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_search_returns_both_overlaps",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "literal_no_results",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "return_current_clears_search_and_resumes_following",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timestamp_navigation_preserves_pause_and_locked_card",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continuous_loop_plays_and_preserves_locked_card",
+          "passed": true
+        },
+        {
+          "detail": "position=0.20833333333333331 → 0.20833333333333331, loops=3 → 3",
+          "name": "pause_preserves_loop_and_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "next_sentence_retargets_paused_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "previous_sentence_retargets_paused_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "timestamp_retargets_existing_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "toggle_off_preserves_position_and_pause",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "gap_disables_toolbar_loop_but_row_can_start",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_learning_exits_loop_and_unlocks",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "one_shot_exits_loop_and_pauses_with_card",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "scrub_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "five_second_jump_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_offset_keeps_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "english_offset_exits_loop_and_updates_jump",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "loop_uses_english_offset_and_independent_tail",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "audio_selection_exits_loop",
+          "passed": true
+        },
+        {
+          "detail": "iterations=20, position=7.6, ",
+          "name": "twenty_tail_loops_at_double_speed_never_autoplay_or_finish",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "old_loop_seek_result_is_ignored",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_shortcut_cycles_to_english_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_mode_preserves_learning_and_video_geometry",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "bilingual_restores_without_geometry_change",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "search_field_keeps_player_shortcuts_native",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "settings_blocks_new_actions",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "main_shortcut_starts_loop_once",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "detached_shortcuts_share_loop_and_display_state",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "bilingual_replacement_resets_loop_search_and_browsing",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "rapid_media_switch_clears_loop_and_stale_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "negative_offset_replay_keeps_start_and_extends_tail",
+          "passed": true
+        },
+        {
+          "detail": "position=2.6666666666666665, word=tail-regression:2",
+          "name": "replay_still_plays_and_highlights_its_own_cue_after_subtitle_end",
+          "passed": true
+        },
+        {
+          "detail": "position=3.125",
+          "name": "replay_pauses_after_full_tail_and_keeps_practiced_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "navigation_and_loop_target_stay_on_practiced_sentence_after_tail",
+          "passed": true
+        },
+        {
+          "detail": "timings=2, offset=-1.7",
+          "name": "tail_adjustment_preserves_offsets_and_alignment",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "tail_setting_persists_per_media_with_existing_offset",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "continue_learning_releases_practiced_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "zero_tail_restores_subtitle_endpoint",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "direct_seek_clears_replay_subtitle",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "five_thousand_rows_prepare_and_search",
+          "passed": true
+        },
+        {
+          "detail": "following=false, row=4895 → 4895, offset=20.0 → 20.0",
+          "name": "native_manual_scroll_stops_automatic_follow",
+          "passed": true
+        },
+        {
+          "detail": "visible cell views=6",
+          "name": "native_table_virtualizes_large_transcript",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "hidden_transcript_defers_active_row_updates",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reopening_transcript_preserves_manual_reading_position",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "reopening_transcript_refreshes_current_highlight",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "return_current_scrolls_native_table_back",
+          "passed": true
+        },
+        {
+          "detail": "clock delta=5.458333333333333, maximum main actor gap=0.06717896461486816",
+          "name": "playback_advances_during_search_and_scroll_without_rebuild",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_only_navigation_and_disabled_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "chinese_only_timestamp_preserves_pause",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 27.98442792892456,
+      "metrics": {
+        "main_actor_max_gap_seconds": 0.06717896461486816,
+        "tail_loop_iterations": 20,
+        "transcript_5000_prepare_seconds": 0.1474210023880005,
+        "transcript_5000_search_seconds_including_debounce": 0.2111290693283081
+      },
+      "passed": true,
+      "version": "1.0.0"
+    },
+    "practice/practice-restore.json": {
+      "checks": [
+        {
+          "detail": "",
+          "name": "restart_paused_with_display_preference_and_no_loop",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_resets_search_and_following",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "new_action_custom_bindings_restore",
+          "passed": true
+        },
+        {
+          "detail": "",
+          "name": "restart_keeps_queue_and_unfinished_progress",
+          "passed": true
+        }
+      ],
+      "elapsed_seconds": 1.1732760667800903,
+      "metrics": {},
+      "passed": true,
+      "version": "1.0.0"
+    }
+  },
+  "package_sha256": "255c012570d170a82e40dce58ae24d683a8ba525aeb6b243b22ca97f8c09249a"
+}

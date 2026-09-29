@@ -243,6 +243,9 @@ python3 scripts/evaluate-alignment.py --result result.json \
 - 默认 Python 优先使用项目 `.runtime/aligner/bin/python`，用户明确指定的路径继续保留。
 - 诊断仅保存在本机数据目录的 `AlignmentFailures`：最多 20 条、总计 20 MB；包含任务配置、退出码、完整进程输出与 MFA 文本日志，不保存提取音频。单条超出总限额会标记截断。可从详情窗口在 Finder 中定位。
 - 播放进度最多 10 Hz 刷新；字幕按内容变化更新。原始播放时间仍用于高亮和循环判断。缓存及保存操作在后台执行，切片与退出时完成必要落盘。
+- 播放状态变化时才重新读取片源、时长、暂停和画面尺寸等信息；高亮与循环仍使用 30 Hz 原始时钟。逐词高亮固定字宽并复用句子测量结果，避免高亮切换挤动换行；学习词卡复用可选择、可复制的原生文字控件。后台对齐以较低调度优先级运行，并限制 OpenBLAS／OpenMP 等数值库为单线程，减少与播放争抢资源；已有逐词缓存继续有效。
+
+学习模式资源优化的测量结果与局限见 [2026-09-29 验证记录](verification/LEARNING-PERFORMANCE-2026-09-29.md)。
 
 诊断和性能复测入口：`--alignment-repro request.json output.json`、`--response-test request.json output.json`。请求格式为 `{"video":"绝对路径","subtitle":"绝对路径","position":秒}`。只应配合独立 `LINGOPLAYER_DATA_DIR` 使用；响应测试自动静音，默认投递应用内键盘事件；请求增加 `"input":"button"` 可测原生鼠标按下／松开事件。生成记录分别包含事件投递、动作执行、界面更新及播放器确认耗时。原生显示回归见 `scripts/run-display-smoke.sh`。
 

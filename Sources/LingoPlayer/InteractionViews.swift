@@ -23,7 +23,7 @@ struct SidebarPanel: View {
                 }.pickerStyle(.segmented).labelsHidden().help(model.help(.toggleSidebar))
                 Button { model.setSidebarCollapsed(true) } label: { Image(systemName: "xmark") }
                     .buttonStyle(.plain).help("收起侧栏").accessibilityIdentifier("collapse-sidebar")
-            }.padding(16)
+            }.padding(.horizontal, 16).padding(.vertical, 10)
             ZStack {
                 TranscriptPanel(model: model, transcript: model.transcript)
                     .opacity(model.sidebarTab == .transcript ? 1 : 0)

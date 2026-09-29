@@ -41,7 +41,7 @@ import PlayerCore
 @MainActor final class LearningPresentation: ObservableObject {
     @Published var state = LearningState()
     @Published var entry: DictionaryEntry?
-    @Published var status = "词典释义 · ECDICT"
+    @Published var status = ""
 }
 
 @MainActor final class MediaPresentation: ObservableObject {

@@ -29,6 +29,18 @@ final class PerformanceCounters: @unchecked Sendable {
             var usage = rusage(); getrusage(RUSAGE_SELF, &usage)
             return Double(usage.ru_utime.tv_sec + usage.ru_stime.tv_sec) + Double(usage.ru_utime.tv_usec + usage.ru_stime.tv_usec) / 1e6
         }
+        func memory() -> [String: Double] {
+            var info = task_vm_info_data_t()
+            var count = mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size / MemoryLayout<integer_t>.size)
+            let result = withUnsafeMutablePointer(to: &info) { pointer in
+                pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) {
+                    task_info(mach_task_self_, task_flavor_t(TASK_VM_INFO), $0, &count)
+                }
+            }
+            guard result == KERN_SUCCESS else { return [:] }
+            return ["resident_mib": Double(info.resident_size) / 1048576,
+                    "footprint_mib": Double(info.phys_footprint) / 1048576]
+        }
         model.settings.autoSearch = false; model.settings.mfa = "/missing/performance-smoke"
         model.setVolume(0); model.player.set("mute", "yes"); model.open(video)
         let loaded = await wait { model.playbackReady && model.duration > 20 }
@@ -49,13 +61,18 @@ final class PerformanceCounters: @unchecked Sendable {
         model.refreshTranscript(reset: true); _ = await wait { !model.transcript.isPreparing }
         NSApp.activate(ignoringOtherApps: true); window.makeKeyAndOrderFront(nil)
         var scenarios: [[String: Any]] = []
-        for name in ["immersive", "controls", "learning", "transcript"] {
+        let requested = ProcessInfo.processInfo.environment["LINGOPLAYER_PERF_SCENARIO"]
+        let sampleCount = max(120, min(400, Int(ProcessInfo.processInfo.environment["LINGOPLAYER_PERF_SAMPLES"] ?? "120") ?? 120))
+        for name in ["immersive", "controls", "learning", "transcript"] where requested == nil || requested == name {
             model.chrome.hold(.keyboard, active: false)
             model.setSidebarCollapsed(name == "immersive" || name == "controls")
             model.sidebarTab = name == "transcript" ? .transcript : .learning
             model.seek(1)
             if !model.endGate.wantsPlayback { model.togglePlayback() }
             _ = await wait { model.seekTarget == nil && !model.paused }
+            // Let native hover/focus callbacks settle after the sidebar resize
+            // before choosing the chrome state for the measured interval.
+            if name == "immersive" { await delay(0.5) }
             if name == "immersive" { if model.chrome.visible { model.chrome.toggle() } }
             else { model.chrome.hold(.keyboard, active: true) }
             await delay(1)
@@ -63,17 +80,29 @@ final class PerformanceCounters: @unchecked Sendable {
             counters.reset()
             let start = ProcessInfo.processInfo.systemUptime, cpuStart = cpu(), frames = model.videoView.renderedFrames
             var wakeups: [Double] = []
+            var resources: [[String: Double]] = []
+            var sampleTime = start, sampleCPU = cpuStart
             var highlightedWords = Set<String>()
-            for _ in 0..<120 {
+            for index in 0..<sampleCount {
                 let before = ProcessInfo.processInfo.systemUptime
                 await delay(0.05)
                 wakeups.append(max(0, ProcessInfo.processInfo.systemUptime - before - 0.05) * 1000)
                 if let word = model.currentWordID { highlightedWords.insert(word) }
+                if (index + 1).isMultiple(of: 20) {
+                    let now = ProcessInfo.processInfo.systemUptime, used = cpu()
+                    var sample = memory()
+                    sample["cpu_percent_one_core"] = (used - sampleCPU) / (now - sampleTime) * 100
+                    sample["elapsed_seconds"] = now - start
+                    resources.append(sample); sampleTime = now; sampleCPU = used
+                }
             }
             let elapsed = ProcessInfo.processInfo.systemUptime - start, cpuSeconds = cpu() - cpuStart
             let counts = counters.snapshot(); wakeups.sort()
-            scenarios.append(["name": name, "wall_seconds": elapsed, "cpu_seconds": cpuSeconds, "cpu_percent_one_core": cpuSeconds / elapsed * 100, "rendered_frames": model.videoView.renderedFrames - frames, "main_wakeup_p95_ms": wakeups[113], "main_wakeup_max_ms": wakeups.last!, "counts": counts, "highlighted_words": highlightedWords.count, "word_timing_count": model.timings.count, "english_count": model.english.count, "paused": model.paused, "controls_visible": model.chrome.visible])
+            scenarios.append(["name": name, "wall_seconds": elapsed, "cpu_seconds": cpuSeconds, "cpu_percent_one_core": cpuSeconds / elapsed * 100, "rendered_frames": model.videoView.renderedFrames - frames, "main_wakeup_p95_ms": wakeups[Int(Double(wakeups.count - 1) * 0.95)], "main_wakeup_max_ms": wakeups.last!, "counts": counts, "highlighted_words": highlightedWords.count, "word_timing_count": model.timings.count, "english_count": model.english.count, "paused": model.paused, "controls_visible": model.chrome.visible, "resource_samples": resources])
             print("performance", name, cpuSeconds / elapsed * 100, counts); fflush(stdout)
+            if ProcessInfo.processInfo.environment["LINGOPLAYER_PERF_SNAPSHOTS"] == "1" {
+                WindowSnapshot.save(window, to: output.deletingLastPathComponent().appendingPathComponent(name + ".png"))
+            }
         }
         let result: [String: Any] = ["scenarios": scenarios, "subtitle_count": 5000, "synthetic_word_times": true]
         try? FileManager.default.createDirectory(at: output.deletingLastPathComponent(), withIntermediateDirectories: true)

@@ -31,6 +31,10 @@ final class MPVPlayer {
     private var fileReady = false
     private var seekRevision: UInt64 = 0
     private var lastSnapshot: PlaybackSnapshot?
+    private var metadataDirty = true
+    private var path = "", duration = 0.0
+    private var paused = true, eof = false, seeking = false
+    private var videoAspect: Double?
     var onUpdate: ((PlaybackSnapshot) -> Void)?
     var startupError: String?
     init(library: String) {
@@ -38,7 +42,7 @@ final class MPVPlayer {
         handle = lp_create(library, &error, error.count)
         guard handle != nil else { startupError = String(cString: error); return }
         let timer = DispatchSource.makeTimerSource(queue: queue)
-        timer.schedule(deadline: .now(), repeating: 1.0 / 30)
+        timer.schedule(deadline: .now(), repeating: 1.0 / 30, leeway: .milliseconds(2))
         timer.setEventHandler { [weak self] in self?.poll() }
         self.timer = timer; timer.resume()
     }
@@ -54,16 +58,24 @@ final class MPVPlayer {
             var error: Int32 = 0, entry: Int64 = -1
             let event = lp_poll_event(handle, &error, &entry)
             if event == 0 { break }
+            if event == 6 || event == 8 || event == 22 { metadataDirty = true }
             if event == 6 { activeEntry = entry }
             if event == 8 && activeEntry == expectedEntry { fileReady = true }
             if event == 7 && entry == expectedEntry && error < 0 { failure = String(cString: lp_error(handle, error)) }
         }
-        let path = string("path")
+        if metadataDirty {
+            path = string("path"); duration = lp_get_double(handle, "duration", 0)
+            paused = string("pause") == "yes"; eof = string("eof-reached") == "yes"
+            seeking = string("seeking") == "yes"
+            videoAspect = VideoWindowGeometry.displayAspect(width: lp_get_double(handle, "dwidth", 0), height: lp_get_double(handle, "dheight", 0), rotation: lp_get_double(handle, "video-out-params/rotate", 0))
+            metadataDirty = false
+            PerformanceCounters.shared.hit("playback_metadata_reads")
+        }
         let ready = fileReady && activeEntry == expectedEntry && path == expectedPath
         let snapshot = PlaybackSnapshot(generation: generation, path: expectedPath,
-            position: lp_get_double(handle, "time-pos", 0), duration: lp_get_double(handle, "duration", 0),
-            paused: string("pause") == "yes", loaded: ready, eof: ready && string("eof-reached") == "yes", error: failure, seekRevision: seekRevision, seeking: string("seeking") == "yes", avSync: lp_get_double(handle, "avsync", 0),
-            videoAspect: ready ? VideoWindowGeometry.displayAspect(width: lp_get_double(handle, "dwidth", 0), height: lp_get_double(handle, "dheight", 0), rotation: lp_get_double(handle, "video-out-params/rotate", 0)) : nil)
+            position: lp_get_double(handle, "time-pos", 0), duration: duration,
+            paused: paused, loaded: ready, eof: ready && eof, error: failure, seekRevision: seekRevision, seeking: seeking, avSync: lp_get_double(handle, "avsync", 0),
+            videoAspect: ready ? videoAspect : nil)
         if let old = lastSnapshot, old.generation == snapshot.generation, old.path == snapshot.path,
            old.position == snapshot.position, old.duration == snapshot.duration, old.paused == snapshot.paused,
            old.loaded == snapshot.loaded, old.eof == snapshot.eof, snapshot.error == nil,

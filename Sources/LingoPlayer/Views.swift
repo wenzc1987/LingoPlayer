@@ -181,19 +181,28 @@ struct SubtitleStrip: View {
 }
 
 struct WordWrap: Layout {
+    struct Metrics: Equatable {
+        var text: String
+        var fontSize: Double
+        var bold: Bool
+    }
+    var metrics: Metrics
     var spacing: CGFloat = 3
     var lineSpacing: CGFloat = 5
     struct Cache {
+        var metrics: Metrics
         var sizes: [CGSize]
         var width: CGFloat?
         var spacing: CGFloat?
         var lineSpacing: CGFloat?
         var result: (CGSize, [CGPoint])?
     }
-    func makeCache(subviews: Subviews) -> Cache { Cache(sizes: measure(subviews)) }
+    func makeCache(subviews: Subviews) -> Cache { Cache(metrics: metrics, sizes: measure(subviews)) }
     func updateCache(_ cache: inout Cache, subviews: Subviews) {
-        let sizes = measure(subviews)
-        if cache.sizes != sizes { cache = Cache(sizes: sizes) }
+        // The explicit point size and weight are constant for a sentence.
+        // Active/locked colors must not remeasure every word at speech rate.
+        guard cache.metrics != metrics || cache.sizes.count != subviews.count else { return }
+        cache = Cache(metrics: metrics, sizes: measure(subviews))
     }
     private func measure(_ subviews: Subviews) -> [CGSize] {
         PerformanceCounters.shared.hit("word_measurements", count: subviews.count)
@@ -391,79 +400,99 @@ struct LearningPanel: View {
     var body: some View {
         let _ = PerformanceCounters.shared.hit("learning_panel_body")
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Label("学习", systemImage: "sparkle").font(.system(size: 15, weight: .semibold))
+            HStack(spacing: 10) {
+                Label("学习", systemImage: "sparkle").font(.system(size: 13, weight: .semibold))
                 Spacer()
                 Text(model.isFollowing ? "自动跟随" : "已锁定").font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(Palette.accent).padding(.horizontal, 8).padding(.vertical, 5)
+                    .foregroundStyle(Palette.accent).padding(.horizontal, 7).padding(.vertical, 3)
                     .background(Palette.accent.opacity(0.1), in: Capsule())
                 if !detached {
-                    Button { model.onDetach?() } label: { Image(systemName: "arrow.up.forward.square") }
+                    Button { model.onDetach?() } label: { Image(systemName: "arrow.up.forward.square").frame(width: 24, height: 24).contentShape(Rectangle()) }
                         .buttonStyle(.plain).foregroundStyle(Palette.muted).help("移至独立学习窗口")
                 }
                 if !model.preferences.cardHidden {
-                    Button { model.closeLearningCard() } label: { Image(systemName: "xmark") }
+                    Button { model.closeLearningCard() } label: { Image(systemName: "xmark").frame(width: 24, height: 24).contentShape(Rectangle()) }
                         .buttonStyle(.plain).foregroundStyle(Palette.muted).help("关闭词卡 · 点击字幕单词可重新打开")
                         .accessibilityIdentifier("close-word-card")
                 }
-            }.padding(22)
+            }.padding(.horizontal, 16).padding(.vertical, 6)
             Rectangle().fill(Palette.border).frame(height: 1)
             ScrollView {
-                VStack(alignment: .leading, spacing: 26) {
+                VStack(alignment: .leading, spacing: 16) {
                     if model.preferences.cardHidden {
                         Text("词卡已关闭\n点击视频字幕中的单词，重新开始学习。")
                             .font(.system(size: 13)).foregroundStyle(Palette.muted).lineSpacing(7).padding(.top, 30)
                     } else if model.learningVisible, let selection = model.selected {
-                        VStack(alignment: .leading, spacing: 9) {
-                            Text("当前单词").font(.system(size: 10, weight: .medium)).foregroundStyle(Palette.muted)
-                            Text(selection.token.text).font(.system(size: 34, weight: .semibold, design: .rounded)).foregroundStyle(Palette.accent).textSelection(.enabled)
+                        VStack(alignment: .leading, spacing: 5) {
+                            LearningText(text: selection.token.text, style: .word).equatable()
                             if let entry = model.dictionaryEntry {
                                 if let lemma = entry.lemma, lemma != selection.token.normalized { Text("原形  \(lemma)").font(.system(size: 13)).foregroundStyle(.secondary) }
                                 else if entry.word != selection.token.normalized { Text("原形候选  \(entry.word)").font(.system(size: 13)).foregroundStyle(.secondary) }
-                                if !entry.phonetic.isEmpty { Text("/\(entry.phonetic)/").font(.system(size: 14)).foregroundStyle(Palette.muted).textSelection(.enabled) }
+                                if !entry.phonetic.isEmpty { LearningText(text: "/\(entry.phonetic)/", style: .phonetic).equatable() }
                             }
                         }
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text(model.dictionaryStatus).font(.system(size: 10)).foregroundStyle(Palette.muted)
+                        VStack(alignment: .leading, spacing: 8) {
+                            if !model.dictionaryStatus.isEmpty {
+                                Text(model.dictionaryStatus).font(.system(size: 11)).foregroundStyle(Palette.muted)
+                            }
                             if let entry = model.dictionaryEntry {
-                                if !entry.translation.isEmpty { Text(entry.translation).font(.system(size: 15)).lineSpacing(6).textSelection(.enabled) }
-                                if !entry.definition.isEmpty { Text(entry.definition).font(.system(size: 13)).foregroundStyle(.secondary).lineSpacing(5).textSelection(.enabled) }
-                            } else {
-                                Text("当前台词仍可查阅和回放。").font(.system(size: 13)).foregroundStyle(.secondary)
+                                if !entry.translation.isEmpty { LearningText(text: entry.translation, style: .translation).equatable() }
+                                if !entry.definition.isEmpty { LearningText(text: entry.definition, style: .definition).equatable() }
                             }
                         }
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack { Text("当前台词").font(.system(size: 10)); Spacer(); Text(clock(selection.playbackStart)).font(.system(size: 10)).monospacedDigit() }.foregroundStyle(Palette.muted)
-                            Text(selection.cue.text).font(.system(size: 16, weight: .medium)).lineSpacing(6).textSelection(.enabled)
-                            if !selection.chinese.isEmpty { Text(selection.chinese).font(.system(size: 13)).foregroundStyle(.secondary).lineSpacing(5).textSelection(.enabled) }
-                            Button { model.perform(.replaySentence) } label: { Label("回放本句", systemImage: "arrow.counterclockwise").font(.system(size: 12)) }.buttonStyle(.borderless).help(model.help(.replaySentence))
-                        }
-                        .padding(17).frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.white.opacity(0.035), in: RoundedRectangle(cornerRadius: 12))
+                        LearningSentenceCard(cue: selection.cue, chinese: selection.chinese,
+                                             playbackStart: selection.playbackStart, replayHelp: model.help(.replaySentence),
+                                             replay: { model.perform(.replaySentence) }).equatable()
                     } else {
                         VStack(alignment: .leading, spacing: 16) {
                             Image(systemName: "text.magnifyingglass").font(.system(size: 34, weight: .light)).foregroundStyle(Palette.accent.opacity(0.7)).padding(.bottom, 4)
                             Text("从一句对白开始").font(.system(size: 21, weight: .medium))
                             Text("播放时跟随正在说的词。\n点击字幕中的单词，暂停并慢慢读。")
                                 .font(.system(size: 13)).foregroundStyle(Palette.muted).lineSpacing(7)
-                            if model.dictionaryEntry == nil { Text(model.dictionaryStatus).font(.system(size: 11)).foregroundStyle(Palette.muted) }
+                            if model.dictionaryEntry == nil, !model.dictionaryStatus.isEmpty {
+                                Text(model.dictionaryStatus).font(.system(size: 11)).foregroundStyle(Palette.muted)
+                            }
                         }.padding(.top, 30)
                     }
-                }.padding(22).frame(maxWidth: .infinity, alignment: .leading)
+                }.padding(.horizontal, 16).padding(.vertical, 12).frame(maxWidth: .infinity, alignment: .leading)
             }
             Spacer(minLength: 0)
-            VStack(spacing: 10) {
+            VStack(spacing: 6) {
                 if !model.preferences.cardHidden && model.learning.isLocked {
                     Button { model.perform(.resumeLearning) } label: {
-                        Label("继续学习", systemImage: "play.fill").frame(maxWidth: .infinity).padding(.vertical, 8)
+                        Label("继续学习", systemImage: "play.fill").frame(maxWidth: .infinity).padding(.vertical, 5)
                     }.buttonStyle(.borderedProminent).foregroundStyle(.black).help(model.help(.resumeLearning))
                     Text(model.help(.resumeLearning) + " · 恢复自动跟随").font(.system(size: 10)).foregroundStyle(Palette.muted)
                 } else {
                     Label("点击单词可暂停并锁定", systemImage: "hand.tap").font(.system(size: 11)).foregroundStyle(Palette.muted)
                 }
-            }.padding(22)
+            }.padding(.horizontal, 16).padding(.vertical, 12)
         }
         .background(Palette.panel).tint(Palette.accent)
+    }
+}
+
+/// The sentence and its selectable text remain stable while the current word
+/// and dictionary entry change. Do not rebuild their native text controls per word.
+private struct LearningSentenceCard: View, Equatable {
+    let cue: SubtitleCue
+    let chinese: String
+    let playbackStart: Double
+    let replayHelp: String
+    let replay: () -> Void
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.cue == rhs.cue && lhs.chinese == rhs.chinese && lhs.playbackStart == rhs.playbackStart && lhs.replayHelp == rhs.replayHelp
+    }
+    var body: some View {
+        let _ = PerformanceCounters.shared.hit("learning_sentence_body")
+        VStack(alignment: .leading, spacing: 8) {
+            HStack { Text("当前台词").font(.system(size: 10)); Spacer(); Text(clock(playbackStart)).font(.system(size: 10)).monospacedDigit() }.foregroundStyle(Palette.muted)
+            LearningText(text: cue.text, style: .sentence).equatable()
+            if !chinese.isEmpty { LearningText(text: chinese, style: .chinese).equatable() }
+            Button(action: replay) { Label("回放本句", systemImage: "arrow.counterclockwise").font(.system(size: 12)) }.buttonStyle(.borderless).help(replayHelp)
+        }
+        .padding(12).frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.035), in: RoundedRectangle(cornerRadius: 12))
     }
 }
 

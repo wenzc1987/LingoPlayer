@@ -91,7 +91,7 @@ public enum ProcessRunner {
         }, onCancel: { control.cancel() })
     }
     /// File-backed output avoids a child blocking forever on a full stdout/stderr pipe.
-    public static func run(executable: String, arguments: [String], environment: [String: String] = [:], timeout: TimeInterval = 600) async throws -> ProcessResult {
+    public static func run(executable: String, arguments: [String], environment: [String: String] = [:], timeout: TimeInterval = 600, qualityOfService: QualityOfService = .default) async throws -> ProcessResult {
         let control = ProcessControl()
         return try await withTaskCancellationHandler(operation: {
             try Task.checkCancellation()
@@ -107,6 +107,7 @@ public enum ProcessRunner {
             let error = try FileHandle(forWritingTo: errorURL)
             defer { try? output.close(); try? error.close() }
             let process = Process()
+            process.qualityOfService = qualityOfService
             process.executableURL = URL(fileURLWithPath: executable)
             process.arguments = arguments
             process.standardOutput = output; process.standardError = error

@@ -23,6 +23,7 @@ struct SubtitleFrame {
 }
 
 struct SubtitleCaptionContent: View {
+    @Environment(\.legibilityWeight) private var legibilityWeight
     let frame: SubtitleFrame
     var select: ((SubtitleCue, WordToken) -> Void)?
     var body: some View {
@@ -30,7 +31,7 @@ struct SubtitleCaptionContent: View {
             if frame.hasContent {
                 if frame.learning {
                 ForEach(frame.english) { cue in
-                    WordWrap(spacing: 1, lineSpacing: 4) {
+                    WordWrap(metrics: .init(text: cue.text, fontSize: frame.appearance.englishSize, bold: legibilityWeight == .bold), spacing: 1, lineSpacing: 4) {
                         ForEach(cue.tokens) { token in
                             if token.isWord {
                                 if let select {
@@ -61,9 +62,22 @@ struct SubtitleCaptionContent: View {
         .background { if frame.hasContent { RoundedRectangle(cornerRadius: 10).fill(.black.opacity(frame.appearance.backgroundOpacity)) } }
     }
     private func word(_ cue: SubtitleCue, _ token: WordToken) -> some View {
-        let spoken = frame.wordID == "\(cue.id):\(token.id)"
-        let locked = frame.lockedWordID == "\(cue.id):\(token.id)"
-        return Text(token.text).font(.system(size: frame.appearance.englishSize, weight: spoken ? .semibold : .medium))
+        SubtitleWord(text: token.text, size: frame.appearance.englishSize,
+                     spoken: frame.wordID == "\(cue.id):\(token.id)",
+                     locked: frame.lockedWordID == "\(cue.id):\(token.id)").equatable()
+    }
+}
+
+/// Highlight changes paint only. Stable glyph widths keep wrapping and caption
+/// height unchanged as speech advances, including near a line boundary.
+private struct SubtitleWord: View, Equatable {
+    let text: String
+    let size: Double
+    let spoken: Bool
+    let locked: Bool
+    var body: some View {
+        let _ = PerformanceCounters.shared.hit("subtitle_word_body")
+        Text(text).font(.system(size: size, weight: .medium))
             .foregroundStyle(spoken ? .black : .white.opacity(0.93))
             .padding(.horizontal, 3).padding(.vertical, 3)
             .background(spoken ? Palette.accent : .clear, in: RoundedRectangle(cornerRadius: 5))

@@ -124,7 +124,19 @@ import PlayerCore
                 model.english = [longCue]; model.learning.resumeFollowing(); model.refreshLearning(); await delay(0.4)
                 let words = longCue.tokens.filter(\.isWord).compactMap { (element(window, id: "subtitle-word-\(longCue.id)-\($0.id)")?.value(forKey: "accessibilityFrame") as? NSValue)?.rectValue }
                 let controls = (element(window, id: "action-playPause")?.value(forKey: "accessibilityFrame") as? NSValue)?.rectValue ?? .zero
-                record("large_subtitles_stay_below_controls_in_small_window", words.count == longCue.tokens.filter(\.isWord).count && words.allSatisfy { $0.maxY < controls.minY && window.frame.contains($0) })
+                // Raised, tall captions may put the controls below them. Both
+                // placements are intentional in VideoContentGeometry; overlap
+                // and off-window word hit targets are the regressions to catch.
+                let separated = words.allSatisfy { $0.maxY < controls.minY } || words.allSatisfy { $0.minY > controls.maxY }
+                record("large_subtitles_do_not_overlap_controls_in_small_window", words.count == longCue.tokens.filter(\.isWord).count && separated && words.allSatisfy { window.frame.contains($0) })
+                var stableHighlightLayout = !words.isEmpty
+                for token in longCue.tokens.filter(\.isWord) {
+                    model.currentWordID = "\(longCue.id):\(token.id)"; await delay(0.025)
+                    let highlighted = longCue.tokens.filter(\.isWord).compactMap { (element(window, id: "subtitle-word-\(longCue.id)-\($0.id)")?.value(forKey: "accessibilityFrame") as? NSValue)?.rectValue }
+                    stableHighlightLayout = stableHighlightLayout && highlighted == words
+                }
+                model.currentWordID = nil
+                record("word_highlights_preserve_wrapping_and_hit_targets", stableHighlightLayout)
                 screenshot("large-subtitles")
                 model.english = originalEnglish; model.refreshLearning(); model.setSidebarCollapsed(true)
                 window.setContentSize(NSSize(width: 1100, height: 720)); await delay(0.3)

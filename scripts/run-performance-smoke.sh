@@ -11,9 +11,10 @@ fi
 export LINGOPLAYER_DATA_DIR="$TASK_OUTPUT/state-$(uuidgen)" LINGOPLAYER_RUNTIME="$TASK_ROOT/.runtime"
 "${LINGOPLAYER_TEST_BINARY:-$TASK_APP/Contents/MacOS/LingoPlayer}" --performance-test "$TASK_VIDEO" "$TASK_OUTPUT/performance.json"
 python3 - "$TASK_OUTPUT/performance.json" <<'PY'
-import json,sys
+import json,sys,os
 r=json.load(open(sys.argv[1]))
-assert [s['name'] for s in r['scenarios']]==['immersive','controls','learning','transcript']
+expected=[os.environ['LINGOPLAYER_PERF_SCENARIO']] if os.environ.get('LINGOPLAYER_PERF_SCENARIO') else ['immersive','controls','learning','transcript']
+assert [s['name'] for s in r['scenarios']]==expected
 for s in r['scenarios']:
     print(s['name'],round(s['cpu_percent_one_core'],1),'% of one CPU core',s['counts'])
     assert s['rendered_frames']>100, s

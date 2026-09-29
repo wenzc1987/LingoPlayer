@@ -25,6 +25,7 @@ struct LPPlayer {
     int (*command)(mpv_handle *, const char *const *);
     void (*free)(void *);
     mpv_event *(*wait_event)(mpv_handle *, double);
+    int (*observe_property)(mpv_handle *, uint64_t, const char *, int);
     const char *(*error_string)(int);
     int (*render_create)(mpv_render_context **, mpv_handle *, render_param *);
     void (*render_callback)(mpv_render_context *, LPUpdateCallback, void *);
@@ -46,6 +47,7 @@ LPPlayer *lp_create(const char *path, char *error, size_t error_size) {
     LOAD(set_option_string, "mpv_set_option_string"); LOAD(set_property_string, "mpv_set_property_string");
     LOAD(get_property, "mpv_get_property"); LOAD(get_property_string, "mpv_get_property_string");
     LOAD(command, "mpv_command"); LOAD(free, "mpv_free"); LOAD(wait_event, "mpv_wait_event"); LOAD(error_string, "mpv_error_string");
+    LOAD(observe_property, "mpv_observe_property");
     LOAD(render_create, "mpv_render_context_create"); LOAD(render_callback, "mpv_render_context_set_update_callback");
     LOAD(render, "mpv_render_context_render"); LOAD(render_free, "mpv_render_context_free");
 #undef LOAD
@@ -60,6 +62,15 @@ LPPlayer *lp_create(const char *path, char *error, size_t error_size) {
     p->set_option_string(p->handle, "video-timing-offset", "0");
     int result = p->initialize(p->handle);
     if (result < 0) { snprintf(error, error_size, "%s", p->error_string(result)); lp_destroy(p); return NULL; }
+    // Metadata is read only after a change notification. Keep the playback
+    // clock on its own 30 Hz path; observing it here would invalidate this cache.
+    const char *properties[] = { "path", "duration", "pause", "eof-reached", "seeking", "dwidth", "dheight", "video-out-params/rotate" };
+    const int formats[] = { 1, 5, 3, 3, 3, 5, 5, 5 }; // STRING, DOUBLE, FLAG
+    for (unsigned i = 0; i < sizeof(properties) / sizeof(properties[0]); ++i) {
+        // Typed observation suppresses low-level events with unchanged values.
+        result = p->observe_property(p->handle, i + 1, properties[i], formats[i]);
+        if (result < 0) { snprintf(error, error_size, "%s", p->error_string(result)); lp_destroy(p); return NULL; }
+    }
     return p;
 }
 void lp_destroy(LPPlayer *p) { if (!p) return; if (p->handle) p->terminate_destroy(p->handle); if (p->library) dlclose(p->library); free(p); }

@@ -20,7 +20,7 @@ import PlayerCore
     var isAvailable: Bool { provider != nil }
     var hasSelection: Bool { selectionKey != nil }
     var cachedWordCount: Int { cache.count }
-    private static let readyStatus = "词典释义 · ECDICT"
+    private static let readyStatus = ""
 
     init(presentation: LearningPresentation, makeProvider: @escaping (String) throws -> any LearningContentProvider = { try ECDictionary(path: $0) }) {
         self.presentation = presentation; self.makeProvider = makeProvider
@@ -35,9 +35,9 @@ import PlayerCore
             do { provider = try makeProvider(path); setStatus(Self.readyStatus) }
             catch { setStatus(error.localizedDescription) }
         }
-        let word = selection.token.normalized
-        let key = SelectionKey(cueID: selection.cue.id, tokenID: selection.token.id, word: word)
+        let key = SelectionKey(cueID: selection.cue.id, tokenID: selection.token.id, word: selection.token.text)
         guard key != selectionKey else { return }
+        let word = selection.token.normalized
         cancelRequest(); selectionKey = key
         guard let provider else { setEntry(nil); return }
         if let cached = cache.value(for: word) {

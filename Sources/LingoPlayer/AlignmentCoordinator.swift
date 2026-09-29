@@ -28,6 +28,13 @@ struct AlignmentResult: Codable {
 
 @MainActor
 final class AlignmentCoordinator {
+    // MFA already runs one job. Native math libraries otherwise create their
+    // own CPU-sized pools inside that job, competing with playback and retaining
+    // per-thread buffers. This scheduling policy does not invalidate word caches.
+    nonisolated static let workerEnvironment = [
+        "OMP_NUM_THREADS": "1", "OPENBLAS_NUM_THREADS": "1", "MKL_NUM_THREADS": "1",
+        "VECLIB_MAXIMUM_THREADS": "1", "NUMEXPR_NUM_THREADS": "1"
+    ]
     private(set) var configurationCount = 0
     var onChange: (([TimedWord], String) -> Void)?
     var onStatus: ((AlignmentTaskStatus) -> Void)?
@@ -163,7 +170,7 @@ final class AlignmentCoordinator {
             let data = try JSONEncoder().encode(job); try data.write(to: input)
             let configuration = "python=\(python)\n" + (String(data: data, encoding: .utf8) ?? "")
             do {
-                let process = try await ProcessRunner.run(executable: python, arguments: [worker.path, "--request", input.path, "--output", output.path], timeout: 900)
+                let process = try await ProcessRunner.run(executable: python, arguments: [worker.path, "--request", input.path, "--output", output.path], environment: Self.workerEnvironment, timeout: 900, qualityOfService: .utility)
                 let result = try JSONDecoder().decode(AlignmentResult.self, from: Data(contentsOf: output))
                 var record: URL?
                 if !result.failures.isEmpty {
